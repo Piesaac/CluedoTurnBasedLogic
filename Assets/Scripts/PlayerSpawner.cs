@@ -1,54 +1,55 @@
 using UnityEngine;
 using Unity.Netcode;
-using Netcode = Unity.Netcode.NetworkManager;
 
 public class PlayerSpawner : NetworkBehaviour
 {
-    [Header("Assign 6 transforms here")]
-    public Transform[] spawnPoints; 
-
+    public GameObject playerPrefab; // Drag your prefab here
     public override void OnNetworkSpawn()
     {
         if (IsServer)
         {
-            takePosition();
-
-            NetworkManager.Singleton.OnClientConnectedCallback += HandleClientConnected;
+            SpawnAllPlayers();
         }
     }
 
-    public override void OnNetworkDespawn()
+    private void SpawnAllPlayers()
     {
-        if (IsServer && NetworkManager.Singleton != null)
+        // Get all connected clients
+        foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
         {
-            NetworkManager.Singleton.OnClientConnectedCallback -= HandleClientConnected;
+            SpawnPlayerForClient(clientId);
         }
     }
 
-    private void HandleClientConnected(ulong clientId)
+    private void SpawnPlayerForClient(ulong clientId)
     {
-        takePosition();
-    }
+        // 1. Get all spawn points in the scene
+        SpawnPoint[] points = FindObjectsByType<SpawnPoint>(FindObjectsSortMode.None);
+    
+        // 2. Find the point where the index matches the clientId
+        // If no point is found, chosenPoint will be null
+        SpawnPoint chosenPoint = System.Array.Find(points, p => p.index == (int)clientId);
 
-    private void takePosition()
-    {
-        int index = 0;
-        foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+        // 3. Safety check: If we can't find a match, default to the first one found
+        if (chosenPoint == null && points.Length > 0)
         {
-            if (client.PlayerObject != null && index < spawnPoints.Length)
-            {
-                Transform spawnArea = spawnPoints[index];
-                client.PlayerObject.transform.position = spawnArea.position;
-                client.PlayerObject.transform.rotation = spawnArea.rotation;
-
-                // NEW: Tell the movement script to find the floor at this new spot
-                if (client.PlayerObject.TryGetComponent<Movement>(out var moveScript))
-                {
-                    moveScript.whereWeAt();
-                }
-
-                index++;
-            }
+            Debug.LogWarning($"[Server] No spawn point found for ID {clientId}, using index 0.");
+            chosenPoint = points[0];
         }
+        else if (chosenPoint == null)
+        {
+            Debug.LogError($"[Server] FATAL: No spawn points found in scene!");
+            return;
+        }
+
+        // 4. Extract position and rotation safely
+        Vector3 pos = chosenPoint.transform.position;
+        Quaternion rot = chosenPoint.transform.rotation;
+
+        // 5. Instantiate and Spawn
+        GameObject player = Instantiate(playerPrefab, pos, rot);
+        player.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId);
+    
+        Debug.Log($"[Server] Manually spawned client {clientId} at {pos}");
     }
 }
