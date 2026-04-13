@@ -9,10 +9,6 @@ public class TurnManager : NetworkBehaviour
     public TextMeshProUGUI status;
     public TextMeshProUGUI activePlayerText;
 
-    [Header("Links to UI Controller")]
-    [SerializeField] private UIController uiMan;
-
-
     // Initialises the game to begin in the rolling phase
     public NetworkVariable<TurnStage> whatPhase = new NetworkVariable<TurnStage>(TurnStage.ROLLING);
 
@@ -61,32 +57,6 @@ public class TurnManager : NetworkBehaviour
                 activePlayerText.text += " (YOU)";
             }
         }
-
-        // Shows the Suggestion phase UI if it is the players turn and if it is actually the suggesting phase.
-        if (uiMan != null)
-        {
-            bool isMyTurn = (whosPlaying.Value == (int)NetworkManager.Singleton.LocalClientId);
-            bool isSuggestingPhase = (whatPhase.Value == TurnStage.SUGGESTING);
-
-            if (isMyTurn && isSuggestingPhase)
-            {
-                uiMan.ShowSuggestionUI(); 
-            }
-            else
-            {
-                Invoke("delayHideGuess", 1f);
-            }
-        }
-    }
-
-    private void delayHideGuess()
-    {
-        uiMan.HideSuggestionUI();
-    }
-
-    private void delayHideRoll()
-    {
-        uiMan.HideRollingUI();
     }
 
     public void reqNextPhase()
@@ -119,16 +89,16 @@ public class TurnManager : NetworkBehaviour
             whatPhase.Value = TurnStage.ROLLING;
             nextTurn();
         }
-        uiMan.delayedUI();
     }
 
-    private void nextTurn()
+    public void nextTurn()
     {
         // Cycles to the next player in rotation
         if (allPlayers > 0)
         {
             whosPlaying.Value = (whosPlaying.Value + 1) % allPlayers;
         }
+        whatPhase.Value = TurnStage.ROLLING;
     }
 
     public void pushNextPhase()

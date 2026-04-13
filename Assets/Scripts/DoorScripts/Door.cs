@@ -1,16 +1,9 @@
 using UnityEngine;
+using Unity.Netcode;
 
-public class Door : MonoBehaviour
+public abstract class Door : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public abstract string roomName { get; }
+    public string exitName;
+    public abstract Vector3 GetRoomPosition(int clientId);
 }

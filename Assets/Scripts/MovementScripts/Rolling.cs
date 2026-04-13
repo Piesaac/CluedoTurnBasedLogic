@@ -9,7 +9,7 @@ public class Rolling : NetworkBehaviour
     private int secondVal;
     private int totalVal;
     public TurnManager turnMan;
-    public TextMeshProUGUI moves;
+    public TextMeshProUGUI diceResult;
 
     // Initialises dice values as 0 and finds TurnManager. 
     void Start()
@@ -32,7 +32,7 @@ public class Rolling : NetworkBehaviour
         secondVal = UnityEngine.Random.Range(1, 7);
         totalVal = firstVal + secondVal;
         
-        moves.text = $"First dice rolled: {firstVal}; Second dice rolled: {secondVal}; Total score: {totalVal}";
+        diceResult.text = $"First dice rolled: {firstVal}; Second dice rolled: {secondVal}; Total score: {totalVal}";
 
         if (NetworkManager.Singleton != null && NetworkManager.Singleton.LocalClient != null)
         {
@@ -59,7 +59,7 @@ public class Rolling : NetworkBehaviour
 
         if (turnMan.whatPhase.Value == TurnStage.SUGGESTING)
         {
-            moves.text = " ";
+            diceResult.text = " ";
         }
     }
 }

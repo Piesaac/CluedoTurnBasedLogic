@@ -34,7 +34,7 @@ public class GuessManager : NetworkBehaviour
     // Resets dropdowns to original form so next player does not see input.
     private void resetGuess()
     {
-        uiscript.clearDropdowns();
+        uiscript.clearGuessDropdowns();
     }
 
     // Re-initialises the local variables with dropdown input - links with the submit button.
@@ -82,7 +82,7 @@ public class GuessManager : NetworkBehaviour
     {
         guessResult.text = resultText;
 
-        uiscript.clearDropdowns();
+        uiscript.clearGuessDropdowns();
     
         Invoke("clearAnswerText", 5f);
     }

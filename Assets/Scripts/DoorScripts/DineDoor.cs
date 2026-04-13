@@ -1,16 +1,14 @@
 using UnityEngine;
 
-public class DineDoor : MonoBehaviour
+public class DineDoor : Door
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    public DineSpawn[] dineSpawns;
+    public override string roomName => "Dining";
 
-    // Update is called once per frame
-    void Update()
+    public override Vector3 GetRoomPosition(int clientId)
     {
-        
+        // Find the spawn point where the ID matches the clientId
+        DineSpawn match = System.Array.Find(dineSpawns, p => p.id == clientId);
+        return (match != null) ? match.spawnPoint.position : Vector3.zero;
     }
 }

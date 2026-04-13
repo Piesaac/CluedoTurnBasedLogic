@@ -1,16 +1,15 @@
 using UnityEngine;
 
-public class BilliarDoor : MonoBehaviour
+public class BilliarDoor : Door
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    public BillSpawn[] billSpawns;
+    public override string roomName => "Billiard";
 
-    // Update is called once per frame
-    void Update()
+    public override Vector3 GetRoomPosition(int clientId)
     {
-        
+        // Find the spawn point where the ID matches the clientId
+        BillSpawn match = System.Array.Find(billSpawns, p => p.id == clientId);
+        return (match != null) ? match.spawnPoint.position : Vector3.zero;
     }
+    
 }

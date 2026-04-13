@@ -12,6 +12,7 @@ using System.Collections.Generic;
 public class UIController : MonoBehaviour
 {
     // Text for number of moves
+    public TextMeshProUGUI diceResult;
     public TextMeshProUGUI moves;
     // Button to action rolling "dice"
     public Button rollBtn;
@@ -23,11 +24,23 @@ public class UIController : MonoBehaviour
     public TMP_Dropdown weaponList;
     public TMP_Dropdown locationList;
 
+    // Fields for room entry/exit
+    public TMP_Dropdown exitList;
+    public TextMeshProUGUI exitText;
+    public Button exitButton;
+    public Button entryButton;
+    private List<Door> currentDoors = new List<Door>();
+    private List<string> exitNames = new List<string>();
+
     // Instance of this UI controller
     public static UIController Instance;
 
     // Text displaying players hand
     public TextMeshProUGUI handText;
+    public TMP_Dropdown handList;
+
+    public Movement localPlayerScript;
+
 
     // UI panels for each different phase
     [Header("Panels")]
@@ -39,12 +52,11 @@ public class UIController : MonoBehaviour
     public What selectedWeapon;
     public Where selectedRoom;
 
+
     public void ShowSuggestionUI() => guessPanel.SetActive(true);
     public void HideSuggestionUI() => guessPanel.SetActive(false);
     public void ShowRollingUI() => rollPanel.SetActive(true);
     public void HideRollingUI() => rollPanel.SetActive(true);
-
-
 
     private void Awake()
     {
@@ -53,13 +65,13 @@ public class UIController : MonoBehaviour
 
     public void updateHand(Card[] cards)
     {
-        string displayString = "<b>YOUR HAND:</b>\n";
+        handText.text = "<b>YOUR HAND:</b>\n";
+        List<string> cardNames = new List<string>();
         foreach (Card card in cards)
         {
-            displayString += $"- {whatCard(card)}\n";
+            cardNames.Add(whatCard(card));
         }
-
-        handText.text = displayString;
+        handList.AddOptions(cardNames);
     }
 
     private string whatCard(Card card)
@@ -76,10 +88,35 @@ public class UIController : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        fillDropdowns();
-        rollPanel.SetActive(true);
-        movePanel.SetActive(false);
-        guessPanel.SetActive(false);
+        if (localPlayerScript != null)
+        {
+            localPlayerScript.move_tokens.OnValueChanged += (oldVal, newVal) => updateMoveText();
+        }
+        fillGuessDropdowns();
+        turnMan.whatPhase.OnValueChanged += (oldVal, newVal) => UpdateUIVisibility();
+        turnMan.whosPlaying.OnValueChanged += (oldVal, newVal) => UpdateUIVisibility();
+        UpdateUIVisibility();
+    }
+
+    public void UpdateUIVisibility()
+    {
+        bool isMyTurn = (turnMan.whosPlaying.Value == (int)NetworkManager.Singleton.LocalClientId);
+        bool isOnDoor = localPlayerScript != null && localPlayerScript.IsOnDoor();
+        bool isInRoom = localPlayerScript != null && localPlayerScript.IsInRoom();
+        bool isMovingPhase = turnMan.whatPhase.Value == TurnStage.MOVING;
+
+        // By explicitly setting the Active state based on the boolean result,
+        // you guarantee they turn off when the condition is not met.
+        rollPanel.SetActive(isMyTurn && turnMan.whatPhase.Value == TurnStage.ROLLING);
+        movePanel.SetActive(isMyTurn && isMovingPhase);
+        guessPanel.SetActive(isMyTurn && turnMan.whatPhase.Value == TurnStage.SUGGESTING);
+
+        moves.gameObject.SetActive(isMovingPhase);
+        // Explicitly hide the entry button if not on a door or not moving phase
+        entryButton.gameObject.SetActive(isMyTurn && isMovingPhase && isOnDoor);
+        exitList.gameObject.SetActive(isMyTurn && isMovingPhase && isInRoom);
+        exitText.gameObject.SetActive(isMyTurn && isMovingPhase && isInRoom);
+        exitButton.gameObject.SetActive(isMyTurn && isMovingPhase && isInRoom);
     }
 
     public void delayedUI()
@@ -109,24 +146,92 @@ public class UIController : MonoBehaviour
         }
     }
 
-    public void suggestionButton()
+    // -----V----- Used for tracking moves ---------V-------
+    public void updateMoveText()
     {
-        int suspectIndex = suspectList.value;
-        string suspectName = suspectList.options[suspectIndex].text;
-
-        int weaponIndex = weaponList.value;
-        string weaponName = weaponList.options[weaponIndex].text;
-
-        int roomIndex = locationList.value;
-        string roomName = locationList.options[roomIndex].text;
-    
-        // You can now cast this back to your Enum!
-        selectedSuspect = (Who)suspectIndex;
-        selectedWeapon = (What)weaponIndex;
-        selectedRoom =  (Where)roomIndex;
+        if (localPlayerScript != null)
+        {
+            // Use $ for interpolation, and access .Value for the NetworkVariable
+            moves.text = $"You have {localPlayerScript.move_tokens.Value} moves left!";
+        }
     }
 
-    void fillDropdowns()
+    // -----V----- Used for room entry/exit --------V--------
+
+    public void submitEnterRoom()
+    {
+        if (localPlayerScript != null)
+        {
+            localPlayerScript.submitEntryServerRpc();
+        }
+        entryButton.gameObject.SetActive(false);
+        exitDropdown();
+        exitList.gameObject.SetActive(true);
+        exitText.gameObject.SetActive(true);
+        exitButton.gameObject.SetActive(true);
+    }
+
+    public void exitDropdown()
+    {
+        if (localPlayerScript == null) return;
+
+        Door[] allDoors = GameObject.FindObjectsByType<Door>(FindObjectsSortMode.None);
+    
+        exitNames.Clear();
+        currentDoors.Clear();
+
+        foreach (var door in allDoors)
+        {
+            if (door.roomName == localPlayerScript.currentRoomName) 
+            {
+                currentDoors.Add(door);
+                exitNames.Add(door.exitName);   
+            }
+        }
+
+        exitList.ClearOptions();
+        exitList.AddOptions(exitNames);
+    }
+
+    public void clearExit()
+    {
+        if (localPlayerScript == null) return;
+        exitList.gameObject.SetActive(false);
+        exitText.gameObject.SetActive(false);
+        exitButton.gameObject.SetActive(false);
+
+    }
+
+    public void confirmExit()
+    {
+        Debug.Log("UIController: confirmExit called!");
+        int selectedIndex = exitList.value;
+        if (localPlayerScript != null)
+        {
+            if (selectedIndex >= 0 && selectedIndex < currentDoors.Count)
+            {
+                Door exitDoor = currentDoors[selectedIndex];
+            
+                // Get the NetworkObject attached to the door
+                NetworkObject doorNetObj = exitDoor.GetComponent<NetworkObject>();
+            
+                if (doorNetObj != null)
+                {
+                    Debug.Log("UIController: Sending RPC to server for door: " + exitDoor.name);
+                    localPlayerScript.submitExitServerRPC(doorNetObj.NetworkObjectId);
+                }
+                else
+                {
+                    Debug.LogError("UIController: Door has no NetworkObject component!");
+                }
+            }
+            clearExit();
+
+        }
+    }
+
+    // -----V----- Used for suggestion phase dropdowns -----V-----
+    void fillGuessDropdowns()
     {
         
         suspectList.ClearOptions();
@@ -144,7 +249,7 @@ public class UIController : MonoBehaviour
 
     }
 
-    public void clearDropdowns()
+    public void clearGuessDropdowns()
     {
         suspectList.value = 0;
         weaponList.value = 0;
@@ -155,11 +260,22 @@ public class UIController : MonoBehaviour
         locationList.RefreshShownValue();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void suggestionButton()
     {
+        int suspectIndex = suspectList.value;
+        string suspectName = suspectList.options[suspectIndex].text;
+
+        int weaponIndex = weaponList.value;
+        string weaponName = weaponList.options[weaponIndex].text;
+
+        int roomIndex = locationList.value;
+        string roomName = locationList.options[roomIndex].text;
         
+        selectedSuspect = (Who)suspectIndex;
+        selectedWeapon = (What)weaponIndex;
+        selectedRoom =  (Where)roomIndex;
     }
+
     
 
 }

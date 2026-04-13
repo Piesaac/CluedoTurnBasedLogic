@@ -17,6 +17,18 @@ public class Movement : NetworkBehaviour
     private Vector3 targetPosition;
     private bool isMoving = false;
 
+    [Header("Room Fields")]
+    public GameObject ballroom;
+    public GameObject billiard;
+    public GameObject conserve;
+    public GameObject dining;
+    public GameObject hall;
+    public GameObject kitchen;
+    public GameObject library;
+    public GameObject lounge;
+    public GameObject study;
+
+    public string currentRoomName;
 
 
     // Allows the variable to be viewable by all players but only changable by the host
@@ -25,12 +37,16 @@ public class Movement : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         if (!IsOwner) return;
+        if (UIController.Instance != null)
+        {
+            UIController.Instance.localPlayerScript = this;
+        }
         searchOnce();
-        StartCoroutine(floorSearch());
+        StartCoroutine(stageSearch());
     }
 
-    // Looks for stage below the player repeatedly in case spawns are delayed.
-    private System.Collections.IEnumerator floorSearch()
+    // Looks for stage below the player repeatedly in case spawns are delayed
+    private System.Collections.IEnumerator stageSearch()
     {
         int attempts = 0;
         while (stage == null && attempts < 20)
@@ -75,6 +91,13 @@ public class Movement : NetworkBehaviour
                 BoardCam = Camera.main;
             }
         }
+        /*
+        if (doorui == null)
+        {
+            doorui = GameObject.FindFirstObjectByType<DoorUI>();
+            Debug.Log(doorui != null ? "Found DoorUI!" : "CRITICAL: Could not find DoorUI");
+        }
+        */
 
         // Indicates if any references are missing
         if (whomst == null) Debug.LogWarning("Movement: Still looking for TurnManager...");
@@ -173,7 +196,7 @@ public class Movement : NetworkBehaviour
             // If player is out of moves, triggers turn phase change
             if (move_tokens.Value == 0)
             {
-                Invoke("delayNextPhase", 0.5f);
+                Invoke("delayNextTurn", 0.5f);
             }
         }
     }
@@ -187,6 +210,7 @@ public class Movement : NetworkBehaviour
         onWhite = landingOnWhite;
     }
 
+
     // Actually moves the player to the tile selected and updates stage
     void movePlayer()
     {
@@ -196,6 +220,10 @@ public class Movement : NetworkBehaviour
             transform.position = targetPosition;
             isMoving = false;
             whereWeAt();
+        }
+        if (UIController.Instance != null)
+        {
+            UIController.Instance.UpdateUIVisibility();
         }
     }
 
@@ -214,6 +242,12 @@ public class Movement : NetworkBehaviour
                 onWhite = hit.collider.GetComponent<White>() != null;
                 Debug.Log($"Found tile: {stage.name}");
             }
+            Room roomComponent = hit.collider.GetComponent<Room>();
+            if (roomComponent != null)
+            {
+                stage = hit.collider.gameObject;
+                currentRoomName = roomComponent.myName;
+            }
         }
         else
         {
@@ -221,10 +255,87 @@ public class Movement : NetworkBehaviour
         }
     }
 
+    // --------------- Room entry logic ----------------
+
+    public bool IsOnDoor()
+    {
+        // Check if the current stage has a Door component
+        if (stage != null)
+        {
+            return stage.GetComponent<Door>() != null;
+        }
+        return false;
+    }
+
+    public bool IsInRoom()
+    {
+        // Check if the current stage has a Room component
+        if (stage != null)
+        {
+            return stage.GetComponent<Room>() != null;
+        }
+        return false;
+    }
+
+    [ClientRpc]
+    private void moveToRoomClientRpc(Vector3 roomPos)
+    {
+        transform.position = roomPos;
+        targetPosition = roomPos;
+        isMoving = false; 
+        onWhite = false;
+        move_tokens.Value--;
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner)]
+    public void submitEntryServerRpc()
+    {
+        if (whomst.whosPlaying.Value != (int)OwnerClientId) return;
+
+        // Use polymorphism to call the correct method regardless of door type
+        Door door = stage.GetComponent<Door>();
+        if (door == null) return;
+
+        Vector3 targetPos = door.GetRoomPosition((int)OwnerClientId);
+
+        transform.position = targetPos;
+        whereWeAt();
+        moveToRoomClientRpc(targetPos);
+        if (whomst.whatPhase.Value == TurnStage.MOVING)
+        {
+            whomst.pushNextPhase();
+        }
+    }
+    
+    [ClientRpc]
+    private void exitRoomClientRPC(Vector3 exitPos)
+    {
+        targetPosition = exitPos;
+        isMoving = true;
+        move_tokens.Value--;
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner)]
+    public void submitExitServerRPC(ulong doorId)
+    {
+        if (whomst.whosPlaying.Value != (int)OwnerClientId) return;
+
+        // Find the NetworkObject by its ID on the server
+        if (NetworkManager.SpawnManager.SpawnedObjects.TryGetValue(doorId, out NetworkObject doorNetworkObject))
+        {
+            Door exit = doorNetworkObject.GetComponent<Door>();
+            if (exit != null)
+            {
+                exitRoomClientRPC(exit.transform.position);
+                Debug.Log("The exit button hath been pressed");
+            }
+        }
+    }
+
+    // ------------ End of room entry logic ------------
+
     private Tile GetTileAtPosition(Vector3 pos)
     {
-        // Increase the radius slightly to 0.5f to ensure we "catch" the tile
-        // even if the coordinate is slightly off-center.
         Collider[] colls = Physics.OverlapSphere(pos, 0.5f);
     
         foreach (var c in colls)
@@ -240,20 +351,20 @@ public class Movement : NetworkBehaviour
         return null;
     }
 
-    void delayNextPhase()
+    void delayNextTurn()
     {
         // Ensures this is the host and turn manager has been found
         if (IsServer) 
         {
             if (whomst != null)
             {
-                whomst.pushNextPhase();
+                whomst.nextTurn();
             }
             else
             {
                 // If turn manager is not found, find it again and then pushes to next phase
                 whomst = GameObject.FindFirstObjectByType<TurnManager>();
-                whomst?.pushNextPhase();
+                whomst?.nextTurn();
             }
         }
     }

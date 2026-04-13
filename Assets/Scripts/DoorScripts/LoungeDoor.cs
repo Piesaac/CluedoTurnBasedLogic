@@ -1,16 +1,16 @@
 using UnityEngine;
 
-public class LoungeDoor : MonoBehaviour
+public class LoungeDoor : Door
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public LoungeSpawn[] loungeSpawns;
+    public override string roomName => "Lounge";
+
+    public override Vector3 GetRoomPosition(int clientId)
     {
-        
+        // Find the spawn point where the ID matches the clientId
+        LoungeSpawn match = System.Array.Find(loungeSpawns, p => p.id == clientId);
+        return (match != null) ? match.spawnPoint.position : Vector3.zero;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+
 }

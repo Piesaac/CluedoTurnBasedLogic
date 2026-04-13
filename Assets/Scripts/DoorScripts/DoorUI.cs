@@ -1,44 +1,43 @@
 using UnityEngine;
-using TMPro;
-
+using TMPro;  
+using Unity.Netcode;
+using turnyWurny;
 public class DoorUI : MonoBehaviour
 {
     public TextMeshProUGUI doorNotif;
-    public GameObject enterButton;
-    public GameObject exitButton;
-    public GameObject pickDoor;
+    public GameObject entryButton;
+    public TurnManager turnMan;
+    public UIController uiMan;
 
-    void start()
+    public bool isDoorVisible = false; 
+
+    void Start()
     {
-        doorNotif.gameObject.SetActive(false);
-        enterButton.SetActive(false);
+        // Subscribe to turn changes so it cleans itself up when the turn ends
+        turnMan.whosPlaying.OnValueChanged += (oldVal, newVal) => UpdateVisibility();
     }
 
-
-    public void notifDoor(string popentry)
+    // Call this from your logic when a door is found/lost
+    public void SetDoorFound(bool found)
     {
-        doorNotif.text = popentry;
-        doorNotif.gameObject.SetActive(true);
-        enterButton.SetActive(true);
-
+        isDoorVisible = found;
+        UpdateVisibility();
     }
 
-    public void noMoDoor()
+    public void UpdateVisibility()
     {
-        doorNotif.gameObject.SetActive(false);
-        enterButton.SetActive(false);
-    }
+        // 1. Get the current active player ID
+        int activePlayerId = turnMan.whosPlaying.Value;
+    
+        // 2. Get the local player's ID
+        int myId = (int)NetworkManager.Singleton.LocalClientId;
+    
+        // 3. Only show if it IS my turn AND the door condition is met
+        // Add your "isDoorFound" condition here
+        bool isMyTurn = (activePlayerId == myId);
+        bool shouldShow = isMyTurn && isDoorVisible; 
 
-    public void roomExit()
-    {
-        exitButton.SetActive(true);
-    }
-
-    // Triggers the Guess button to appear
-    public void anyDoor(string popexit)
-    {
-        exitButton.SetActive(false);
-        doorNotif.text = popexit;
-        doorNotif.gameObject.SetActive(true);
-    }
+        doorNotif.gameObject.SetActive(shouldShow);
+        entryButton.gameObject.SetActive(shouldShow);
+    }   
 }

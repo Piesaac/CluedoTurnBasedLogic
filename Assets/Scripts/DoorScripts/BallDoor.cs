@@ -1,16 +1,15 @@
 using UnityEngine;
+using Unity.Netcode;
 
-public class BallDoor : MonoBehaviour
+public class BallDoor : Door
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    public BallSpawn[] ballSpawns;
+    public override string roomName => "Ballroom";
 
-    // Update is called once per frame
-    void Update()
+    public override Vector3 GetRoomPosition(int clientId)
     {
-        
+        // Find the spawn point where the ID matches the clientId
+        BallSpawn match = System.Array.Find(ballSpawns, p => p.id == clientId);
+        return (match != null) ? match.spawnPoint.position : Vector3.zero;
     }
 }

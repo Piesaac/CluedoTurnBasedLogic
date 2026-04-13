@@ -1,17 +1,8 @@
 using UnityEngine;
 
-public class Room : MonoBehaviour
+public abstract class Room : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    public abstract string myName { get; }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
 }

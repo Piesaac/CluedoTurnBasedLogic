@@ -1,16 +1,14 @@
 using UnityEngine;
 
-public class StudDoor : MonoBehaviour
+public class StudDoor : Door
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    public StudSpawn[] studSpawns;
+    public override string roomName => "Study";
 
-    // Update is called once per frame
-    void Update()
+    public override Vector3 GetRoomPosition(int clientId)
     {
-        
+        // Find the spawn point where the ID matches the clientId
+        StudSpawn match = System.Array.Find(studSpawns, p => p.id == clientId);
+        return (match != null) ? match.spawnPoint.position : Vector3.zero;
     }
 }

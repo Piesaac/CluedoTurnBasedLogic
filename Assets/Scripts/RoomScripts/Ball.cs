@@ -1,21 +1,7 @@
 using UnityEngine;
 
-public class Ball : MonoBehaviour
+public class Ball : Room
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    public override string myName => "Ballroom";
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    public Vector3 roomMove()
-    {
-        return new Vector3(transform.position.x, 0.5f, transform.position.z);
-    }
 }

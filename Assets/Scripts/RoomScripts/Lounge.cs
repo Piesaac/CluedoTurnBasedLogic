@@ -1,21 +1,7 @@
 using UnityEngine;
 
-public class Lounge : MonoBehaviour
+public class Lounge : Room
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    public override string myName => "Lounge";
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    public Vector3 roomMove()
-    {
-        return new Vector3(transform.position.x, 0.5f, transform.position.z);
-    }
 }

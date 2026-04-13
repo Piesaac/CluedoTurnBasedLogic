@@ -1,16 +1,14 @@
 using UnityEngine;
 
-public class HallDoor : MonoBehaviour
+public class HallDoor : Door
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    public HallSpawn[] hallSpawns;
+    public override string roomName => "Hall";
 
-    // Update is called once per frame
-    void Update()
+    public override Vector3 GetRoomPosition(int clientId)
     {
-        
+        // Find the spawn point where the ID matches the clientId
+        HallSpawn match = System.Array.Find(hallSpawns, p => p.id == clientId);
+        return (match != null) ? match.spawnPoint.position : Vector3.zero;
     }
 }

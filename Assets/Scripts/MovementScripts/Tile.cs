@@ -37,25 +37,6 @@ public class Tile : MonoBehaviour
         occupied = state;
     }
 
-    public void anyoneHome()
-    {
-        // Start slightly below the tile center to ensure the ray starts inside the collider
-        Vector3 rayStart = transform.position + Vector3.down * 0.1f;
-        float rayDistance = 2.0f; // Adjust based on how high the player is
-
-        // Fire the ray upwards
-        if (Physics.Raycast(rayStart, Vector3.up, out RaycastHit hit, rayDistance, playerLayer))
-        {
-            // If we hit something on the player layer, it's occupied
-            occupied = true;
-            Debug.Log($"Tile {gameObject.name} is occupied by {hit.collider.name}");
-        }
-        else
-        {
-            occupied = false;
-        }
-        Debug.DrawRay(rayStart, Vector3.up * rayDistance, occupied ? Color.red : Color.green, 2.0f);
-    }
     
     // Gets the top position when clicked, for the players movement.
     public Vector3 getTopPosition()
