@@ -3,7 +3,7 @@ using Unity.Netcode;
 
 public class PlayerSpawner : NetworkBehaviour
 {
-    public GameObject playerPrefab; // Drag your prefab here
+    public GameObject playerPrefab; 
     public override void OnNetworkSpawn()
     {
         if (IsServer)
@@ -14,23 +14,23 @@ public class PlayerSpawner : NetworkBehaviour
 
     private void SpawnAllPlayers()
     {
-        // Get all connected clients
+        // Gets all connected clients and spawns one for each
         foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
         {
             SpawnPlayerForClient(clientId);
         }
     }
 
+    // Spawns a player for the client inputted.
     private void SpawnPlayerForClient(ulong clientId)
-    {
-        // 1. Get all spawn points in the scene
+    {   
+        // Finds player spawn points specified.
         SpawnPoint[] points = FindObjectsByType<SpawnPoint>(FindObjectsSortMode.None);
     
-        // 2. Find the point where the index matches the clientId
-        // If no point is found, chosenPoint will be null
+        // Chooses specific spawn point depending on client ID.
         SpawnPoint chosenPoint = System.Array.Find(points, p => p.index == (int)clientId);
 
-        // 3. Safety check: If we can't find a match, default to the first one found
+        // If none are found, uses default spawn.
         if (chosenPoint == null && points.Length > 0)
         {
             Debug.LogWarning($"[Server] No spawn point found for ID {clientId}, using index 0.");
@@ -42,11 +42,11 @@ public class PlayerSpawner : NetworkBehaviour
             return;
         }
 
-        // 4. Extract position and rotation safely
+        // Finds position and rotation for spawn point.
         Vector3 pos = chosenPoint.transform.position;
         Quaternion rot = chosenPoint.transform.rotation;
 
-        // 5. Instantiate and Spawn
+        // Created player instance and spawns them.
         GameObject player = Instantiate(playerPrefab, pos, rot);
         player.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId);
     

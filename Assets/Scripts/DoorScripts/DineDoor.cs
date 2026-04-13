@@ -7,7 +7,7 @@ public class DineDoor : Door
 
     public override Vector3 GetRoomPosition(int clientId)
     {
-        // Find the spawn point where the ID matches the clientId
+        // Finds the corresponding spawn point for the players ID
         DineSpawn match = System.Array.Find(dineSpawns, p => p.id == clientId);
         return (match != null) ? match.spawnPoint.position : Vector3.zero;
     }

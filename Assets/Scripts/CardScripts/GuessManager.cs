@@ -31,7 +31,7 @@ public class GuessManager : NetworkBehaviour
 
     }
 
-    // Resets dropdowns to original form so next player does not see input.
+    // Resets dropdowns to original form so next player does not see previous players input
     private void resetGuess()
     {
         uiscript.clearGuessDropdowns();
@@ -44,7 +44,6 @@ public class GuessManager : NetworkBehaviour
         chosenWhat = uiscript.selectedWeapon;
         chosenWhere = uiscript.selectedRoom;
 
-        // 2. Ask the server to check them
         submitGuessServerRpc(chosenWho, chosenWhat, chosenWhere);
     }
 
@@ -93,9 +92,4 @@ public class GuessManager : NetworkBehaviour
         guessResult.text = "";
     }   
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

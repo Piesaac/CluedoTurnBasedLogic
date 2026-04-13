@@ -6,28 +6,30 @@ using turnyWurny;
 
 public class Movement : NetworkBehaviour
 {
+    // Links to the Turn Manager so the player is kept in line of turns.
     [SerializeField] private TurnManager whomst;
+    // Links to the Board Camera for raycasting.
     public Camera BoardCam;
+
+    // Move speed for player movements.
     public float moveSpeed = 5f;
 
+    // The GameObject currently under the player.
     [SerializeField] public GameObject stage;
+
+    // All tiles adjacent to the one currently under the player.
     public List<GameObject> nearby = new List<GameObject>();
+
+    // Bool showing if the player is currently on a white tile.
     private bool onWhite = false;
 
+    // Field for movement.
     private Vector3 targetPosition;
+
+    // Field for activating movement in update method.
     private bool isMoving = false;
 
-    [Header("Room Fields")]
-    public GameObject ballroom;
-    public GameObject billiard;
-    public GameObject conserve;
-    public GameObject dining;
-    public GameObject hall;
-    public GameObject kitchen;
-    public GameObject library;
-    public GameObject lounge;
-    public GameObject study;
-
+    // Stores room player is currently in for room exit logic.
     public string currentRoomName;
 
 
@@ -36,11 +38,14 @@ public class Movement : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
+        // Checks the player is the owner of the prefab.
         if (!IsOwner) return;
+        // Dynamically links the players script to the UI controller instance.
         if (UIController.Instance != null)
         {
             UIController.Instance.localPlayerScript = this;
         }
+        // Searches for required references once, searches repeatedly for stage in case of delayed spawn.
         searchOnce();
         StartCoroutine(stageSearch());
     }
@@ -91,13 +96,6 @@ public class Movement : NetworkBehaviour
                 BoardCam = Camera.main;
             }
         }
-        /*
-        if (doorui == null)
-        {
-            doorui = GameObject.FindFirstObjectByType<DoorUI>();
-            Debug.Log(doorui != null ? "Found DoorUI!" : "CRITICAL: Could not find DoorUI");
-        }
-        */
 
         // Indicates if any references are missing
         if (whomst == null) Debug.LogWarning("Movement: Still looking for TurnManager...");
@@ -179,21 +177,27 @@ public class Movement : NetworkBehaviour
         }
     }
 
+    // Used to request movement on the server.
     [ServerRpc]
     void requestMoveServerRpc(Vector3 destination, bool landingOnWhite)
-    {
+    {   
+        // This is the tile the player has clicked to move to.
         Tile targetTile = GetTileAtPosition(destination);
+
         // Validates movements and updates onto the server
         if (targetTile == null) Debug.LogError($"SERVER: Failed to find tile at {destination}");
+
+        // Allows movement if the tile is not occupied and the player has enough move tokens.
         if (move_tokens.Value > 0 && targetTile != null && !targetTile.occupied)
         {
             if (stage != null) stage.GetComponent<Tile>().updateOccupied(false);
             move_tokens.Value--;
+
+            // Marks tile as occupied if player moves onto it.
             targetTile.updateOccupied(true);
-            
             movePositionClientRpc(destination, landingOnWhite);
 
-            // If player is out of moves, triggers turn phase change
+            // If player is out of moves, triggers turn change
             if (move_tokens.Value == 0)
             {
                 Invoke("delayNextTurn", 0.5f);
@@ -201,7 +205,7 @@ public class Movement : NetworkBehaviour
         }
     }
 
-    // Sets the required variables for the client
+    // Activates movement on clients side.
     [ClientRpc]
     void movePositionClientRpc(Vector3 destination, bool landingOnWhite)
     {
@@ -234,7 +238,8 @@ public class Movement : NetworkBehaviour
         float rayDistance = 2.0f;
 
         if (Physics.Raycast(rayStart, Vector3.down, out RaycastHit hit, rayDistance))
-        {
+        {   
+            // Detects if the stage below is a Tile
             Tile tileComponent = hit.collider.GetComponent<Tile>();
             if (tileComponent != null)
             {
@@ -242,6 +247,7 @@ public class Movement : NetworkBehaviour
                 onWhite = hit.collider.GetComponent<White>() != null;
                 Debug.Log($"Found tile: {stage.name}");
             }
+            // Detects if the stage below is a Room
             Room roomComponent = hit.collider.GetComponent<Room>();
             if (roomComponent != null)
             {
@@ -251,7 +257,7 @@ public class Movement : NetworkBehaviour
         }
         else
         {
-            Debug.LogWarning("No stage tile found!");
+            Debug.LogWarning("No stage found!");
         }
     }
 
@@ -277,6 +283,7 @@ public class Movement : NetworkBehaviour
         return false;
     }
 
+    // Moves client side to the room of the door
     [ClientRpc]
     private void moveToRoomClientRpc(Vector3 roomPos)
     {
@@ -287,6 +294,7 @@ public class Movement : NetworkBehaviour
         move_tokens.Value--;
     }
 
+    // Submits request to move player to room
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner)]
     public void submitEntryServerRpc()
     {
@@ -307,6 +315,7 @@ public class Movement : NetworkBehaviour
         }
     }
     
+    // Moves the client to the exit selected.
     [ClientRpc]
     private void exitRoomClientRPC(Vector3 exitPos)
     {
@@ -315,6 +324,7 @@ public class Movement : NetworkBehaviour
         move_tokens.Value--;
     }
 
+    // Submits exit request to the server.
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner)]
     public void submitExitServerRPC(ulong doorId)
     {
@@ -334,6 +344,7 @@ public class Movement : NetworkBehaviour
 
     // ------------ End of room entry logic ------------
 
+    // Returns the tile the player has clicked to move to.
     private Tile GetTileAtPosition(Vector3 pos)
     {
         Collider[] colls = Physics.OverlapSphere(pos, 0.5f);
@@ -343,7 +354,7 @@ public class Movement : NetworkBehaviour
             Tile t = c.GetComponent<Tile>();
             if (t != null) 
             {
-                return t; // Found it!
+                return t;
             }
         }
     

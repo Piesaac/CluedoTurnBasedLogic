@@ -105,7 +105,7 @@ public class CardDistributor : NetworkBehaviour
         }
     }
 
-    // Mtheod to pick random card
+    // Method to pick random card
     private Card chooseEvidence(List<Card> list)
     {
         int index = Random.Range(0, list.Count);

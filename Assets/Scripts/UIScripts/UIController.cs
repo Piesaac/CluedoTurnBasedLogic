@@ -98,6 +98,7 @@ public class UIController : MonoBehaviour
         UpdateUIVisibility();
     }
 
+    // Updates UI depending on whether it meets the criteria for showing
     public void UpdateUIVisibility()
     {
         bool isMyTurn = (turnMan.whosPlaying.Value == (int)NetworkManager.Singleton.LocalClientId);
@@ -105,25 +106,24 @@ public class UIController : MonoBehaviour
         bool isInRoom = localPlayerScript != null && localPlayerScript.IsInRoom();
         bool isMovingPhase = turnMan.whatPhase.Value == TurnStage.MOVING;
 
-        // By explicitly setting the Active state based on the boolean result,
-        // you guarantee they turn off when the condition is not met.
         rollPanel.SetActive(isMyTurn && turnMan.whatPhase.Value == TurnStage.ROLLING);
         movePanel.SetActive(isMyTurn && isMovingPhase);
         guessPanel.SetActive(isMyTurn && turnMan.whatPhase.Value == TurnStage.SUGGESTING);
 
         moves.gameObject.SetActive(isMovingPhase);
-        // Explicitly hide the entry button if not on a door or not moving phase
         entryButton.gameObject.SetActive(isMyTurn && isMovingPhase && isOnDoor);
         exitList.gameObject.SetActive(isMyTurn && isMovingPhase && isInRoom);
         exitText.gameObject.SetActive(isMyTurn && isMovingPhase && isInRoom);
         exitButton.gameObject.SetActive(isMyTurn && isMovingPhase && isInRoom);
     }
 
+    // Delays UI change by 1 second.
     public void delayedUI()
     {
         Invoke("changeUI", 1f);
     }
 
+    // Changes UI panels showing depending on TurnStage.
     private void changeUI()
     {
         // Hide everything first
@@ -158,6 +158,7 @@ public class UIController : MonoBehaviour
 
     // -----V----- Used for room entry/exit --------V--------
 
+    // Button to confirm room entry.
     public void submitEnterRoom()
     {
         if (localPlayerScript != null)
@@ -171,6 +172,7 @@ public class UIController : MonoBehaviour
         exitButton.gameObject.SetActive(true);
     }
 
+    // Fills room exit dropdown with valid doors.
     public void exitDropdown()
     {
         if (localPlayerScript == null) return;
@@ -193,6 +195,7 @@ public class UIController : MonoBehaviour
         exitList.AddOptions(exitNames);
     }
 
+    // Clears all UI elements related to room exit.
     public void clearExit()
     {
         if (localPlayerScript == null) return;
@@ -202,6 +205,7 @@ public class UIController : MonoBehaviour
 
     }
 
+    // Links to button to confirm room exit.
     public void confirmExit()
     {
         Debug.Log("UIController: confirmExit called!");
@@ -231,6 +235,8 @@ public class UIController : MonoBehaviour
     }
 
     // -----V----- Used for suggestion phase dropdowns -----V-----
+
+    // Fills dropdown for guesses with valid elements.
     void fillGuessDropdowns()
     {
         
@@ -249,6 +255,7 @@ public class UIController : MonoBehaviour
 
     }
 
+    // clears dropdowns for guesses after the TurnStage has moved on.
     public void clearGuessDropdowns()
     {
         suspectList.value = 0;
@@ -260,6 +267,7 @@ public class UIController : MonoBehaviour
         locationList.RefreshShownValue();
     }
 
+    // Links to button for confirming guess.
     public void suggestionButton()
     {
         int suspectIndex = suspectList.value;
