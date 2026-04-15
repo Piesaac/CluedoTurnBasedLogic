@@ -267,6 +267,7 @@ public class Movement : NetworkBehaviour
 
         if (Physics.Raycast(rayStart, Vector3.down, out RaycastHit hit, rayDistance))
         {   
+            Debug.Log($"Raycast hit: {hit.collider.name}");
             // Detects if the stage below is a Tile
             Tile tileComponent = hit.collider.GetComponent<Tile>();
             if (tileComponent != null)
@@ -276,11 +277,16 @@ public class Movement : NetworkBehaviour
                 Debug.Log($"Found tile: {stage.name}");
             }
             // Detects if the stage below is a Room
-            Room roomComponent = hit.collider.GetComponent<Room>();
+            Room roomComponent = hit.collider.GetComponentInParent<Room>();
             if (roomComponent != null)
             {
                 stage = hit.collider.gameObject;
                 currentRoomName = roomComponent.myName;
+                Debug.Log($"Room detected: {currentRoomName}");
+            }
+            else
+            {
+                Debug.LogWarning($"Hit {hit.collider.name} but no Room component found!");
             }
         }
         else
@@ -324,8 +330,17 @@ public class Movement : NetworkBehaviour
         targetPosition = roomPos;
         isMoving = false; 
         onWhite = false;
-        move_tokens.Value--;
         whereWeAt();
+        StartCoroutine(delayedExitList());
+    }
+
+    private IEnumerator delayedExitList()
+    {
+        yield return new WaitForSeconds(0.1f);
+        if (UIController.Instance != null)
+        {
+            UIController.Instance.exitDropdown();
+        }
     }
 
     // Submits request to move player to room
@@ -352,6 +367,7 @@ public class Movement : NetworkBehaviour
         
             // Notify clients
             moveToRoomClientRpc(targetPos);
+            move_tokens.Value = 0;
         
             if (whomst.whatPhase.Value == TurnStage.MOVING)
             {
@@ -370,7 +386,6 @@ public class Movement : NetworkBehaviour
     {
         targetPosition = exitPos;
         isMoving = true;
-        move_tokens.Value--;
     }
 
     // Submits exit request to the server.
@@ -385,6 +400,7 @@ public class Movement : NetworkBehaviour
             Door exit = doorNetworkObject.GetComponent<Door>();
             if (exit != null)
             {
+                move_tokens.Value--;
                 exitRoomClientRPC(exit.transform.position);
                 Debug.Log("The exit button hath been pressed");
             }

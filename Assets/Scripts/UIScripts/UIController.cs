@@ -49,16 +49,28 @@ public class UIController : MonoBehaviour
     [SerializeField] private GameObject movePanel;  
     [SerializeField] private GameObject guessPanel; 
 
-    // Fields for the suggesting / accusation UI dropdowns
+    // Fields for disproving UI
+    [SerializeField] private GameObject disprovePanel;
+    [SerializeField] private TMP_Dropdown disproveList;
+    public CardDistributor cardDist;
+
+    // Fields for the suggesting dropdowns
     public Who selectedSuspect;
     public What selectedWeapon;
     public Where selectedRoom;
+
+    // Fields for accusation dropdowns
+    public Who accuseWho;
+    public What accuseWhat;
+    public Where accuseWhere;
+
 
     // Simple methods for hiding and showing UI panels
     public void ShowSuggestionUI() => guessPanel.SetActive(true);
     public void HideSuggestionUI() => guessPanel.SetActive(false);
     public void ShowRollingUI() => rollPanel.SetActive(true);
     public void HideRollingUI() => rollPanel.SetActive(true);
+    public void HideDisproveUI() => disprovePanel.SetActive(false);
 
     // Sets the global reference to this instance upon the files being loaded
     private void Awake()
@@ -101,31 +113,6 @@ public class UIController : MonoBehaviour
     }
     
 
-    /// -------V-------- Player Hand Scripts -------V--------//
-    // Updates players hand dropdown list in UI with cards inputted.
-    public void updateHand(Card[] cards)
-    {
-        handText.text = "<b>YOUR HAND:</b>\n";
-        List<string> cardNames = new List<string>();
-        foreach (Card card in cards)
-        {
-            cardNames.Add(whatCard(card));
-        }
-        handList.AddOptions(cardNames);
-    }
-
-    // Returns the string name value of the card inputted.
-    private string whatCard(Card card)
-    {
-        return card.type switch
-        {
-            Card.CardType.Suspect => ((Who)card.value).ToString(),
-            Card.CardType.Weapon => ((What)card.value).ToString(),
-            Card.CardType.Room   => ((Where)card.value).ToString(),
-            _=> "Unknown"
-        };
-    }
-
 
     // --------V-------- UI update/refresh methods --------V--------
     // Updates UI depending on whether it meets the criteria for showing
@@ -136,6 +123,7 @@ public class UIController : MonoBehaviour
         bool isOnDoor = localPlayerScript != null && localPlayerScript.IsOnDoor();
         bool isInRoom = localPlayerScript != null && localPlayerScript.IsInRoom();
         bool isMovingPhase = turnMan.whatPhase.Value == TurnStage.MOVING;
+        HideDisproveUI();
         
         Debug.Log($"UI Debug: MyTurn={isMyTurn}, MovingPhase={isMovingPhase}, OnDoor={isOnDoor}");
 
@@ -196,10 +184,11 @@ public class UIController : MonoBehaviour
     // Button to confirm room entry.
     public void submitEnterRoom()
     {
-        if (localPlayerScript != null && localPlayerScript.stage != null)
+        if (localPlayerScript != null)
         {
+            localPlayerScript.whereWeAt();
             NetworkObject stageNet = localPlayerScript.stage.GetComponent<NetworkObject>();
-            if (stageNet != null)
+            if (stageNet != null )
             {
                 localPlayerScript.submitEntryServerRpc(stageNet.NetworkObjectId);
             }
@@ -227,7 +216,15 @@ public class UIController : MonoBehaviour
 
         foreach (var door in allDoors)
         {
-            if (door.roomName == localPlayerScript.currentRoomName) 
+            // Print the comparison values clearly
+            string doorRoom = door.roomName ?? "NULL";
+            string myRoom = localPlayerScript.currentRoomName ?? "NULL";
+    
+            bool isMatch = (doorRoom == myRoom);
+    
+            Debug.Log($"Matching? {isMatch} | Door: '{door.name}' room is '{doorRoom}' | My Room is '{myRoom}'");
+
+            if (isMatch) 
             {
                 currentDoors.Add(door);
                 exitNames.Add(door.exitName);   
@@ -275,6 +272,31 @@ public class UIController : MonoBehaviour
             clearExit();
 
         }
+    }
+
+    /// -------V-------- Player Hand Scripts -------V--------//
+    // Updates players hand dropdown list in UI with cards inputted.
+    public void updateHand(Card[] cards)
+    {
+        handText.text = "<b>YOUR HAND:</b>\n";
+        List<string> cardNames = new List<string>();
+        foreach (Card card in cards)
+        {
+            cardNames.Add(whatCard(card));
+        }
+        handList.AddOptions(cardNames);
+    }
+
+    // Returns the string name value of the card inputted.
+    private string whatCard(Card card)
+    {
+        return card.type switch
+        {
+            Card.CardType.Suspect => ((Who)card.value).ToString(),
+            Card.CardType.Weapon => ((What)card.value).ToString(),
+            Card.CardType.Room   => ((Where)card.value).ToString(),
+            _=> "Unknown"
+        };
     }
 
     // -----V----- Used for suggestion phase dropdowns -----V-----
@@ -327,6 +349,23 @@ public class UIController : MonoBehaviour
         selectedRoom =  (Where)roomIndex;
     }
 
-    
+
+    // --------V-------- Accusation Methods --------V--------
+
+    public void ShowDisprovePanel(Card[] cards)
+    {
+        List<string> cardNames = new List<string>();
+        foreach (Card card in cards)
+        {
+            cardNames.Add(cardDist.whatCard(card));
+        }
+        disproveList.AddOptions(cardNames);
+        disprovePanel.gameObject.SetActive(true);
+    }
+
+    public void confirmDisprove()
+    {
+        Card clueToShow = disproveList.value;
+    }
 
 }
