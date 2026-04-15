@@ -8,7 +8,7 @@ using Unity.Netcode;
 public class CardDistributor : NetworkBehaviour
 {
     // Creates list of list for player hands
-    private List<List<Card>> playerHands = new List<List<Card>>();
+    public List<List<Card>> playerHands = new List<List<Card>>();
     // Creates list of all cards for clues
     private List<Card> allCards = new List<Card>();
     //Creates list for evidence clues in envelope
@@ -115,7 +115,7 @@ public class CardDistributor : NetworkBehaviour
     }
 
     // Returns the name of the card selected
-    private string whatCard(Card card)
+    public string whatCard(Card card)
     {
         return card.type switch
         {
