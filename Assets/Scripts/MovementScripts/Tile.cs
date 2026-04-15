@@ -1,14 +1,13 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
-using Unity.Netcode;
 
-public class Tile : NetworkBehaviour
+public class Tile : MonoBehaviour
 {
     public List<GameObject> neighbours = new List<GameObject>();
     public LayerMask tiles;
     public GameObject stage;
-    [SerializeField] public NetworkVariable<bool> occupied = new NetworkVariable<bool>(false);
+    [SerializeField] public bool occupied;
     [SerializeField] private LayerMask playerLayer; 
 
     void Start()
@@ -35,10 +34,7 @@ public class Tile : NetworkBehaviour
     }
 
     public void updateOccupied(bool state) {
-        if (IsServer)
-        {
-            occupied.Value = state;
-        }
+        occupied = state;
     }
 
     

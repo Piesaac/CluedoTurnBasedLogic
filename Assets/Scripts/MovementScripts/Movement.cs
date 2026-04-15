@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using turnyWurny;
@@ -11,8 +10,6 @@ public class Movement : NetworkBehaviour
     [SerializeField] private TurnManager whomst;
     // Links to the Board Camera for raycasting.
     public Camera BoardCam;
-
-    private UIController uiobj;
 
     // Move speed for player movements.
     public float moveSpeed = 5f;
@@ -41,20 +38,8 @@ public class Movement : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        // Checks the player is the owner of the prefab.   
-        if (!IsOwner)
-        {
-            return;
-        }
-        else
-        {
-            uiobj = GameObject.FindFirstObjectByType<UIController>();
-            if (uiobj != null)
-            {
-                uiobj.localPlayerScript = this;
-            }
-        }
-
+        // Checks the player is the owner of the prefab.
+        if (!IsOwner) return;
         // Dynamically links the players script to the UI controller instance.
         if (UIController.Instance != null)
         {
@@ -63,19 +48,6 @@ public class Movement : NetworkBehaviour
         // Searches for required references once, searches repeatedly for stage in case of delayed spawn.
         searchOnce();
         StartCoroutine(stageSearch());
-        StartCoroutine(linkUI());
-
-    }
-
-    private IEnumerator linkUI()
-    {
-        // Waits until UI controller has spawned
-        while (UIController.Instance == null) yield return null;
-    
-        UIController.Instance.localPlayerScript = this;
-        UIController.Instance.updateMoveText();
-        UIController.Instance.UpdateUIVisibility();
-        uiobj.SetLocalPlayer(this);
     }
 
     // Looks for stage below the player repeatedly in case spawns are delayed
@@ -180,7 +152,7 @@ public class Movement : NetworkBehaviour
             Tile clickedTile = hit.collider.GetComponent<Tile>();
             if (clickedTile == null || stage == null) return;
 
-            if (clickedTile.occupied.Value)
+            if (clickedTile.occupied)
             {
                 Debug.Log("Clicked tile is marked as occupied");
                 return;
@@ -216,7 +188,7 @@ public class Movement : NetworkBehaviour
         if (targetTile == null) Debug.LogError($"SERVER: Failed to find tile at {destination}");
 
         // Allows movement if the tile is not occupied and the player has enough move tokens.
-        if (move_tokens.Value > 0 && targetTile != null && !targetTile.occupied.Value)
+        if (move_tokens.Value > 0 && targetTile != null && !targetTile.occupied)
         {
             if (stage != null) stage.GetComponent<Tile>().updateOccupied(false);
             move_tokens.Value--;
@@ -287,10 +259,6 @@ public class Movement : NetworkBehaviour
         {
             Debug.LogWarning("No stage found!");
         }
-        if (IsOwner && UIController.Instance != null)
-        {
-            UIController.Instance.UpdateUIVisibility();
-        }
     }
 
     // --------------- Room entry logic ----------------
@@ -307,7 +275,6 @@ public class Movement : NetworkBehaviour
 
     public bool IsInRoom()
     {
-        Debug.Log($"IsInRoom check: stage is {(stage != null ? stage.name : "NULL")}");
         // Check if the current stage has a Room component
         if (stage != null)
         {
@@ -325,42 +292,26 @@ public class Movement : NetworkBehaviour
         isMoving = false; 
         onWhite = false;
         move_tokens.Value--;
-        whereWeAt();
     }
 
     // Submits request to move player to room
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner)]
-    public void submitEntryServerRpc(ulong stageNetworkObjectId)
+    public void submitEntryServerRpc()
     {
-        // Find the object on the server using the ID passed by the client
-        if (NetworkManager.SpawnManager.SpawnedObjects.TryGetValue(stageNetworkObjectId, out NetworkObject stageNetObj))
+        if (whomst.whosPlaying.Value != (int)OwnerClientId) return;
+
+        // Use polymorphism to call the correct method regardless of door type
+        Door door = stage.GetComponent<Door>();
+        if (door == null) return;
+
+        Vector3 targetPos = door.GetRoomPosition((int)OwnerClientId);
+
+        transform.position = targetPos;
+        whereWeAt();
+        moveToRoomClientRpc(targetPos);
+        if (whomst.whatPhase.Value == TurnStage.MOVING)
         {
-            // Now use this netObj instead of the local 'stage' variable
-            Tile tileComp = stageNetObj.GetComponent<Tile>();
-            if (tileComp != null)
-            {
-                tileComp.updateOccupied(false);
-            }
-
-            Door door = stageNetObj.GetComponent<Door>();
-            if (door == null) return;
-
-            Vector3 targetPos = door.GetRoomPosition((int)OwnerClientId);
-
-            // Update position on server
-            transform.position = targetPos;
-        
-            // Notify clients
-            moveToRoomClientRpc(targetPos);
-        
-            if (whomst.whatPhase.Value == TurnStage.MOVING)
-            {
-                whomst.pushNextPhase();
-            }
-        }
-        else
-        {
-            Debug.LogError("Server could not find stage with ID: " + stageNetworkObjectId);
+            whomst.pushNextPhase();
         }
     }
     

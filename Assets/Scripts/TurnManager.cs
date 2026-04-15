@@ -26,7 +26,6 @@ public class TurnManager : NetworkBehaviour
         updateUI();
     }
 
-
     // Method to update UI to show what phase and whos playing
     private void updateUI()
     {

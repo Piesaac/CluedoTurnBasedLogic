@@ -39,7 +39,6 @@ public class UIController : MonoBehaviour
     public TextMeshProUGUI handText;
     public TMP_Dropdown handList;
 
-    // Local instance of player's movement script, allocated through the script itself.
     public Movement localPlayerScript;
 
 
@@ -49,60 +48,21 @@ public class UIController : MonoBehaviour
     [SerializeField] private GameObject movePanel;  
     [SerializeField] private GameObject guessPanel; 
 
-    // Fields for the suggesting / accusation UI dropdowns
     public Who selectedSuspect;
     public What selectedWeapon;
     public Where selectedRoom;
 
-    // Simple methods for hiding and showing UI panels
+
     public void ShowSuggestionUI() => guessPanel.SetActive(true);
     public void HideSuggestionUI() => guessPanel.SetActive(false);
     public void ShowRollingUI() => rollPanel.SetActive(true);
     public void HideRollingUI() => rollPanel.SetActive(true);
 
-    // Sets the global reference to this instance upon the files being loaded
     private void Awake()
     {
         Instance = this;
     }
 
-    // Subscribes to changes in move_tokens from player movement, updating the number of move tokens on the event of a change.
-    void Start()
-    {
-        Debug.Log($"UIController Start: localPlayerScript is {(localPlayerScript != null ? localPlayerScript.name : "NULL")}");
-        if (localPlayerScript != null)
-        {
-            localPlayerScript.move_tokens.OnValueChanged += (oldVal, newVal) => updateMoveText();
-        }
-        // Fills the dropdowns for the guess/clue system.
-        fillGuessDropdowns();
-        turnMan.whatPhase.OnValueChanged += (oldVal, newVal) => UpdateUIVisibility();
-        turnMan.whosPlaying.OnValueChanged += (oldVal, newVal) => UpdateUIVisibility();
-        UpdateUIVisibility();
-    }
-
-    void Update()
-    {
-        if (localPlayerScript != null)
-        {
-            // Force update the text every frame to test if data is actually arriving
-            moves.text = $"You have {localPlayerScript.move_tokens.Value} moves left!";
-        }
-    }
-
-    public void SetLocalPlayer(Movement player)
-    {
-        localPlayerScript = player;
-        // 1. Force the first update immediately
-        updateMoveText(); 
-    
-        // 2. Subscribe to future updates
-        localPlayerScript.move_tokens.OnValueChanged += (oldVal, newVal) => updateMoveText();
-    }
-    
-
-    /// -------V-------- Player Hand Scripts -------V--------//
-    // Updates players hand dropdown list in UI with cards inputted.
     public void updateHand(Card[] cards)
     {
         handText.text = "<b>YOUR HAND:</b>\n";
@@ -114,7 +74,6 @@ public class UIController : MonoBehaviour
         handList.AddOptions(cardNames);
     }
 
-    // Returns the string name value of the card inputted.
     private string whatCard(Card card)
     {
         return card.type switch
@@ -126,25 +85,31 @@ public class UIController : MonoBehaviour
         };
     }
 
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
+    {
+        if (localPlayerScript != null)
+        {
+            localPlayerScript.move_tokens.OnValueChanged += (oldVal, newVal) => updateMoveText();
+        }
+        fillGuessDropdowns();
+        turnMan.whatPhase.OnValueChanged += (oldVal, newVal) => UpdateUIVisibility();
+        turnMan.whosPlaying.OnValueChanged += (oldVal, newVal) => UpdateUIVisibility();
+        UpdateUIVisibility();
+    }
 
-    // --------V-------- UI update/refresh methods --------V--------
     // Updates UI depending on whether it meets the criteria for showing
     public void UpdateUIVisibility()
     {
-        // Bools for determining whether a UI should be visible to the player actioning.
         bool isMyTurn = (turnMan.whosPlaying.Value == (int)NetworkManager.Singleton.LocalClientId);
         bool isOnDoor = localPlayerScript != null && localPlayerScript.IsOnDoor();
         bool isInRoom = localPlayerScript != null && localPlayerScript.IsInRoom();
         bool isMovingPhase = turnMan.whatPhase.Value == TurnStage.MOVING;
-        
-        Debug.Log($"UI Debug: MyTurn={isMyTurn}, MovingPhase={isMovingPhase}, OnDoor={isOnDoor}");
 
-        // Shows/Hides the overarching UI panels of the different phases.
         rollPanel.SetActive(isMyTurn && turnMan.whatPhase.Value == TurnStage.ROLLING);
         movePanel.SetActive(isMyTurn && isMovingPhase);
         guessPanel.SetActive(isMyTurn && turnMan.whatPhase.Value == TurnStage.SUGGESTING);
 
-        // Sets the specific UI elements within the panels to hide or show.
         moves.gameObject.SetActive(isMovingPhase);
         entryButton.gameObject.SetActive(isMyTurn && isMovingPhase && isOnDoor);
         exitList.gameObject.SetActive(isMyTurn && isMovingPhase && isInRoom);
@@ -196,17 +161,9 @@ public class UIController : MonoBehaviour
     // Button to confirm room entry.
     public void submitEnterRoom()
     {
-        if (localPlayerScript != null && localPlayerScript.stage != null)
+        if (localPlayerScript != null)
         {
-            NetworkObject stageNet = localPlayerScript.stage.GetComponent<NetworkObject>();
-            if (stageNet != null)
-            {
-                localPlayerScript.submitEntryServerRpc(stageNet.NetworkObjectId);
-            }
-            else
-            {
-                Debug.LogError("Player does not have a stage component.");
-            }
+            localPlayerScript.submitEntryServerRpc();
         }
         entryButton.gameObject.SetActive(false);
         exitDropdown();
