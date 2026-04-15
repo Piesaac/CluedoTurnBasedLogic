@@ -124,7 +124,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2109826896391721904}
   - component: {fileID: 5641258008274696699}
-  - component: {fileID: 1675616192801484389}
+  - component: {fileID: 7458302319896592316}
+  - component: {fileID: -5685299408679672803}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -160,7 +161,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 3704700971
+  GlobalObjectIdHash: 3276976722
   InScenePlacedSourceGlobalObjectIdHash: 3276976722
   DeferredDespawnTick: 0
   Ownership: 1
@@ -173,7 +174,7 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
---- !u!114 &1675616192801484389
+--- !u!114 &7458302319896592316
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -182,27 +183,64 @@ MonoBehaviour:
   m_GameObject: {fileID: 3233135812412451706}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01a8519ff53d93140adea7174c07f068, type: 3}
+  m_Script: {fileID: 11500000, guid: 48682399160185c4886ce0e75d40a700, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Movement
   ShowTopMostFoldoutHeaderGroup: 1
-  doorui: {fileID: 0}
-  kitchen: {fileID: 0}
-  ball: {fileID: 0}
-  conserve: {fileID: 0}
-  dining: {fileID: 0}
-  billiard: {fileID: 0}
-  library: {fileID: 0}
-  lounge: {fileID: 0}
-  hall: {fileID: 0}
-  study: {fileID: 0}
-  TurnMan: {fileID: 0}
   whomst: {fileID: 0}
-  moves: {fileID: 0}
-  cam1: {fileID: 0}
+  BoardCam: {fileID: 0}
   moveSpeed: 5
   stage: {fileID: 0}
   nearby: []
-  infinite_move: 1000
-  move_tokens: 0
-  DM: {fileID: 0}
+  currentRoomName: 
+  move_tokens:
+    UpdateTraits:
+      MinSecondsBetweenUpdates: 0
+      MaxSecondsBetweenUpdates: 0
+    m_InternalValue: 0
+--- !u!114 &-5685299408679672803
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3233135812412451706}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e96cb6065543e43c4a752faaa1468eb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.Components.NetworkTransform
+  ShowTopMostFoldoutHeaderGroup: 1
+  NetworkTransformExpanded: 0
+  AutoOwnerAuthorityTickOffset: 1
+  PositionInterpolationType: 0
+  RotationInterpolationType: 0
+  ScaleInterpolationType: 0
+  PositionLerpSmoothing: 1
+  PositionMaxInterpolationTime: 0.1
+  RotationLerpSmoothing: 1
+  RotationMaxInterpolationTime: 0.1
+  ScaleLerpSmoothing: 1
+  ScaleMaxInterpolationTime: 0.1
+  AuthorityMode: 1
+  TickSyncChildren: 0
+  UseUnreliableDeltas: 0
+  SyncPositionX: 1
+  SyncPositionY: 1
+  SyncPositionZ: 1
+  SyncRotAngleX: 1
+  SyncRotAngleY: 1
+  SyncRotAngleZ: 1
+  SyncScaleX: 1
+  SyncScaleY: 1
+  SyncScaleZ: 1
+  PositionThreshold: 0.001
+  RotAngleThreshold: 0.01
+  ScaleThreshold: 0.01
+  UseQuaternionSynchronization: 0
+  UseQuaternionCompression: 0
+  UseHalfFloatPrecision: 0
+  InLocalSpace: 0
+  SwitchTransformSpaceWhenParented: 0
+  Interpolate: 1
+  SlerpPosition: 0
