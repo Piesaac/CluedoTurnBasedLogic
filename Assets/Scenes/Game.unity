@@ -127,6 +127,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 985580516
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -2.5
@@ -232,6 +244,18 @@ PrefabInstance:
     - target: {fileID: 7952068716342621676, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
       propertyPath: m_Name
       value: BlackTile (16)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 28873687
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -492,6 +516,7 @@ GameObject:
   - component: {fileID: 39192335}
   - component: {fileID: 39192334}
   - component: {fileID: 39192337}
+  - component: {fileID: 39192338}
   m_Layer: 0
   m_Name: LoungePlat3
   m_TagString: Untagged
@@ -604,6 +629,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e5fd3e598dbbdf4581153e0a33e4364, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Lounge
+--- !u!114 &39192338
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 39192332}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
+  GlobalObjectIdHash: 3762138938
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 0
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!1001 &44856593
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -655,6 +705,18 @@ PrefabInstance:
     - target: {fileID: 7952068716342621676, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
       propertyPath: m_Name
       value: BlackTile (73)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1691234815
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -720,6 +782,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1068946873
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -12.5
@@ -1000,6 +1074,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (69)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3674986631
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1018,6 +1104,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2416732007
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.5
@@ -1170,6 +1268,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (40)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 116051295
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1277,6 +1387,18 @@ PrefabInstance:
     - target: {fileID: 7952068716342621676, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
       propertyPath: m_Name
       value: BlackTile (52)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 913330201
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1500,6 +1622,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 457063002
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: 3.5
@@ -1815,6 +1949,18 @@ PrefabInstance:
     - target: {fileID: 7952068716342621676, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
       propertyPath: m_Name
       value: BlackTile (94)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1234773944
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2132,6 +2278,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 276366862
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -18.5
@@ -2566,6 +2724,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3628277186
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -3.5
@@ -2865,6 +3035,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2292897333
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -11.5
@@ -2968,7 +3150,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.CanvasScaler
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 800, y: 600}
@@ -3069,6 +3251,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 4094131373
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -14.5
@@ -3206,6 +3400,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 983780805
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -12.5
@@ -3389,6 +3595,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3503637180
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -11.5
@@ -3570,6 +3788,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (77)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1186398844
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3588,6 +3818,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 169102616
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -11.5
@@ -3822,6 +4064,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (56)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1614559614
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3840,6 +4094,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2962481998
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -10.5
@@ -3945,6 +4211,18 @@ PrefabInstance:
     - target: {fileID: 7952068716342621676, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
       propertyPath: m_Name
       value: BlackTile (84)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2799312766
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4082,6 +4360,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1726507023
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -2.5
@@ -4177,6 +4467,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2786384520
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -3.5
@@ -4239,6 +4541,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1205924613
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -9.5
@@ -4301,6 +4615,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 714536016
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.5
@@ -4363,6 +4689,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 4248835896
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -10.5
@@ -4515,6 +4853,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (20)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 845325976
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -4576,6 +4926,18 @@ PrefabInstance:
     - target: {fileID: 7952068716342621676, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
       propertyPath: m_Name
       value: BlackTile (09)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1715428322
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5015,6 +5377,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1021740635
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -10.5
@@ -5082,6 +5456,7 @@ GameObject:
   - component: {fileID: 373559802}
   - component: {fileID: 373559801}
   - component: {fileID: 373559800}
+  - component: {fileID: 373559804}
   m_Layer: 0
   m_Name: LoungePlat
   m_TagString: Untagged
@@ -5194,6 +5569,31 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 373559798}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &373559804
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 373559798}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
+  GlobalObjectIdHash: 875663856
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 0
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!1001 &377589929
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5202,6 +5602,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2940567478
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: 2.5
@@ -5307,6 +5719,18 @@ PrefabInstance:
     - target: {fileID: 7952068716342621676, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
       propertyPath: m_Name
       value: BlackTile (95)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1874126201
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5507,6 +5931,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (33)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2800302047
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5705,7 +6141,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 360, y: -100}
+  m_AnchoredPosition: {x: 300, y: -100}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &411025463
@@ -5860,6 +6296,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (80)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 4003574845
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5878,6 +6326,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2387556322
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -4.5
@@ -5984,6 +6444,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (44)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 683675008
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -6048,6 +6520,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3263115481
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -11.5
@@ -6110,6 +6594,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1512626427
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -11.5
@@ -6335,7 +6831,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 380, y: 150}
+  m_AnchoredPosition: {x: 300, y: 150}
   m_SizeDelta: {x: 250, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &464726730
@@ -6451,6 +6947,7 @@ GameObject:
   - component: {fileID: 465683414}
   - component: {fileID: 465683413}
   - component: {fileID: 465683416}
+  - component: {fileID: 465683417}
   m_Layer: 0
   m_Name: BillPlat
   m_TagString: Untagged
@@ -6563,6 +7060,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25f52a9cabe73334fa3bc4038c1f787c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Billiard
+--- !u!114 &465683417
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 465683411}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
+  GlobalObjectIdHash: 3461798355
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 0
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!1001 &466397902
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6733,6 +7255,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (31)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3094532263
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -6756,6 +7290,7 @@ GameObject:
   - component: {fileID: 473832813}
   - component: {fileID: 473832812}
   - component: {fileID: 473832815}
+  - component: {fileID: 473832816}
   m_Layer: 0
   m_Name: DinePlat2
   m_TagString: Untagged
@@ -6868,6 +7403,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1cbf11a48e5712047bcb2c021436351f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Dining
+--- !u!114 &473832816
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 473832810}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
+  GlobalObjectIdHash: 1640162145
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 0
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!1001 &477447080
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6876,6 +7436,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1341782206
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -3.5
@@ -6938,6 +7510,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2569244990
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -12.5
@@ -7005,6 +7589,7 @@ GameObject:
   - component: {fileID: 496212478}
   - component: {fileID: 496212477}
   - component: {fileID: 496212480}
+  - component: {fileID: 496212481}
   m_Layer: 0
   m_Name: ConsPlat4
   m_TagString: Untagged
@@ -7117,6 +7702,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b275e10f86d4f8549b5fda42c457cf6b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Conservatory
+--- !u!114 &496212481
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 496212475}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
+  GlobalObjectIdHash: 2896477083
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 0
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!1 &504297297
 GameObject:
   m_ObjectHideFlags: 0
@@ -7215,6 +7825,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (38)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 533250315
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -7233,6 +7855,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1864405555
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -7.5
@@ -7619,6 +8253,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (39)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3981985655
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -7763,6 +8409,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (75)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 732252758
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -7824,6 +8482,18 @@ PrefabInstance:
     - target: {fileID: 7952068716342621676, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
       propertyPath: m_Name
       value: BlackTile (66)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1584014971
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -8024,6 +8694,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (87)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 23536323
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -8085,6 +8767,18 @@ PrefabInstance:
     - target: {fileID: 7952068716342621676, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
       propertyPath: m_Name
       value: BlackTile (74)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2567236204
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -8362,6 +9056,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (81)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3209724222
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -8380,6 +9086,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 581392516
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1.5
@@ -8485,6 +9203,18 @@ PrefabInstance:
     - target: {fileID: 7952068716342621676, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
       propertyPath: m_Name
       value: BlackTile (22)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2506205469
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -8645,6 +9375,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2491966671
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -2.5
@@ -8750,6 +9492,18 @@ PrefabInstance:
     - target: {fileID: 7952068716342621676, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
       propertyPath: m_Name
       value: BlackTile (8)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3013889005
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -8950,6 +9704,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (79)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3735055928
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -8968,6 +9734,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2673892785
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -16.5
@@ -9030,6 +9808,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 982710718
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -2.5
@@ -9309,6 +10099,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (32)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1610706290
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -9371,6 +10173,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (45)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3573088309
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -9389,6 +10203,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 193700159
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -17.5
@@ -9541,6 +10367,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (18)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3227677884
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -9682,6 +10520,7 @@ GameObject:
   - component: {fileID: 793740069}
   - component: {fileID: 793740068}
   - component: {fileID: 793740071}
+  - component: {fileID: 793740072}
   m_Layer: 0
   m_Name: ConsPlat3
   m_TagString: Untagged
@@ -9794,6 +10633,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b275e10f86d4f8549b5fda42c457cf6b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Conservatory
+--- !u!114 &793740072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 793740066}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
+  GlobalObjectIdHash: 3175729088
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 0
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!1001 &796111022
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9845,6 +10709,18 @@ PrefabInstance:
     - target: {fileID: 7952068716342621676, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
       propertyPath: m_Name
       value: BlackTile (99)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1508507153
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -9910,6 +10786,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2072649369
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -10.5
@@ -10016,6 +10904,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (7)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2958992349
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -10078,6 +10978,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (37)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1267395226
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -10096,6 +11008,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2634561414
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -12.5
@@ -10158,6 +11082,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 706059865
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -10.5
@@ -10264,6 +11200,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (35)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 4071126802
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -10308,7 +11256,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 380, y: 50}
+  m_AnchoredPosition: {x: 300, y: 80}
   m_SizeDelta: {x: 250, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &826031089
@@ -10683,6 +11631,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (76)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 729440854
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -10701,6 +11661,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 832801348
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -14.5
@@ -10768,6 +11740,7 @@ GameObject:
   - component: {fileID: 839472420}
   - component: {fileID: 839472419}
   - component: {fileID: 839472422}
+  - component: {fileID: 839472423}
   m_Layer: 0
   m_Name: ConsPlat2
   m_TagString: Untagged
@@ -10880,6 +11853,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b275e10f86d4f8549b5fda42c457cf6b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Conservatory
+--- !u!114 &839472423
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 839472417}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
+  GlobalObjectIdHash: 2344918873
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 0
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!1 &846740205
 GameObject:
   m_ObjectHideFlags: 0
@@ -11201,6 +12199,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2643467359
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -2.5
@@ -11263,6 +12273,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 4215931355
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.5
@@ -11369,6 +12391,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (30)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2072981659
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -11431,6 +12465,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (29)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1591876769
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -11449,6 +12495,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 4042143734
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -11.5
@@ -11557,6 +12615,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2531775470
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -2.5
@@ -11619,6 +12689,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1435179285
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -16.5
@@ -11725,6 +12807,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 889842067
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -11743,6 +12837,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 322913673
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.5
@@ -11805,6 +12911,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2884001344
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -4.5
@@ -11911,6 +13029,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (11)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 342443570
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -11973,6 +13103,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (6)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3655160712
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -11996,6 +13138,7 @@ GameObject:
   - component: {fileID: 925544166}
   - component: {fileID: 925544165}
   - component: {fileID: 925544164}
+  - component: {fileID: 925544168}
   m_Layer: 0
   m_Name: ConsPlat1
   m_TagString: Untagged
@@ -12108,6 +13251,31 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 925544162}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &925544168
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 925544162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
+  GlobalObjectIdHash: 3242558363
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 0
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!1 &932767614
 GameObject:
   m_ObjectHideFlags: 0
@@ -12167,6 +13335,7 @@ GameObject:
   - component: {fileID: 944704037}
   - component: {fileID: 944704036}
   - component: {fileID: 944704039}
+  - component: {fileID: 944704040}
   m_Layer: 0
   m_Name: DinePlat1
   m_TagString: Untagged
@@ -12279,6 +13448,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1cbf11a48e5712047bcb2c021436351f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Dining
+--- !u!114 &944704040
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 944704034}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
+  GlobalObjectIdHash: 1917654897
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 0
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!1001 &948085078
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12330,6 +13524,18 @@ PrefabInstance:
     - target: {fileID: 7952068716342621676, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
       propertyPath: m_Name
       value: BlackTile (93)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3565886358
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -12392,6 +13598,18 @@ PrefabInstance:
     - target: {fileID: 7952068716342621676, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
       propertyPath: m_Name
       value: BlackTile (28)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 783777835
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -12539,6 +13757,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2576415817
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1.5
@@ -12601,6 +13831,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2360434243
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -10.5
@@ -13110,6 +14352,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (15)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 264149638
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -13128,6 +14382,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 453996797
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -6.5
@@ -13190,6 +14456,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 4164829082
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -3.5
@@ -14176,6 +15454,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1874981306
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -12.5
@@ -14282,6 +15572,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (100)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2419709292
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -14380,6 +15682,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (62)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3366599576
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -14473,6 +15787,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2290162093
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -10.5
@@ -14662,6 +15988,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (51)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1078236305
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -14731,6 +16069,7 @@ GameObject:
   - component: {fileID: 1143848714}
   - component: {fileID: 1143848713}
   - component: {fileID: 1143848716}
+  - component: {fileID: 1143848717}
   m_Layer: 0
   m_Name: KitchenBase
   m_TagString: Untagged
@@ -14843,6 +16182,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0410243ccd7366488d878236756b064, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Kitchen
+--- !u!114 &1143848717
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1143848711}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
+  GlobalObjectIdHash: 3220779619
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 0
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!1 &1163972830
 GameObject:
   m_ObjectHideFlags: 0
@@ -15092,6 +16456,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3049947688
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -11.5
@@ -15154,6 +16530,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3297041570
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -8.5
@@ -15260,6 +16648,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (49)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3658853024
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -15278,6 +16678,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3645606273
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -17.5
@@ -15340,6 +16752,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2188323229
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -11.5
@@ -15756,6 +17180,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (92)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3886541589
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -15817,6 +17253,18 @@ PrefabInstance:
     - target: {fileID: 7952068716342621676, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
       propertyPath: m_Name
       value: BlackTile (41)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2221371441
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -15917,6 +17365,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (58)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 355959480
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -15935,6 +17395,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1906626766
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -14.5
@@ -16040,6 +17512,18 @@ PrefabInstance:
     - target: {fileID: 7952068716342621676, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
       propertyPath: m_Name
       value: BlackTile (10)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 137279718
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -16149,6 +17633,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (26)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2594923235
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -16210,6 +17706,18 @@ PrefabInstance:
     - target: {fileID: 7952068716342621676, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
       propertyPath: m_Name
       value: BlackTile (98)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1218031661
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -16363,6 +17871,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (78)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1453317727
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -16381,6 +17901,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2648219804
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.5
@@ -16443,6 +17975,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2072533712
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -5.5
@@ -16548,6 +18092,18 @@ PrefabInstance:
     - target: {fileID: 7952068716342621676, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
       propertyPath: m_Name
       value: BlackTile (25)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3912754577
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -17518,6 +19074,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (63)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3366249144
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -17582,6 +19150,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3769743552
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -13.5
@@ -17774,6 +19354,18 @@ PrefabInstance:
     - target: {fileID: 7952068716342621676, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
       propertyPath: m_Name
       value: BlackTile (12)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2141962203
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -18006,6 +19598,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2151561934
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.5
@@ -18111,6 +19715,18 @@ PrefabInstance:
     - target: {fileID: 7952068716342621676, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
       propertyPath: m_Name
       value: BlackTile (85)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1741082325
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -18612,6 +20228,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (48)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1702866327
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -18695,7 +20323,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 380, y: -50}
+  m_AnchoredPosition: {x: 300, y: -50}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1403022898
@@ -18856,6 +20484,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (61)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 36645034
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -18918,6 +20558,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (34)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1820735370
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -18936,6 +20588,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 63274310
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -4.5
@@ -19035,6 +20699,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2671281002
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.5
@@ -19097,6 +20773,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1377139985
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: 3.5
@@ -19202,6 +20890,18 @@ PrefabInstance:
     - target: {fileID: 7952068716342621676, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
       propertyPath: m_Name
       value: BlackTile (65)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 4142347742
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -19340,6 +21040,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (68)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1436268753
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -19401,6 +21113,18 @@ PrefabInstance:
     - target: {fileID: 7952068716342621676, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
       propertyPath: m_Name
       value: BlackTile (83)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 377037316
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -19641,6 +21365,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2130289495
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -8.5
@@ -19703,6 +21439,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3139798518
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -10.5
@@ -19765,6 +21513,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 31252105
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -4.5
@@ -19827,6 +21587,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2010268167
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -16.5
@@ -19932,6 +21704,18 @@ PrefabInstance:
     - target: {fileID: 7952068716342621676, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
       propertyPath: m_Name
       value: BlackTile (57)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 4285579702
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -20132,6 +21916,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 837140805
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -20155,6 +21951,7 @@ GameObject:
   - component: {fileID: 1577558039}
   - component: {fileID: 1577558038}
   - component: {fileID: 1577558037}
+  - component: {fileID: 1577558041}
   m_Layer: 0
   m_Name: HallPlat
   m_TagString: Untagged
@@ -20267,6 +22064,31 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1577558035}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1577558041
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1577558035}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
+  GlobalObjectIdHash: 3529110012
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 0
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!1 &1583123401
 GameObject:
   m_ObjectHideFlags: 0
@@ -20401,6 +22223,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2760402736
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -11.5
@@ -20727,6 +22561,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (59)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1234500390
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -20745,6 +22591,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2722526847
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -15.5
@@ -21118,6 +22976,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 90500494
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -15.5
@@ -21414,6 +23284,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3129106911
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -10.5
@@ -21594,6 +23476,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3565501125
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -3.5
@@ -21656,6 +23550,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2129348296
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -2.5
@@ -21746,7 +23652,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -150, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1677076435
@@ -21907,6 +23813,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (91)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 246134081
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -21925,6 +23843,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2091037053
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.5
@@ -22105,6 +24035,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (60)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1022591650
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -22174,6 +24116,7 @@ GameObject:
   - component: {fileID: 1749696162}
   - component: {fileID: 1749696161}
   - component: {fileID: 1749696164}
+  - component: {fileID: 1749696165}
   m_Layer: 0
   m_Name: BallPlat
   m_TagString: Untagged
@@ -22286,6 +24229,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 725f6fb801a502d47bee02631768acfc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Ball
+--- !u!114 &1749696165
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1749696159}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
+  GlobalObjectIdHash: 1263209961
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 0
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!1001 &1751108536
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -22294,6 +24262,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3885181000
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -13.5
@@ -22400,6 +24380,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (71)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 4163510881
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -22469,6 +24461,7 @@ GameObject:
   - component: {fileID: 1754521517}
   - component: {fileID: 1754521516}
   - component: {fileID: 1754521519}
+  - component: {fileID: 1754521520}
   m_Layer: 0
   m_Name: LibPlat2
   m_TagString: Untagged
@@ -22581,6 +24574,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14f75ffa39c34fb4c9aed6224f74835f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Library
+--- !u!114 &1754521520
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1754521514}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
+  GlobalObjectIdHash: 3672661452
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 0
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!1001 &1755872648
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -22589,6 +24607,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 543453149
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -3.5
@@ -22868,6 +24898,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 91214509
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -4.5
@@ -22934,6 +24976,7 @@ GameObject:
   - component: {fileID: 1789358443}
   - component: {fileID: 1789358442}
   - component: {fileID: 1789358441}
+  - component: {fileID: 1789358444}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -23034,6 +25077,31 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1789358439}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1789358444
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1789358439}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
+  GlobalObjectIdHash: 3788466486
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 0
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!1 &1795737467
 GameObject:
   m_ObjectHideFlags: 0
@@ -23207,6 +25275,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (23)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 518786175
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -23315,6 +25395,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (42)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3872416356
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -23367,6 +25459,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2180132340
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.5
@@ -23472,6 +25576,18 @@ PrefabInstance:
     - target: {fileID: 7952068716342621676, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
       propertyPath: m_Name
       value: BlackTile (36)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3978067152
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -23772,6 +25888,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2480642786
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: 2.5
@@ -23834,6 +25962,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1316015479
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -2.5
@@ -24030,6 +26170,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (64)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 4262012584
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -24126,6 +26278,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2228187423
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.5
@@ -24231,6 +26395,18 @@ PrefabInstance:
     - target: {fileID: 7952068716342621676, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
       propertyPath: m_Name
       value: BlackTile (13)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 751748248
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -24339,6 +26515,18 @@ PrefabInstance:
     - target: {fileID: 7952068716342621676, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
       propertyPath: m_Name
       value: BlackTile (72)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3771355695
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -24538,6 +26726,18 @@ PrefabInstance:
     - target: {fileID: 7952068716342621676, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
       propertyPath: m_Name
       value: BlackTile (88)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3269951049
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -24756,6 +26956,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (96)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3736919488
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -24817,6 +27029,18 @@ PrefabInstance:
     - target: {fileID: 7952068716342621676, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
       propertyPath: m_Name
       value: BlackTile (82)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2035462339
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -24880,6 +27104,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (19)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 4042287648
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -24941,6 +27177,18 @@ PrefabInstance:
     - target: {fileID: 7952068716342621676, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
       propertyPath: m_Name
       value: BlackTile (55)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3677135800
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -25449,6 +27697,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2611931015
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -25849,7 +28109,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -320, y: -80}
+  m_AnchoredPosition: {x: -250, y: -80}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1965508518
@@ -25960,6 +28220,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3755291380
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -4.5
@@ -26022,6 +28294,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 93440047
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -11.5
@@ -26089,6 +28373,7 @@ GameObject:
   - component: {fileID: 1968870081}
   - component: {fileID: 1968870080}
   - component: {fileID: 1968870083}
+  - component: {fileID: 1968870084}
   m_Layer: 0
   m_Name: StudyPlat2
   m_TagString: Untagged
@@ -26201,6 +28486,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 334c12a0fe3ffb54eb5d1b2d3126d82c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Study
+--- !u!114 &1968870084
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1968870078}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
+  GlobalObjectIdHash: 2958773975
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 0
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!1001 &1974352988
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -26209,6 +28519,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3988724245
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -3.5
@@ -26436,6 +28758,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (24)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 4076775016
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -26497,6 +28831,18 @@ PrefabInstance:
     - target: {fileID: 7952068716342621676, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
       propertyPath: m_Name
       value: BlackTile (17)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2785557406
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -26611,6 +28957,7 @@ GameObject:
   - component: {fileID: 2002654457}
   - component: {fileID: 2002654456}
   - component: {fileID: 2002654459}
+  - component: {fileID: 2002654460}
   m_Layer: 0
   m_Name: LibPlat1
   m_TagString: Untagged
@@ -26723,6 +29070,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14f75ffa39c34fb4c9aed6224f74835f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Library
+--- !u!114 &2002654460
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2002654454}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
+  GlobalObjectIdHash: 30732435
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 0
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!1 &2006357623
 GameObject:
   m_ObjectHideFlags: 0
@@ -26867,6 +29239,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (53)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 4214227845
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -26890,6 +29274,7 @@ GameObject:
   - component: {fileID: 2037851780}
   - component: {fileID: 2037851779}
   - component: {fileID: 2037851778}
+  - component: {fileID: 2037851783}
   m_Layer: 0
   m_Name: StudyPlat1
   m_TagString: Untagged
@@ -27002,6 +29387,31 @@ Transform:
   m_Children: []
   m_Father: {fileID: 643783077}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2037851783
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2037851777}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
+  GlobalObjectIdHash: 636806784
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 0
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!1001 &2045337696
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -27010,6 +29420,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1923855524
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -11.5
@@ -27072,6 +29494,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3963656754
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: -12.5
@@ -27463,6 +29897,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (70)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1498007835
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -27525,6 +29971,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlackTile (27)
       objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2783311783
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -27586,6 +30044,18 @@ PrefabInstance:
     - target: {fileID: 7952068716342621676, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
       propertyPath: m_Name
       value: BlackTile (97)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 913530829
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -27776,6 +30246,7 @@ GameObject:
   - component: {fileID: 2098993381}
   - component: {fileID: 2098993380}
   - component: {fileID: 2098993383}
+  - component: {fileID: 2098993384}
   m_Layer: 0
   m_Name: LoungePlat2
   m_TagString: Untagged
@@ -27888,6 +30359,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e5fd3e598dbbdf4581153e0a33e4364, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Lounge
+--- !u!114 &2098993384
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2098993378}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
+  GlobalObjectIdHash: 393614243
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 0
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!1001 &2102776549
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -28060,6 +30556,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031103201}
     m_Modifications:
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3087098448
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2155752960739838274, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2747692834
+      objectReference: {fileID: 0}
     - target: {fileID: 1477180273767311711, guid: 6713959a3349ddc44ba59516b3c1b457, type: 3}
       propertyPath: m_LocalPosition.x
       value: 2.5
@@ -28165,6 +30673,18 @@ PrefabInstance:
     - target: {fileID: 7952068716342621676, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
       propertyPath: m_Name
       value: BlackTile (21)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2933386591
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370945827659653239, guid: 39fd0086a72a6c34486681819c52a8a5, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2415972294
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
