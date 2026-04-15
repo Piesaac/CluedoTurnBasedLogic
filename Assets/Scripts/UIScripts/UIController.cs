@@ -19,6 +19,12 @@ public class UIController : MonoBehaviour
     // TurnManager object
     public TurnManager turnMan;
 
+    // Button to toggle clueSheet
+    public Button clueSheetBtn;
+    public bool cluesheetToggled;
+    // Clue sheet object
+    public GameObject clueSheet;
+
     // Drop downs for suggestions
     public TMP_Dropdown suspectList;
     public TMP_Dropdown weaponList;
@@ -43,11 +49,13 @@ public class UIController : MonoBehaviour
     public Movement localPlayerScript;
 
 
+
+
     // UI panels for each different phase
     [Header("Panels")]
-    [SerializeField] private GameObject rollPanel;  
-    [SerializeField] private GameObject movePanel;  
-    [SerializeField] private GameObject guessPanel; 
+    [SerializeField] private GameObject rollPanel;
+    [SerializeField] private GameObject movePanel;
+    [SerializeField] private GameObject guessPanel;
 
     // Fields for the suggesting / accusation UI dropdowns
     public Who selectedSuspect;
@@ -74,6 +82,7 @@ public class UIController : MonoBehaviour
         {
             localPlayerScript.move_tokens.OnValueChanged += (oldVal, newVal) => updateMoveText();
         }
+        cluesheetToggled = false;
         // Fills the dropdowns for the guess/clue system.
         fillGuessDropdowns();
         turnMan.whatPhase.OnValueChanged += (oldVal, newVal) => UpdateUIVisibility();
@@ -94,12 +103,12 @@ public class UIController : MonoBehaviour
     {
         localPlayerScript = player;
         // 1. Force the first update immediately
-        updateMoveText(); 
-    
+        updateMoveText();
+
         // 2. Subscribe to future updates
         localPlayerScript.move_tokens.OnValueChanged += (oldVal, newVal) => updateMoveText();
     }
-    
+
 
     /// -------V-------- Player Hand Scripts -------V--------//
     // Updates players hand dropdown list in UI with cards inputted.
@@ -121,8 +130,8 @@ public class UIController : MonoBehaviour
         {
             Card.CardType.Suspect => ((Who)card.value).ToString(),
             Card.CardType.Weapon => ((What)card.value).ToString(),
-            Card.CardType.Room   => ((Where)card.value).ToString(),
-            _=> "Unknown"
+            Card.CardType.Room => ((Where)card.value).ToString(),
+            _ => "Unknown"
         };
     }
 
@@ -136,7 +145,7 @@ public class UIController : MonoBehaviour
         bool isOnDoor = localPlayerScript != null && localPlayerScript.IsOnDoor();
         bool isInRoom = localPlayerScript != null && localPlayerScript.IsInRoom();
         bool isMovingPhase = turnMan.whatPhase.Value == TurnStage.MOVING;
-        
+
         Debug.Log($"UI Debug: MyTurn={isMyTurn}, MovingPhase={isMovingPhase}, OnDoor={isOnDoor}");
 
         // Shows/Hides the overarching UI panels of the different phases.
@@ -221,16 +230,16 @@ public class UIController : MonoBehaviour
         if (localPlayerScript == null) return;
 
         Door[] allDoors = GameObject.FindObjectsByType<Door>(FindObjectsSortMode.None);
-    
+
         exitNames.Clear();
         currentDoors.Clear();
 
         foreach (var door in allDoors)
         {
-            if (door.roomName == localPlayerScript.currentRoomName) 
+            if (door.roomName == localPlayerScript.currentRoomName)
             {
                 currentDoors.Add(door);
-                exitNames.Add(door.exitName);   
+                exitNames.Add(door.exitName);
             }
         }
 
@@ -258,10 +267,10 @@ public class UIController : MonoBehaviour
             if (selectedIndex >= 0 && selectedIndex < currentDoors.Count)
             {
                 Door exitDoor = currentDoors[selectedIndex];
-            
+
                 // Get the NetworkObject attached to the door
                 NetworkObject doorNetObj = exitDoor.GetComponent<NetworkObject>();
-            
+
                 if (doorNetObj != null)
                 {
                     Debug.Log("UIController: Sending RPC to server for door: " + exitDoor.name);
@@ -282,7 +291,7 @@ public class UIController : MonoBehaviour
     // Fills dropdown for guesses with valid elements.
     void fillGuessDropdowns()
     {
-        
+
         suspectList.ClearOptions();
         weaponList.ClearOptions();
         locationList.ClearOptions();
@@ -304,7 +313,7 @@ public class UIController : MonoBehaviour
         suspectList.value = 0;
         weaponList.value = 0;
         locationList.value = 0;
-    
+
         suspectList.RefreshShownValue();
         weaponList.RefreshShownValue();
         locationList.RefreshShownValue();
@@ -321,12 +330,22 @@ public class UIController : MonoBehaviour
 
         int roomIndex = locationList.value;
         string roomName = locationList.options[roomIndex].text;
-        
+
         selectedSuspect = (Who)suspectIndex;
         selectedWeapon = (What)weaponIndex;
-        selectedRoom =  (Where)roomIndex;
+        selectedRoom = (Where)roomIndex;
     }
 
-    
+    public void cluePopUp()
+    {
+        if (cluesheetToggled)
+        {
+            clueSheet.gameObject.SetActive(false);
+            cluesheetToggled = false;
+            return;
+        }
+        clueSheet.gameObject.SetActive(true);
+        cluesheetToggled = true;
+    }
 
 }
