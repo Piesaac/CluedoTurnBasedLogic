@@ -14,14 +14,17 @@ public class UIController : MonoBehaviour
     // Text for number of moves
     public TextMeshProUGUI diceResult;
     public TextMeshProUGUI moves;
+
     // Button to action rolling "dice"
     public Button rollBtn;
+
     // TurnManager object
     public TurnManager turnMan;
 
     // Button to toggle clueSheet
     public Button clueSheetBtn;
     public bool cluesheetToggled;
+
     // Clue sheet object
     public GameObject clueSheet;
 
@@ -45,28 +48,45 @@ public class UIController : MonoBehaviour
     public TextMeshProUGUI handText;
     public TMP_Dropdown handList;
 
-    // Local instance of player's movement script, allocated through the script itself.
+    // Local instance of player's movement script.
     public Movement localPlayerScript;
 
-
+    // Bools required for movement logic;
+    private bool isMyTurn;
+    private bool isOnDoor;
+    private bool isInRoom;
+    private bool isMovingPhase;
 
 
     // UI panels for each different phase
     [Header("Panels")]
-    [SerializeField] private GameObject rollPanel;
-    [SerializeField] private GameObject movePanel;
-    [SerializeField] private GameObject guessPanel;
+    [SerializeField] private GameObject rollPanel;  
+    [SerializeField] private GameObject movePanel;  
+    [SerializeField] private GameObject guessPanel; 
 
-    // Fields for the suggesting / accusation UI dropdowns
+    // Fields for disproving UI
+    [SerializeField] private GameObject disprovePanel;
+    [SerializeField] private TMP_Dropdown disproveList;
+    [SerializeField] private TextMeshProUGUI clueWhisper;
+    public CardDistributor cardDist;
+
+    // Fields for the suggesting dropdowns
     public Who selectedSuspect;
     public What selectedWeapon;
     public Where selectedRoom;
+
+    // Fields for accusation dropdowns
+    public Who accuseWho;
+    public What accuseWhat;
+    public Where accuseWhere;
+
 
     // Simple methods for hiding and showing UI panels
     public void ShowSuggestionUI() => guessPanel.SetActive(true);
     public void HideSuggestionUI() => guessPanel.SetActive(false);
     public void ShowRollingUI() => rollPanel.SetActive(true);
     public void HideRollingUI() => rollPanel.SetActive(true);
+    public void HideDisproveUI() => disprovePanel.SetActive(false);
 
     // Sets the global reference to this instance upon the files being loaded
     private void Awake()
@@ -82,7 +102,6 @@ public class UIController : MonoBehaviour
         {
             localPlayerScript.move_tokens.OnValueChanged += (oldVal, newVal) => updateMoveText();
         }
-        cluesheetToggled = false;
         // Fills the dropdowns for the guess/clue system.
         fillGuessDropdowns();
         turnMan.whatPhase.OnValueChanged += (oldVal, newVal) => UpdateUIVisibility();
@@ -103,49 +122,24 @@ public class UIController : MonoBehaviour
     {
         localPlayerScript = player;
         // 1. Force the first update immediately
-        updateMoveText();
-
+        updateMoveText(); 
+    
         // 2. Subscribe to future updates
         localPlayerScript.move_tokens.OnValueChanged += (oldVal, newVal) => updateMoveText();
     }
-
-
-    /// -------V-------- Player Hand Scripts -------V--------//
-    // Updates players hand dropdown list in UI with cards inputted.
-    public void updateHand(Card[] cards)
-    {
-        handText.text = "<b>YOUR HAND:</b>\n";
-        List<string> cardNames = new List<string>();
-        foreach (Card card in cards)
-        {
-            cardNames.Add(whatCard(card));
-        }
-        handList.AddOptions(cardNames);
-    }
-
-    // Returns the string name value of the card inputted.
-    private string whatCard(Card card)
-    {
-        return card.type switch
-        {
-            Card.CardType.Suspect => ((Who)card.value).ToString(),
-            Card.CardType.Weapon => ((What)card.value).ToString(),
-            Card.CardType.Room => ((Where)card.value).ToString(),
-            _ => "Unknown"
-        };
-    }
+    
 
 
     // --------V-------- UI update/refresh methods --------V--------
     // Updates UI depending on whether it meets the criteria for showing
     public void UpdateUIVisibility()
     {
-        // Bools for determining whether a UI should be visible to the player actioning.
-        bool isMyTurn = (turnMan.whosPlaying.Value == (int)NetworkManager.Singleton.LocalClientId);
-        bool isOnDoor = localPlayerScript != null && localPlayerScript.IsOnDoor();
-        bool isInRoom = localPlayerScript != null && localPlayerScript.IsInRoom();
-        bool isMovingPhase = turnMan.whatPhase.Value == TurnStage.MOVING;
-
+        HideDisproveUI();
+        isMyTurn = (turnMan.whosPlaying.Value == (int)NetworkManager.Singleton.LocalClientId);
+        isOnDoor = localPlayerScript != null && localPlayerScript.IsOnDoor();
+        isInRoom = localPlayerScript != null && localPlayerScript.IsInRoom();
+        isMovingPhase = turnMan.whatPhase.Value == TurnStage.MOVING;
+        bool isGuessPhase = turnMan.whatPhase.Value == TurnStage.SUGGESTING;
         Debug.Log($"UI Debug: MyTurn={isMyTurn}, MovingPhase={isMovingPhase}, OnDoor={isOnDoor}");
 
         // Shows/Hides the overarching UI panels of the different phases.
@@ -159,6 +153,7 @@ public class UIController : MonoBehaviour
         exitList.gameObject.SetActive(isMyTurn && isMovingPhase && isInRoom);
         exitText.gameObject.SetActive(isMyTurn && isMovingPhase && isInRoom);
         exitButton.gameObject.SetActive(isMyTurn && isMovingPhase && isInRoom);
+        clueWhisper.gameObject.SetActive(isMyTurn && isGuessPhase);
     }
 
     // Delays UI change by 1 second.
@@ -205,10 +200,11 @@ public class UIController : MonoBehaviour
     // Button to confirm room entry.
     public void submitEnterRoom()
     {
-        if (localPlayerScript != null && localPlayerScript.stage != null)
+        if (localPlayerScript != null)
         {
+            localPlayerScript.whereWeAt();
             NetworkObject stageNet = localPlayerScript.stage.GetComponent<NetworkObject>();
-            if (stageNet != null)
+            if (stageNet != null )
             {
                 localPlayerScript.submitEntryServerRpc(stageNet.NetworkObjectId);
             }
@@ -230,16 +226,24 @@ public class UIController : MonoBehaviour
         if (localPlayerScript == null) return;
 
         Door[] allDoors = GameObject.FindObjectsByType<Door>(FindObjectsSortMode.None);
-
+    
         exitNames.Clear();
         currentDoors.Clear();
 
         foreach (var door in allDoors)
         {
-            if (door.roomName == localPlayerScript.currentRoomName)
+            // Print the comparison values clearly
+            string doorRoom = door.roomName ?? "NULL";
+            string myRoom = localPlayerScript.currentRoomName ?? "NULL";
+    
+            bool isMatch = (doorRoom == myRoom);
+    
+            Debug.Log($"Matching? {isMatch} | Door: '{door.name}' room is '{doorRoom}' | My Room is '{myRoom}'");
+
+            if (isMatch) 
             {
                 currentDoors.Add(door);
-                exitNames.Add(door.exitName);
+                exitNames.Add(door.exitName);   
             }
         }
 
@@ -267,10 +271,9 @@ public class UIController : MonoBehaviour
             if (selectedIndex >= 0 && selectedIndex < currentDoors.Count)
             {
                 Door exitDoor = currentDoors[selectedIndex];
-
-                // Get the NetworkObject attached to the door
+            
                 NetworkObject doorNetObj = exitDoor.GetComponent<NetworkObject>();
-
+            
                 if (doorNetObj != null)
                 {
                     Debug.Log("UIController: Sending RPC to server for door: " + exitDoor.name);
@@ -286,12 +289,37 @@ public class UIController : MonoBehaviour
         }
     }
 
+    /// -------V-------- Player Hand Scripts -------V--------//
+    // Updates players hand dropdown list in UI with cards inputted.
+    public void updateHand(Card[] cards)
+    {
+        handText.text = "<b>YOUR HAND:</b>\n";
+        List<string> cardNames = new List<string>();
+        foreach (Card card in cards)
+        {
+            cardNames.Add(whatCard(card));
+        }
+        handList.AddOptions(cardNames);
+    }
+
+    // Returns the string name value of the card inputted.
+    private string whatCard(Card card)
+    {
+        return card.type switch
+        {
+            Card.CardType.Suspect => ((Who)card.value).ToString(),
+            Card.CardType.Weapon => ((What)card.value).ToString(),
+            Card.CardType.Room   => ((Where)card.value).ToString(),
+            _=> "Unknown"
+        };
+    }
+
     // -----V----- Used for suggestion phase dropdowns -----V-----
 
     // Fills dropdown for guesses with valid elements.
     void fillGuessDropdowns()
     {
-
+        
         suspectList.ClearOptions();
         weaponList.ClearOptions();
         locationList.ClearOptions();
@@ -313,7 +341,7 @@ public class UIController : MonoBehaviour
         suspectList.value = 0;
         weaponList.value = 0;
         locationList.value = 0;
-
+    
         suspectList.RefreshShownValue();
         weaponList.RefreshShownValue();
         locationList.RefreshShownValue();
@@ -330,10 +358,10 @@ public class UIController : MonoBehaviour
 
         int roomIndex = locationList.value;
         string roomName = locationList.options[roomIndex].text;
-
+        
         selectedSuspect = (Who)suspectIndex;
         selectedWeapon = (What)weaponIndex;
-        selectedRoom = (Where)roomIndex;
+        selectedRoom =  (Where)roomIndex;
     }
 
     public void cluePopUp()
@@ -347,5 +375,36 @@ public class UIController : MonoBehaviour
         clueSheet.gameObject.SetActive(true);
         cluesheetToggled = true;
     }
+
+    // --------V-------- Guessing Methods --------V--------
+
+    public void ShowDisprovePanel(Card[] cards)
+    {
+        List<string> cardNames = new List<string>();
+        foreach (Card card in cards)
+        {
+            cardNames.Add(cardDist.whatCard(card));
+        }
+        disproveList.AddOptions(cardNames);
+        disprovePanel.gameObject.SetActive(true);
+    }
+
+    public void confirmDisprove()
+    {
+        int disproveIdx = disproveList.value;
+        string clueToShow = disproveList.options[disproveIdx].text;
+        notifyClientDisprove(clueToShow);
+    }
+
+    public void notifyClientDisprove(string clue)
+    {
+        if (!isMyTurn) return;
+        clueWhisper.text = $"You have been shown the card: {clue}";
+        clueWhisper.gameObject.SetActive(true);
+
+
+    }
+
+
 
 }
