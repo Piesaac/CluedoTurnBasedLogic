@@ -3,9 +3,6 @@ using TMPro;
 using Unity.Netcode;
 using turnyWurny; 
 using CardList;
-using System.Collections;
-using System.Collections.Generic;
-
 
 public class GuessManager : NetworkBehaviour
 {
@@ -14,7 +11,6 @@ public class GuessManager : NetworkBehaviour
 
     [Header("Links to Card System")]
     [SerializeField] private CardDistributor cardDist;
-    
 
     [Header("Links to Turn Manager")]
     [SerializeField] private TurnManager turnMan;
@@ -24,7 +20,6 @@ public class GuessManager : NetworkBehaviour
     public What chosenWhat;
     public Where chosenWhere;
     [SerializeField] public TextMeshProUGUI guessResult;
-
 
 
     // Initialises variables as selected items in dropdown
@@ -54,80 +49,7 @@ public class GuessManager : NetworkBehaviour
 
     // Submits the guess to the server and checks them against the evidence selected.
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
-    public void submitGuessServerRpc(Who who, What what, Where where, RpcParams rpcParams = default)
-    {   
-        // Finds ulong ID of player guessing.
-        ulong guesserId = rpcParams.Receive.SenderClientId;
-
-        // Finds next clockwise player.
-        int nextCW_Player = (int)(guesserId + 1) % cardDist.playerHands.Count;
-        StartCoroutine(checkTheirMFHands(who, what, where, nextCW_Player, guesserId));
-    }
-
-    private List<Card> findSame(List<Card> hand, Who who, What what, Where where)
-    {
-        List<Card> matches = new List<Card>();
-        foreach (Card card in hand)
-        {
-            if ((card.type == Card.CardType.Suspect && card.value == (int)who) ||
-                (card.type == Card.CardType.Weapon && card.value == (int)what) ||
-                (card.type == Card.CardType.Room && card.value == (int)where))
-            {
-                matches.Add(card);
-            }
-        }
-        return matches;
-    }
-
-    private IEnumerator checkTheirMFHands(Who who, What what, Where where, int start, ulong guesserID)
-    {
-        for (int i = 0; i < cardDist.playerHands.Count - 1; i++)
-        {
-            int idxToCheck = (start + i) % cardDist.playerHands.Count;
-            if (idxToCheck == (int)guesserID) continue;
-
-            List<Card> foundCards = findSame(cardDist.playerHands[idxToCheck], who, what, where);
-            
-            if (foundCards.Count > 0)
-            {
-                ulong clientToNotify = NetworkManager.Singleton.ConnectedClientsIds[(int)idxToCheck];
-                ClientRpcParams param = new ClientRpcParams
-                {
-                    Send = new ClientRpcSendParams {TargetClientIds = new ulong[] {clientToNotify}}
-                };
-                reqDisproveClientRpc(foundCards.ToArray(), param);
-                yield break;
-            }
-
-        }
-        notifyNoMatchesClientRpc(guesserID);
-    }
-
-    [ClientRpc]
-    private void notifyNoMatchesClientRpc(ulong playerID)
-    {
-
-    }
-
-    [ClientRpc]
-        private void reqDisproveClientRpc(Card[] matchingCards, ClientRpcParams rpcParams)
-    {
-        uiscript.ShowDisprovePanel(matchingCards); 
-    }
-
-
-
-    public void validateAccuse()
-    {
-        chosenWho = uiscript.accuseWho;
-        chosenWhat = uiscript.accuseWhat;
-        chosenWhere = uiscript.accuseWhere;
-
-        submitAccuseServerRpc(chosenWho, chosenWhat, chosenWhere);
-    }
-
-    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
-    public void submitAccuseServerRpc(Who who, What what, Where where)
+    public void submitGuessServerRpc(Who who, What what, Where where)
     {
         bool foundWho = false;
         bool foundWhat = false;
