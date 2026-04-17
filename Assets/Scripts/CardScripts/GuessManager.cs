@@ -14,7 +14,6 @@ public class GuessManager : NetworkBehaviour
 
     [Header("Links to Card System")]
     [SerializeField] private CardDistributor cardDist;
-    
 
     [Header("Links to Turn Manager")]
     [SerializeField] private TurnManager turnMan;
@@ -24,7 +23,6 @@ public class GuessManager : NetworkBehaviour
     public What chosenWhat;
     public Where chosenWhere;
     [SerializeField] public TextMeshProUGUI guessResult;
-
 
 
     // Initialises variables as selected items in dropdown
