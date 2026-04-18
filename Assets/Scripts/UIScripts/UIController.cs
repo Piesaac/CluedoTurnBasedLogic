@@ -335,6 +335,7 @@ public class UIController : MonoBehaviour
     // Links to button for confirming guess.
     public void suggestionButton()
     {
+        Debug.Log("UI Controller: suggestionButton() called");
         int suspectIndex = suspectList.value;
         string suspectName = suspectList.options[suspectIndex].text;
 
@@ -347,6 +348,7 @@ public class UIController : MonoBehaviour
         selectedSuspect = (Who)suspectIndex;
         selectedWeapon = (What)weaponIndex;
         selectedRoom =  (Where)roomIndex;
+        HideSuggestionUI();
     }
 
 
@@ -365,7 +367,7 @@ public class UIController : MonoBehaviour
 
     public void confirmDisprove()
     {
-        Card clueToShow = disproveList.value;
+        // Card clueToShow = disproveList.value;
     }
 
 }

@@ -58,6 +58,7 @@ public class GuessManager : NetworkBehaviour
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     public void submitGuessServerRpc(Who who, What what, Where where, RpcParams rpcParams = default)
     {   
+        Debug.Log("GuessManager: submitGuessServerRpc() called");
         // Finds ulong ID of player guessing.
         ulong guesserId = rpcParams.Receive.SenderClientId;
 
@@ -68,6 +69,7 @@ public class GuessManager : NetworkBehaviour
 
     private List<Card> findSame(List<Card> hand, Who who, What what, Where where)
     {
+        Debug.Log("GuessManager: findSame() called");
         List<Card> matches = new List<Card>();
         foreach (Card card in hand)
         {
@@ -83,6 +85,7 @@ public class GuessManager : NetworkBehaviour
 
     private IEnumerator checkTheirMFHands(Who who, What what, Where where, int start, ulong guesserID)
     {
+        Debug.Log("GuessManager: checkTheirMFHands() called");
         for (int i = 0; i < cardDist.playerHands.Count - 1; i++)
         {
             int idxToCheck = (start + i) % cardDist.playerHands.Count;
@@ -108,6 +111,7 @@ public class GuessManager : NetworkBehaviour
     [ClientRpc]
     private void notifyNoMatchesClientRpc(ulong playerID)
     {
+        turnMan.delayNextPhase();
 
     }
 
