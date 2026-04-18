@@ -92,6 +92,11 @@ public class TurnManager : NetworkBehaviour
         }
     }
 
+    public void delayNextPhase()
+    {
+        Invoke("pushNextPhase", 2f);
+    }
+
     public void nextTurn()
     {
         // Cycles to the next player in rotation

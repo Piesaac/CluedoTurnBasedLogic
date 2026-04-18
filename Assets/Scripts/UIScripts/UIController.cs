@@ -68,6 +68,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private GameObject disprovePanel;
     [SerializeField] private TMP_Dropdown disproveList;
     [SerializeField] private TextMeshProUGUI clueWhisper;
+    public GuessManager guessMan;
     public CardDistributor cardDist;
 
     // Fields for the suggesting dropdowns
@@ -139,7 +140,8 @@ public class UIController : MonoBehaviour
         isInRoom = localPlayerScript != null && localPlayerScript.IsInRoom();
         isMovingPhase = turnMan.whatPhase.Value == TurnStage.MOVING;
         bool isGuessPhase = turnMan.whatPhase.Value == TurnStage.SUGGESTING;
-        Debug.Log($"UI Debug: MyTurn={isMyTurn}, MovingPhase={isMovingPhase}, OnDoor={isOnDoor}");
+        Debug.Log("UI Controller: UpdateUIVisibility() called");
+        Debug.Log($"isMyTurn = {isMyTurn} | isOnDoor = {isOnDoor} | isInRoom = {isInRoom} | isMovingPhase = {isMovingPhase}");
 
         // Shows/Hides the overarching UI panels of the different phases.
         rollPanel.SetActive(isMyTurn && turnMan.whatPhase.Value == TurnStage.ROLLING);
@@ -152,7 +154,7 @@ public class UIController : MonoBehaviour
         exitList.gameObject.SetActive(isMyTurn && isMovingPhase && isInRoom);
         exitText.gameObject.SetActive(isMyTurn && isMovingPhase && isInRoom);
         exitButton.gameObject.SetActive(isMyTurn && isMovingPhase && isInRoom);
-        clueWhisper.gameObject.SetActive(isMyTurn && isGuessPhase);
+        // clueWhisper.gameObject.SetActive(isMyTurn && isGuessPhase);
     }
 
     // Delays UI change by 1 second.
@@ -341,6 +343,7 @@ public class UIController : MonoBehaviour
     // Links to button for confirming guess.
     public void suggestionButton()
     {
+        Debug.Log("UI Controller: suggestionButton() called");
         int suspectIndex = suspectList.value;
         string suspectName = suspectList.options[suspectIndex].text;
 
@@ -353,6 +356,7 @@ public class UIController : MonoBehaviour
         selectedSuspect = (Who)suspectIndex;
         selectedWeapon = (What)weaponIndex;
         selectedRoom = (Where)roomIndex;
+
     }
 
     public void cluePopUp()
@@ -382,6 +386,7 @@ public class UIController : MonoBehaviour
 
     public void confirmDisprove()
     {
+        Debug.Log("UIController: confirmDisprove() called");
         int disproveIdx = disproveList.value;
         string clueToShow = disproveList.options[disproveIdx].text;
         notifyClientDisprove(clueToShow);

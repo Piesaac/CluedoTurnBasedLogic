@@ -45,6 +45,8 @@ public class GuessManager : NetworkBehaviour
     // Re-initialises the local variables with dropdown input - links with the submit button.
     public void validateGuess()
     {
+        Debug.Log("Button actually clicked");
+        uiscript.suggestionButton();
         chosenWho = uiscript.selectedSuspect;
         chosenWhat = uiscript.selectedWeapon;
         chosenWhere = uiscript.selectedRoom;
