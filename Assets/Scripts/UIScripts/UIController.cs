@@ -14,10 +14,13 @@ public class UIController : MonoBehaviour
     // Text for number of moves
     public TextMeshProUGUI diceResult;
     public TextMeshProUGUI moves;
+
     // Button to action rolling "dice"
     public Button rollBtn;
+    
     // TurnManager object
     public TurnManager turnMan;
+    public bool isMyTurn;
 
     // Drop downs for suggestions
     public TMP_Dropdown suspectList;
@@ -52,7 +55,9 @@ public class UIController : MonoBehaviour
     // Fields for disproving UI
     [SerializeField] private GameObject disprovePanel;
     [SerializeField] private TMP_Dropdown disproveList;
+    [SerializeField] private TextMeshProUGUI disproveText;
     public CardDistributor cardDist;
+    List<string> cardNames;
 
     // Fields for the suggesting dropdowns
     public Who selectedSuspect;
@@ -119,7 +124,7 @@ public class UIController : MonoBehaviour
     public void UpdateUIVisibility()
     {
         // Bools for determining whether a UI should be visible to the player actioning.
-        bool isMyTurn = (turnMan.whosPlaying.Value == (int)NetworkManager.Singleton.LocalClientId);
+        isMyTurn = (turnMan.whosPlaying.Value == (int)NetworkManager.Singleton.LocalClientId);
         bool isOnDoor = localPlayerScript != null && localPlayerScript.IsOnDoor();
         bool isInRoom = localPlayerScript != null && localPlayerScript.IsInRoom();
         bool isMovingPhase = turnMan.whatPhase.Value == TurnStage.MOVING;
@@ -356,7 +361,7 @@ public class UIController : MonoBehaviour
 
     public void ShowDisprovePanel(Card[] cards)
     {
-        List<string> cardNames = new List<string>();
+        cardNames = new List<string>();
         foreach (Card card in cards)
         {
             cardNames.Add(cardDist.whatCard(card));
@@ -367,7 +372,25 @@ public class UIController : MonoBehaviour
 
     public void confirmDisprove()
     {
-        // Card clueToShow = disproveList.value;
+        string clueToShow = cardNames[disproveList.value];
+        disproveText.text = clueToShow;
+    }
+
+    public void showDisproveText()
+    {
+        isMyTurn = (turnMan.whosPlaying.Value == (int)NetworkManager.Singleton.LocalClientId);
+        if (!isMyTurn) return;
+        disproveText.gameObject.SetActive(true);
+       //  Invoke("hideDisproveText", 5f);
+    }
+
+    public void hideDisproveText()
+    {
+        isMyTurn = (turnMan.whosPlaying.Value == (int)NetworkManager.Singleton.LocalClientId);
+        if (!isMyTurn) return;
+        disproveText.gameObject.SetActive(false);
+        disproveText.text = "";
+        turnMan.delayNextPhase();
     }
 
 }
