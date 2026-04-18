@@ -55,7 +55,7 @@ public class UIController : MonoBehaviour
     // Fields for disproving UI
     [SerializeField] private GameObject disprovePanel;
     [SerializeField] private TMP_Dropdown disproveList;
-    [SerializeField] private TextMeshProUGUI disproveText;
+    [SerializeField] public TextMeshProUGUI disproveText;
     public CardDistributor cardDist;
     List<string> cardNames;
 
@@ -373,24 +373,24 @@ public class UIController : MonoBehaviour
     public void confirmDisprove()
     {
         string clueToShow = cardNames[disproveList.value];
-        disproveText.text = clueToShow;
+        GuessManager.Instance.disproveResult(clueToShow);
+        HideDisproveUI();
     }
 
     public void showDisproveText()
     {
-        isMyTurn = (turnMan.whosPlaying.Value == (int)NetworkManager.Singleton.LocalClientId);
-        if (!isMyTurn) return;
         disproveText.gameObject.SetActive(true);
        //  Invoke("hideDisproveText", 5f);
     }
 
     public void hideDisproveText()
     {
-        isMyTurn = (turnMan.whosPlaying.Value == (int)NetworkManager.Singleton.LocalClientId);
-        if (!isMyTurn) return;
         disproveText.gameObject.SetActive(false);
         disproveText.text = "";
-        turnMan.delayNextPhase();
-    }
 
+        if (NetworkManager.Singleton.IsServer) 
+        {
+        turnMan.pushNextPhase();
+        }
+    }
 }

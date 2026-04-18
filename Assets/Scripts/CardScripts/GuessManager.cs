@@ -25,6 +25,8 @@ public class GuessManager : NetworkBehaviour
     public Where chosenWhere;
     [SerializeField] public TextMeshProUGUI guessResult;
 
+    public static GuessManager Instance;
+
 
 
     // Initialises variables as selected items in dropdown
@@ -34,6 +36,18 @@ public class GuessManager : NetworkBehaviour
         chosenWhat = uiscript.selectedWeapon;
         chosenWhere = uiscript.selectedRoom;
 
+    }
+
+    void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     // Resets dropdowns to original form so next player does not see previous players input
@@ -175,5 +189,34 @@ public class GuessManager : NetworkBehaviour
     {
         guessResult.text = "";
     }   
+
+    public void disproveResult(string cardName)
+    {
+        disproveServerRpc(cardName);
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    public void disproveServerRpc(string cardName)
+    {
+        ulong suggesterId = (ulong)turnMan.whosPlaying.Value;
+
+        ClientRpcParams clientRpcParams = new ClientRpcParams
+        {
+            Send = new ClientRpcSendParams
+            {
+                TargetClientIds = new ulong[] { suggesterId }
+            }
+        };
+
+        notifDispResClientRpc(cardName, clientRpcParams);
+    }
+
+    [ClientRpc]
+    private void notifDispResClientRpc(string cardName, ClientRpcParams clientRpcParams = default)
+    {
+        UIController.Instance.disproveText.text = "You have been shown the card: " + cardName;
+        UIController.Instance.disproveText.gameObject.SetActive(true);
+        UIController.Instance.Invoke("hideDisproveText", 4f);
+    }
 
 }
