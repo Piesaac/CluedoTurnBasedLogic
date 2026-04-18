@@ -11,6 +11,11 @@ using System.Collections.Generic;
 
 public class UIController : MonoBehaviour
 {
+
+    public Button clueSheetBtn;
+    public bool cluesheetToggled;
+    public GameObject clueSheet;
+
     // Text for number of moves
     public TextMeshProUGUI diceResult;
     public TextMeshProUGUI moves;
@@ -91,6 +96,8 @@ public class UIController : MonoBehaviour
         {
             localPlayerScript.move_tokens.OnValueChanged += (oldVal, newVal) => updateMoveText();
         }
+        cluesheetToggled = false;
+        clueSheetBtn.gameObject.SetActive(true);
         // Fills the dropdowns for the guess/clue system.
         fillGuessDropdowns();
         turnMan.whatPhase.OnValueChanged += (oldVal, newVal) => UpdateUIVisibility();
@@ -392,5 +399,17 @@ public class UIController : MonoBehaviour
         {
         turnMan.pushNextPhase();
         }
+    }
+
+    public void cluePopUp()
+    {
+        if (cluesheetToggled)
+        {
+            clueSheet.gameObject.SetActive(false);
+            cluesheetToggled = false;
+            return;
+        }
+        clueSheet.gameObject.SetActive(true);
+        cluesheetToggled = true;
     }
 }
