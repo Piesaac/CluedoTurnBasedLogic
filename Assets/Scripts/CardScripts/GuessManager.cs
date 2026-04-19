@@ -125,7 +125,9 @@ public class GuessManager : NetworkBehaviour
     [ClientRpc]
     private void notifyNoMatchesClientRpc(ulong playerID)
     {
-        turnMan.delayNextPhase();
+        UIController.Instance.disproveText.text = "No cards found!";
+        UIController.Instance.disproveText.gameObject.SetActive(true);
+        UIController.Instance.Invoke("hideDisproveText", 4f);
 
     }
 
