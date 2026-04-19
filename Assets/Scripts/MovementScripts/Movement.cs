@@ -9,6 +9,7 @@ public class Movement : NetworkBehaviour
 {
     // Links to the Turn Manager so the player is kept in line of turns.
     [SerializeField] private TurnManager whomst;
+    
     // Links to the Board Camera for raycasting.
     public Camera BoardCam;
 
