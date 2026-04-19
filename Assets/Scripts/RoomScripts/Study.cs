@@ -2,6 +2,6 @@ using UnityEngine;
 
 public class Study : Room
 {
-    public override string myName => "Lounge";
+    public override string myName => "Study";
 
 }
