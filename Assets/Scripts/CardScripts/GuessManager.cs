@@ -219,4 +219,18 @@ public class GuessManager : NetworkBehaviour
         UIController.Instance.Invoke("hideDisproveText", 4f);
     }
 
+
+    public void endDisprove()
+    {
+        endDisproveServerRpc();
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    public void endDisproveServerRpc()
+    {
+        turnMan.pushNextPhase();
+    }
+
+
+
 }

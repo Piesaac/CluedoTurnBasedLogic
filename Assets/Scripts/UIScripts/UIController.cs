@@ -394,12 +394,9 @@ public class UIController : MonoBehaviour
     {
         disproveText.gameObject.SetActive(false);
         disproveText.text = "";
-
-        if (NetworkManager.Singleton.IsServer) 
-        {
-        turnMan.pushNextPhase();
-        }
+        GuessManager.Instance.endDisprove();
     }
+
 
     public void cluePopUp()
     {
