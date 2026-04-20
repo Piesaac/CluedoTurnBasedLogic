@@ -1,7 +1,9 @@
-using UnityEngine;
-using Unity.Netcode;
-using UnityEngine.UI;
 using TMPro;
+using Unity.Netcode;
+using Unity.VisualScripting;
+using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.UI;
 using Netcode = Unity.Netcode.NetworkManager;
 
 public class MenuController : MonoBehaviour
@@ -14,6 +16,7 @@ public class MenuController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI statusText;
     [SerializeField] private TextMeshProUGUI playersText;
     [SerializeField] private Button startGameBtn;
+    [SerializeField] private Button escape;
 
     private void Start()
     {
@@ -23,12 +26,21 @@ public class MenuController : MonoBehaviour
         
         // Hides the start button from all players until host is validated
         startGameBtn.gameObject.SetActive(false);
+        escape.gameObject.SetActive(false);
     }
 
     private void Update()
     {
         // Constantly updates to account for incoming players
         GetPlayerCount();
+
+        // if esc is pressed then go back to lobby
+        if (Keyboard.current.escapeKey.wasPressedThisFrame)
+        { 
+            goBack();
+
+        }
+
     }
 
 
@@ -39,6 +51,7 @@ public class MenuController : MonoBehaviour
         {
             displayLobby();
             startGameBtn.gameObject.SetActive(true); // Only the Host sees the Start button
+            escape.gameObject.SetActive(true);
             statusText.text = "Host Mode: Waiting for players...";
         }
         else
@@ -53,6 +66,7 @@ public class MenuController : MonoBehaviour
         if (Netcode.Singleton.StartClient())
         {
             displayLobby();
+            escape.gameObject.SetActive(true);
             statusText.text = "Client Mode: Joining Host...";
         }
         else
@@ -66,6 +80,30 @@ public class MenuController : MonoBehaviour
     {
         loginPanel.SetActive(false);
         lobbyPanel.SetActive(true);
+    }
+
+    // makes you go back to lobby screen (esc)
+    private void goBack()
+    {   
+        loginPanel.SetActive(true);
+        lobbyPanel.SetActive(false);
+        if (startGameBtn == true )
+        {
+            startGameBtn.gameObject.SetActive(false);
+        }
+
+        if (Netcode.Singleton.IsClient || Netcode.Singleton.IsHost)
+        {
+            Netcode.Singleton.Shutdown();
+            Debug.Log("You got disconnected");
+        }
+
+        escape.gameObject.SetActive(false);
+    }
+
+    public void esc()
+    {
+        goBack();
     }
 
     // Once "Start" button is clicked, validates host has actioned before loading next scene
