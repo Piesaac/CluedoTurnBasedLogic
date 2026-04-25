@@ -7,42 +7,34 @@ using Unity.Netcode;
 
 public class CardDistributor : NetworkBehaviour
 {
-    // Creates list of list for player hands (Includes Humans and AI)
+    // Creates list of list for player hands
     public List<List<Card>> playerHands = new List<List<Card>>();
-    
     // Creates list of all cards for clues
     private List<Card> allCards = new List<Card>();
-    
-    // Creates list for evidence clues in envelope
+    //Creates list for evidence clues in envelope
     public List<Card> evidence = new List<Card>();
 
     private void Start()
     {
         // Ensures only the host can action distribution
         if (!IsServer) return;
-
-        // Pass the number of connected humans; the method handles the AI addition
-        int numHumans = NetworkManager.Singleton.ConnectedClients.Count;
-        distributeCards(numHumans);
+        // Finds number of players from connected clients and distributes cards accordingly
+        int numPlayers = NetworkManager.Singleton.ConnectedClients.Count;
+        distributeCards(numPlayers);
     }
 
-    public void distributeCards(int humanPlayerCount)
+    public void distributeCards(int playerCount)
     {
-        // 1. Calculate the REAL total including AI from the Lobby settings
-        int totalPlayers = humanPlayerCount + MenuController.numBotsToSpawn;
-
         // Clears any previous data to initialise a new game
         allCards.Clear();
         playerHands.Clear();
         evidence.Clear();
 
-        // 2. Initialize hands for EVERYONE (Humans + AI)
-        for (int i = 0; i < totalPlayers; i++)
-        {
+        // For each connected player, adds a new hand list into the list of all player hands
+        for (int i = 0; i < playerCount; i++)
             playerHands.Add(new List<Card>());
-        }
 
-        // Seperates all evidence enums into separate lists for selection.
+        // Seperates all evidence enums into seperate lists for selection.
         List<Card> suspects = System.Enum.GetValues(typeof(Who)).Cast<Who>()
             .Select(v => new Card { type = Card.CardType.Suspect, value = (int)v }).ToList();
 
@@ -52,17 +44,17 @@ public class CardDistributor : NetworkBehaviour
         List<Card> rooms = System.Enum.GetValues(typeof(Where)).Cast<Where>()
             .Select(v => new Card { type = Card.CardType.Room, value = (int)v }).ToList();
 
-        // 3. Chooses one card of each clue type for the evidence envelope
+        // Chooses one card of each clue type for the evidence
         evidence.Add(chooseEvidence(suspects));
         evidence.Add(chooseEvidence(weapons));
         evidence.Add(chooseEvidence(rooms));
 
-        // Adds all remaining cards into the master list for dealing
+        // Adds all remaining cards into the list of all cards remaining
         allCards.AddRange(suspects);
         allCards.AddRange(weapons);
         allCards.AddRange(rooms);
 
-        // 4. Shuffle the cards
+        // Shuffles the cards using random indexes
         for (int i = 0; i < allCards.Count; i++)
         {
             Card temp = allCards[i];
@@ -71,48 +63,39 @@ public class CardDistributor : NetworkBehaviour
             allCards[randomIndex] = temp;
         }
 
-        // 5. Distribute cards across all player hands (modulo totalPlayers)
+        // Distributes cards across player hands depending on the player count
         for (int i = 0; i < allCards.Count; i++)
         {
-            int targetPlayerIndex = i % totalPlayers;
+            int targetPlayerIndex = i % playerCount;
             playerHands[targetPlayerIndex].Add(allCards[i]);
         }
 
-        // 6. Handle Networking and Logging
+        // Creates a list of all players connected
         var clients = NetworkManager.Singleton.ConnectedClientsList;
-        
-        Debug.Log("--- CARD DISTRIBUTION SUMMARY ---");
-        
-        for (int i = 0; i < totalPlayers; i++)
+        for (int i = 0; i < clients.Count; i++)
         {
-            string handContents = string.Join(", ", playerHands[i].Select(c => whatCard(c)));
+            // For each player connected, creates an array of their cards in hand
+            Card[] handToSend = playerHands[i].ToArray();
 
-            // If the index belongs to a human client
-            if (i < clients.Count)
+            // Ensure that each player is only sent their hand
+            ClientRpcParams rpcParams = new ClientRpcParams
             {
-                Card[] handToSend = playerHands[i].ToArray();
+                Send = new ClientRpcSendParams { TargetClientIds = new ulong[] { clients[i].ClientId } }
+            };
 
-                // Target only this specific client for the RPC
-                ClientRpcParams rpcParams = new ClientRpcParams
-                {
-                    Send = new ClientRpcSendParams { TargetClientIds = new ulong[] { clients[i].ClientId } }
-                };
-
-                sendHandClientRPC(handToSend, rpcParams);
-                Debug.Log($"Player {i} (Human ID: {clients[i].ClientId}) hand: {handContents}");
-            }
-            else
-            {
-                // This is an AI slot (Index >= Human Count)
-                Debug.Log($"Player {i} (AI) hand: {handContents}");
-            }
+            sendHandClientRPC(handToSend, rpcParams);
         }
-
-        // Final Envelope Reveal (Server Only Log)
         string answerStr = string.Join(", ", evidence.Select(c => whatCard(c)));
         Debug.Log($"<color=red>THE ENVELOPE CONTAINS: {answerStr}</color>");
+        Debug.Log("--- CARD DISTRIBUTION SUMMARY ---");
+        for (int i = 0; i < playerHands.Count; i++)
+        {
+            string handContents = string.Join(", ", playerHands[i].Select(c => whatCard(c)));
+            Debug.Log($"Player {i} (ClientID: {clients[i].ClientId}) hand: {handContents}");
+        }
     }
 
+    // For each client connected, updates the hand UI to display their card list
     [ClientRpc]
     private void sendHandClientRPC(Card[] myCards, ClientRpcParams rpcParams = default)
     {
@@ -122,6 +105,7 @@ public class CardDistributor : NetworkBehaviour
         }
     }
 
+    // Method to pick random card
     private Card chooseEvidence(List<Card> list)
     {
         int index = Random.Range(0, list.Count);
@@ -130,14 +114,15 @@ public class CardDistributor : NetworkBehaviour
         return picked;
     }
 
+    // Returns the name of the card selected
     public string whatCard(Card card)
     {
         return card.type switch
         {
             Card.CardType.Suspect => ((Who)card.value).ToString(),
-            Card.CardType.Weapon  => ((What)card.value).ToString(),
-            Card.CardType.Room    => ((Where)card.value).ToString(),
-            _                     => "Unknown"
+            Card.CardType.Weapon => ((What)card.value).ToString(),
+            Card.CardType.Room   => ((Where)card.value).ToString(),
+            _                    => "Unknown"
         };
     }
 }

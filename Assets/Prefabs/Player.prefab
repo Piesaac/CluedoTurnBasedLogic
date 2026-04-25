@@ -126,9 +126,8 @@ GameObject:
   - component: {fileID: 6338862917777177588}
   - component: {fileID: 1627683346940496484}
   - component: {fileID: -3349457167549752102}
-  - component: {fileID: 2910450185628089165}
   m_Layer: 7
-  m_Name: White
+  m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -193,7 +192,6 @@ MonoBehaviour:
   moveSpeed: 5
   stage: {fileID: 0}
   nearby: []
-  currentRoomName: 
   move_tokens:
     UpdateTraits:
       MinSecondsBetweenUpdates: 0
@@ -245,16 +243,3 @@ MonoBehaviour:
   SwitchTransformSpaceWhenParented: 0
   Interpolate: 1
   SlerpPosition: 0
---- !u!114 &2910450185628089165
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7535549396236755773}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3fbad7aa91483d245bbd3d52025a76ec, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Orchid
-  isHuman: 0

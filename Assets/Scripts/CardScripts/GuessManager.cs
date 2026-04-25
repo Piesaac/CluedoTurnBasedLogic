@@ -6,6 +6,7 @@ using CardList;
 using System.Collections;
 using System.Collections.Generic;
 
+
 public class GuessManager : NetworkBehaviour
 {
     [Header("Links to UI controller")]
@@ -13,6 +14,7 @@ public class GuessManager : NetworkBehaviour
 
     [Header("Links to Card System")]
     [SerializeField] private CardDistributor cardDist;
+    
 
     [Header("Links to Turn Manager")]
     [SerializeField] private TurnManager turnMan;
@@ -25,24 +27,36 @@ public class GuessManager : NetworkBehaviour
 
     public static GuessManager Instance;
 
+
+
+    // Initialises variables as selected items in dropdown
     void Start()
     {
         chosenWho = uiscript.selectedSuspect;
         chosenWhat = uiscript.selectedWeapon;
         chosenWhere = uiscript.selectedRoom;
+
     }
 
     void Awake()
     {
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
+    // Resets dropdowns to original form so next player does not see previous players input
     private void resetGuess()
     {
         uiscript.clearGuessDropdowns();
     }
 
+    // Re-initialises the local variables with dropdown input - links with the submit button.
     public void validateGuess()
     {
         Debug.Log("Button actually clicked");
@@ -54,19 +68,22 @@ public class GuessManager : NetworkBehaviour
         submitGuessServerRpc(chosenWho, chosenWhat, chosenWhere);
     }
 
+    // Submits the guess to the server and checks them against the evidence selected.
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     public void submitGuessServerRpc(Who who, What what, Where where, RpcParams rpcParams = default)
     {   
         Debug.Log("GuessManager: submitGuessServerRpc() called");
+        // Finds ulong ID of player guessing.
         ulong guesserId = rpcParams.Receive.SenderClientId;
 
-        // Use playerHands.Count (total players) instead of just human clients
-        int nextCW_Player = ((int)guesserId + 1) % cardDist.playerHands.Count;
+        // Finds next clockwise player.
+        int nextCW_Player = (int)(guesserId + 1) % cardDist.playerHands.Count;
         StartCoroutine(checkTheirMFHands(who, what, where, nextCW_Player, guesserId));
     }
 
     private List<Card> findSame(List<Card> hand, Who who, What what, Where where)
     {
+        Debug.Log("GuessManager: findSame() called");
         List<Card> matches = new List<Card>();
         foreach (Card card in hand)
         {
@@ -82,38 +99,25 @@ public class GuessManager : NetworkBehaviour
 
     private IEnumerator checkTheirMFHands(Who who, What what, Where where, int start, ulong guesserID)
     {
-        int totalPlayers = cardDist.playerHands.Count;
-        int humanCount = NetworkManager.Singleton.ConnectedClients.Count;
-
-        for (int i = 0; i < totalPlayers; i++)
+        Debug.Log("GuessManager: checkTheirMFHands() called");
+        for (int i = 0; i < cardDist.playerHands.Count - 1; i++)
         {
-            int idxToCheck = (start + i) % totalPlayers;
+            int idxToCheck = (start + i) % cardDist.playerHands.Count;
             if (idxToCheck == (int)guesserID) continue;
 
             List<Card> foundCards = findSame(cardDist.playerHands[idxToCheck], who, what, where);
             
             if (foundCards.Count > 0)
             {
-                // CHECK IF AI OR HUMAN
-                if (idxToCheck < humanCount)
+                ulong clientToNotify = NetworkManager.Singleton.ConnectedClientsIds[(int)idxToCheck];
+                ClientRpcParams param = new ClientRpcParams
                 {
-                    // HUMAN: Send RPC to their specific ClientID
-                    ulong clientToNotify = NetworkManager.Singleton.ConnectedClientsIds[idxToCheck];
-                    ClientRpcParams param = new ClientRpcParams
-                    {
-                        Send = new ClientRpcSendParams { TargetClientIds = new ulong[] { clientToNotify } }
-                    };
-                    reqDisproveClientRpc(foundCards.ToArray(), param);
-                }
-                else
-                {
-                    // AI: Automatically pick the first card and disprove
-                    string aiCardName = cardDist.whatCard(foundCards[0]);
-                    Debug.Log($"AI Player {idxToCheck} disproving with {aiCardName}");
-                    disproveServerRpc(aiCardName); 
-                }
+                    Send = new ClientRpcSendParams {TargetClientIds = new ulong[] {clientToNotify}}
+                };
+                reqDisproveClientRpc(foundCards.ToArray(), param);
                 yield break;
             }
+
         }
         notifyNoMatchesClientRpc(guesserID);
     }
@@ -121,22 +125,19 @@ public class GuessManager : NetworkBehaviour
     [ClientRpc]
     private void notifyNoMatchesClientRpc(ulong playerID)
     {
-        // Only show this to the player who guessed
-        if (NetworkManager.Singleton.LocalClientId != playerID) return;
-
         UIController.Instance.disproveText.text = "No cards found!";
         UIController.Instance.disproveText.gameObject.SetActive(true);
         UIController.Instance.Invoke("hideDisproveText", 4f);
-        
-        // If Host, advance the phase because the sequence ended
-        if(IsServer) Invoke("endDisproveServerRpc", 4.1f);
+
     }
 
     [ClientRpc]
-    private void reqDisproveClientRpc(Card[] matchingCards, ClientRpcParams rpcParams)
+        private void reqDisproveClientRpc(Card[] matchingCards, ClientRpcParams rpcParams)
     {
         uiscript.ShowDisprovePanel(matchingCards); 
     }
+
+
 
     public void validateAccuse()
     {
@@ -156,27 +157,36 @@ public class GuessManager : NetworkBehaviour
 
         foreach (Card evidenceCard in cardDist.evidence)
         {
-            if (evidenceCard.type == Card.CardType.Suspect && evidenceCard.value == (int)who) foundWho = true;
-            if (evidenceCard.type == Card.CardType.Weapon && evidenceCard.value == (int)what) foundWhat = true;
-            if (evidenceCard.type == Card.CardType.Room && evidenceCard.value == (int)where) foundWhere = true;
+            if (evidenceCard.type == Card.CardType.Suspect && evidenceCard.value == (int)who)
+                foundWho = true;
+            
+            if (evidenceCard.type == Card.CardType.Weapon && evidenceCard.value == (int)what)
+                foundWhat = true;
+            
+            if (evidenceCard.type == Card.CardType.Room && evidenceCard.value == (int)where)
+                foundWhere = true;
         }
 
         string message = (foundWho && foundWhat && foundWhere) 
             ? $"CORRECT! It was {who} with the {what} in the {where}!" 
             : "WRONG! Youuuu'rrrreee OUT!";
 
-        returnAnswerClientRpc(message);
-        turnMan.pushNextPhase();
+            returnAnswerClientRpc(message);
+            turnMan.pushNextPhase();
     }
 
+    // Updates client UI with confirmation of their input
     [ClientRpc]
     private void returnAnswerClientRpc(string resultText)
     {
         guessResult.text = resultText;
+
         uiscript.clearGuessDropdowns();
+    
         Invoke("clearAnswerText", 5f);
     }
 
+    // Clears the confirmation text for the next player
     private void clearAnswerText()
     {
         guessResult.text = "";
@@ -190,18 +200,17 @@ public class GuessManager : NetworkBehaviour
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     public void disproveServerRpc(string cardName)
     {
-        // Suggester is always the current player in turn manager
         ulong suggesterId = (ulong)turnMan.whosPlaying.Value;
 
         ClientRpcParams clientRpcParams = new ClientRpcParams
         {
-            Send = new ClientRpcSendParams { TargetClientIds = new ulong[] { suggesterId } }
+            Send = new ClientRpcSendParams
+            {
+                TargetClientIds = new ulong[] { suggesterId }
+            }
         };
 
         notifDispResClientRpc(cardName, clientRpcParams);
-        
-        // Since a card was shown, the phase needs to end automatically after a delay
-        Invoke("endDisproveServerRpc", 4.1f);
     }
 
     [ClientRpc]
@@ -211,6 +220,7 @@ public class GuessManager : NetworkBehaviour
         UIController.Instance.disproveText.gameObject.SetActive(true);
         UIController.Instance.Invoke("hideDisproveText", 4f);
     }
+
 
     public void endDisprove()
     {
@@ -222,4 +232,7 @@ public class GuessManager : NetworkBehaviour
     {
         turnMan.pushNextPhase();
     }
+
+
+
 }
