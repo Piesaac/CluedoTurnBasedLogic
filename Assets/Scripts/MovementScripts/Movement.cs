@@ -269,31 +269,39 @@ public class Movement : NetworkBehaviour
         if (Physics.Raycast(rayStart, Vector3.down, out RaycastHit hit, rayDistance))
         {   
             Debug.Log($"Raycast hit: {hit.collider.name}");
-            // Detects if the stage below is a Tile
-            Tile tileComponent = hit.collider.GetComponent<Tile>();
-            if (tileComponent != null)
+        
+            // 1. Check for DOOR first (This fixes your button issue)
+            Door doorComponent = hit.collider.GetComponent<Door>();
+            if (doorComponent != null)
+            {
+                stage = hit.collider.gameObject;
+                Debug.Log($"Door detected: {stage.name}. Entry button should now show.");
+            }
+            // 2. Otherwise check for TILE
+            else if (hit.collider.GetComponent<Tile>() != null)
             {
                 stage = hit.collider.gameObject;
                 onWhite = hit.collider.GetComponent<White>() != null;
                 Debug.Log($"Found tile: {stage.name}");
             }
-            // Detects if the stage below is a Room
+        
+            // 3. Independent Room Detection (for currentRoomName)
             Room roomComponent = hit.collider.GetComponentInParent<Room>();
             if (roomComponent != null)
             {
-                stage = hit.collider.gameObject;
+                // If we aren't standing on a specific tile/door, the room is our stage
+                if (stage == null) stage = hit.collider.gameObject; 
+            
                 currentRoomName = roomComponent.myName;
                 Debug.Log($"Room detected: {currentRoomName}");
-            }
-            else
-            {
-                Debug.LogWarning($"Hit {hit.collider.name} but no Room component found!");
             }
         }
         else
         {
             Debug.LogWarning("No stage found!");
         }
+
+        // Refresh UI immediately after updating position/stage
         if (IsOwner && UIController.Instance != null)
         {
             UIController.Instance.UpdateUIVisibility();
@@ -445,4 +453,16 @@ public class Movement : NetworkBehaviour
             }
         }
     }
+
+    public void AIclick(GameObject tileToTraverse)
+    {
+        if (!IsServer) return;
+
+        Tile clickedTile = tileToTraverse.GetComponent<Tile>();
+        if (clickedTile == null || stage == null) return;
+
+        bool isWhite = tileToTraverse.GetComponent<White>() != null;
+        requestMoveServerRpc(clickedTile.getTopPosition(), isWhite);
+    }
+
 }

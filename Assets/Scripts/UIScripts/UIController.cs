@@ -11,7 +11,7 @@ using System.Collections.Generic;
 
 public class UIController : MonoBehaviour
 {
-
+    [Header("Links to UI controller")]
     public Button clueSheetBtn;
     public bool cluesheetToggled;
     public GameObject clueSheet;
@@ -47,196 +47,162 @@ public class UIController : MonoBehaviour
     public TextMeshProUGUI handText;
     public TMP_Dropdown handList;
 
-    // Local instance of player's movement script, allocated through the script itself.
+    // Local instance of player's movement script
     public Movement localPlayerScript;
 
-
-    // UI panels for each different phase
     [Header("Panels")]
     [SerializeField] private GameObject rollPanel;  
     [SerializeField] private GameObject movePanel;  
     [SerializeField] private GameObject guessPanel; 
 
-    // Fields for disproving UI
+    [Header("Disproving UI")]
     [SerializeField] private GameObject disprovePanel;
     [SerializeField] private TMP_Dropdown disproveList;
     [SerializeField] public TextMeshProUGUI disproveText;
     public CardDistributor cardDist;
     List<string> cardNames;
 
-    // Fields for the suggesting dropdowns
+    [Header("Dropdown Fields")]
     public Who selectedSuspect;
     public What selectedWeapon;
     public Where selectedRoom;
 
-    // Fields for accusation dropdowns
     public Who accuseWho;
     public What accuseWhat;
     public Where accuseWhere;
 
-
-    // Simple methods for hiding and showing UI panels
     public void ShowSuggestionUI() => guessPanel.SetActive(true);
     public void HideSuggestionUI() => guessPanel.SetActive(false);
     public void ShowRollingUI() => rollPanel.SetActive(true);
-    public void HideRollingUI() => rollPanel.SetActive(true);
+    public void HideRollingUI() => rollPanel.SetActive(false);
     public void HideDisproveUI() => disprovePanel.SetActive(false);
 
-    // Sets the global reference to this instance upon the files being loaded
     private void Awake()
     {
         Instance = this;
     }
 
-    // Subscribes to changes in move_tokens from player movement, updating the number of move tokens on the event of a change.
     void Start()
     {
-        Debug.Log($"UIController Start: localPlayerScript is {(localPlayerScript != null ? localPlayerScript.name : "NULL")}");
-        if (localPlayerScript != null)
-        {
-            localPlayerScript.move_tokens.OnValueChanged += (oldVal, newVal) => updateMoveText();
-        }
         cluesheetToggled = false;
         clueSheetBtn.gameObject.SetActive(true);
-        // Fills the dropdowns for the guess/clue system.
         fillGuessDropdowns();
-        turnMan.whatPhase.OnValueChanged += (oldVal, newVal) => UpdateUIVisibility();
-        turnMan.whosPlaying.OnValueChanged += (oldVal, newVal) => UpdateUIVisibility();
+
+        // Subscribe to turn changes to refresh UI automatically
+        if (turnMan != null)
+        {
+            turnMan.whatPhase.OnValueChanged += (oldVal, newVal) => UpdateUIVisibility();
+            turnMan.whosPlaying.OnValueChanged += (oldVal, newVal) => UpdateUIVisibility();
+        }
+        
         UpdateUIVisibility();
     }
 
     void Update()
     {
-        if (localPlayerScript != null)
+        // Continuous check for room entry buttons while in moving phase
+        if (localPlayerScript != null && isMyTurn && turnMan.whatPhase.Value == TurnStage.MOVING)
         {
-            // Force update the text every frame to test if data is actually arriving
-            moves.text = $"You have {localPlayerScript.move_tokens.Value} moves left!";
+            bool isOnDoor = localPlayerScript.IsOnDoor();
+        
+            // DEBUG: This will tell us exactly why it's not showing
+            if (isOnDoor && !entryButton.gameObject.activeSelf) {
+                Debug.Log("<color=green>UI: Standing on door, showing button!</color>");
+            }
+
+            entryButton.gameObject.SetActive(isOnDoor);
         }
     }
 
     public void SetLocalPlayer(Movement player)
     {
         localPlayerScript = player;
-        // 1. Force the first update immediately
         updateMoveText(); 
-    
-        // 2. Subscribe to future updates
         localPlayerScript.move_tokens.OnValueChanged += (oldVal, newVal) => updateMoveText();
+        UpdateUIVisibility();
     }
-    
 
-
-    // --------V-------- UI update/refresh methods --------V--------
-    // Updates UI depending on whether it meets the criteria for showing
     public void UpdateUIVisibility()
     {
-        // Bools for determining whether a UI should be visible to the player actioning.
+        // 1. Determine Identity and Phase
         isMyTurn = (turnMan.whosPlaying.Value == (int)NetworkManager.Singleton.LocalClientId);
-        bool isOnDoor = localPlayerScript != null && localPlayerScript.IsOnDoor();
-        bool isInRoom = localPlayerScript != null && localPlayerScript.IsInRoom();
-        bool isMovingPhase = turnMan.whatPhase.Value == TurnStage.MOVING;
-        HideDisproveUI();
+        TurnStage currentPhase = turnMan.whatPhase.Value;
         
-        Debug.Log($"UI Debug: MyTurn={isMyTurn}, MovingPhase={isMovingPhase}, OnDoor={isOnDoor}");
+        bool isMovingPhase = currentPhase == TurnStage.MOVING;
+        bool isInRoom = localPlayerScript != null && localPlayerScript.IsInRoom();
+        bool isOnDoor = localPlayerScript != null && localPlayerScript.IsOnDoor();
 
-        // Shows/Hides the overarching UI panels of the different phases.
-        rollPanel.SetActive(isMyTurn && turnMan.whatPhase.Value == TurnStage.ROLLING);
+        int myID = (int)NetworkManager.Singleton.LocalClientId;
+        int activeID = turnMan.whosPlaying.Value;
+
+        isMyTurn = (myID == activeID);
+
+        // Force the Move Panel to stay active if it's the moving phase
+        movePanel.SetActive(isMyTurn && turnMan.whatPhase.Value == TurnStage.MOVING);
+
+        // 2. Clear panels initially
+        HideDisproveUI();
+
+        // 3. Main Panel Logic
+        rollPanel.SetActive(isMyTurn && currentPhase == TurnStage.ROLLING);
         movePanel.SetActive(isMyTurn && isMovingPhase);
-        guessPanel.SetActive(isMyTurn && turnMan.whatPhase.Value == TurnStage.SUGGESTING);
+        guessPanel.SetActive(isMyTurn && currentPhase == TurnStage.SUGGESTING);
 
-        // Sets the specific UI elements within the panels to hide or show.
-        moves.gameObject.SetActive(isMovingPhase);
+        // 4. Detailed Element Logic (Room Entry/Exit)
+        moves.gameObject.SetActive(isMyTurn && isMovingPhase);
+        
+        // Entry button logic: Only if it's my turn, moving phase, and standing on a door
         entryButton.gameObject.SetActive(isMyTurn && isMovingPhase && isOnDoor);
-        exitList.gameObject.SetActive(isMyTurn && isMovingPhase && isInRoom);
-        exitText.gameObject.SetActive(isMyTurn && isMovingPhase && isInRoom);
-        exitButton.gameObject.SetActive(isMyTurn && isMovingPhase && isInRoom);
+
+        // Exit UI logic: Only if it's my turn, moving phase, and already inside a room
+        bool showExitUI = isMyTurn && isMovingPhase && isInRoom;
+        exitList.gameObject.SetActive(showExitUI);
+        exitText.gameObject.SetActive(showExitUI);
+        exitButton.gameObject.SetActive(showExitUI);
+
+        if (showExitUI) exitDropdown();
     }
 
-    // Delays UI change by 1 second.
     public void delayedUI()
     {
-        Invoke("changeUI", 1f);
+        Invoke("UpdateUIVisibility", 1f);
     }
 
-    // Changes UI panels showing depending on TurnStage.
-    private void changeUI()
-    {
-        // Hide everything first
-        rollPanel.SetActive(false);
-        movePanel.SetActive(false);
-        guessPanel.SetActive(false);
-
-        // Show only the current phase
-        switch (turnMan.whatPhase.Value)
-        {
-            case TurnStage.ROLLING:
-                rollPanel.SetActive(true);
-                break;
-            case TurnStage.MOVING:
-                movePanel.SetActive(true);
-                break;
-            case TurnStage.SUGGESTING:
-                guessPanel.SetActive(true);
-                break;
-        }
-    }
-
-    // -----V----- Used for tracking moves ---------V-------
     public void updateMoveText()
     {
         if (localPlayerScript != null)
         {
-            // Use $ for interpolation, and access .Value for the NetworkVariable
             moves.text = $"You have {localPlayerScript.move_tokens.Value} moves left!";
         }
     }
 
-    // -----V----- Used for room entry/exit --------V--------
-
-    // Button to confirm room entry.
     public void submitEnterRoom()
     {
         if (localPlayerScript != null)
         {
             localPlayerScript.whereWeAt();
             NetworkObject stageNet = localPlayerScript.stage.GetComponent<NetworkObject>();
-            if (stageNet != null )
+            if (stageNet != null)
             {
                 localPlayerScript.submitEntryServerRpc(stageNet.NetworkObjectId);
             }
-            else
-            {
-                Debug.LogError("Player does not have a stage component.");
-            }
         }
-        entryButton.gameObject.SetActive(false);
-        exitDropdown();
-        exitList.gameObject.SetActive(true);
-        exitText.gameObject.SetActive(true);
-        exitButton.gameObject.SetActive(true);
+        
+        // Immediately update visibility to swap Entry button for Exit/Suggestion UI
+        UpdateUIVisibility();
     }
 
-    // Fills room exit dropdown with valid doors.
     public void exitDropdown()
     {
         if (localPlayerScript == null) return;
 
         Door[] allDoors = GameObject.FindObjectsByType<Door>(FindObjectsSortMode.None);
-    
         exitNames.Clear();
         currentDoors.Clear();
 
         foreach (var door in allDoors)
         {
-            // Print the comparison values clearly
-            string doorRoom = door.roomName ?? "NULL";
-            string myRoom = localPlayerScript.currentRoomName ?? "NULL";
-    
-            bool isMatch = (doorRoom == myRoom);
-    
-            Debug.Log($"Matching? {isMatch} | Door: '{door.name}' room is '{doorRoom}' | My Room is '{myRoom}'");
-
-            if (isMatch) 
+            if (door.roomName == localPlayerScript.currentRoomName) 
             {
                 currentDoors.Add(door);
                 exitNames.Add(door.exitName);   
@@ -247,59 +213,37 @@ public class UIController : MonoBehaviour
         exitList.AddOptions(exitNames);
     }
 
-    // Clears all UI elements related to room exit.
-    public void clearExit()
-    {
-        if (localPlayerScript == null) return;
-        exitList.gameObject.SetActive(false);
-        exitText.gameObject.SetActive(false);
-        exitButton.gameObject.SetActive(false);
-
-    }
-
-    // Links to button to confirm room exit.
     public void confirmExit()
     {
-        Debug.Log("UIController: confirmExit called!");
         int selectedIndex = exitList.value;
-        if (localPlayerScript != null)
+        if (localPlayerScript != null && selectedIndex >= 0 && selectedIndex < currentDoors.Count)
         {
-            if (selectedIndex >= 0 && selectedIndex < currentDoors.Count)
+            Door exitDoor = currentDoors[selectedIndex];
+            NetworkObject doorNetObj = exitDoor.GetComponent<NetworkObject>();
+            
+            if (doorNetObj != null)
             {
-                Door exitDoor = currentDoors[selectedIndex];
-            
-                // Get the NetworkObject attached to the door
-                NetworkObject doorNetObj = exitDoor.GetComponent<NetworkObject>();
-            
-                if (doorNetObj != null)
-                {
-                    Debug.Log("UIController: Sending RPC to server for door: " + exitDoor.name);
-                    localPlayerScript.submitExitServerRPC(doorNetObj.NetworkObjectId);
-                }
-                else
-                {
-                    Debug.LogError("UIController: Door has no NetworkObject component!");
-                }
+                localPlayerScript.submitExitServerRPC(doorNetObj.NetworkObjectId);
             }
-            clearExit();
-
         }
+        UpdateUIVisibility();
     }
 
-    /// -------V-------- Player Hand Scripts -------V--------//
-    // Updates players hand dropdown list in UI with cards inputted.
     public void updateHand(Card[] cards)
     {
-        handText.text = "<b>YOUR HAND:</b>\n";
-        List<string> cardNames = new List<string>();
+        if (handList == null) return;
+        
+        handList.ClearOptions();
+        List<string> names = new List<string>();
         foreach (Card card in cards)
         {
-            cardNames.Add(whatCard(card));
+            names.Add(whatCard(card));
         }
-        handList.AddOptions(cardNames);
+        handList.AddOptions(names);
+        
+        if (handText != null) handText.text = "<b>YOUR HAND:</b>";
     }
 
-    // Returns the string name value of the card inputted.
     private string whatCard(Card card)
     {
         return card.type switch
@@ -311,83 +255,55 @@ public class UIController : MonoBehaviour
         };
     }
 
-    // -----V----- Used for suggestion phase dropdowns -----V-----
-
-    // Fills dropdown for guesses with valid elements.
     void fillGuessDropdowns()
     {
-        
         suspectList.ClearOptions();
         weaponList.ClearOptions();
         locationList.ClearOptions();
 
-        List<string> whoOptions = new List<string>(Enum.GetNames(typeof(Who)));
-        List<string> whatOptions = new List<string>(Enum.GetNames(typeof(What)));
-        List<string> whereOptions = new List<string>(Enum.GetNames(typeof(Where)));
-
-
-        suspectList.AddOptions(whoOptions);
-        weaponList.AddOptions(whatOptions);
-        locationList.AddOptions(whereOptions);
-
+        suspectList.AddOptions(new List<string>(Enum.GetNames(typeof(Who))));
+        weaponList.AddOptions(new List<string>(Enum.GetNames(typeof(What))));
+        locationList.AddOptions(new List<string>(Enum.GetNames(typeof(Where))));
     }
 
-    // clears dropdowns for guesses after the TurnStage has moved on.
     public void clearGuessDropdowns()
     {
         suspectList.value = 0;
         weaponList.value = 0;
         locationList.value = 0;
-    
         suspectList.RefreshShownValue();
         weaponList.RefreshShownValue();
         locationList.RefreshShownValue();
     }
 
-    // Links to button for confirming guess.
     public void suggestionButton()
     {
-        Debug.Log("UI Controller: suggestionButton() called");
-        int suspectIndex = suspectList.value;
-        string suspectName = suspectList.options[suspectIndex].text;
-
-        int weaponIndex = weaponList.value;
-        string weaponName = weaponList.options[weaponIndex].text;
-
-        int roomIndex = locationList.value;
-        string roomName = locationList.options[roomIndex].text;
-        
-        selectedSuspect = (Who)suspectIndex;
-        selectedWeapon = (What)weaponIndex;
-        selectedRoom =  (Where)roomIndex;
+        selectedSuspect = (Who)suspectList.value;
+        selectedWeapon = (What)weaponList.value;
+        selectedRoom = (Where)locationList.value;
         HideSuggestionUI();
     }
-
-
-    // --------V-------- Accusation Methods --------V--------
 
     public void ShowDisprovePanel(Card[] cards)
     {
         cardNames = new List<string>();
+        disproveList.ClearOptions();
         foreach (Card card in cards)
         {
             cardNames.Add(cardDist.whatCard(card));
         }
         disproveList.AddOptions(cardNames);
-        disprovePanel.gameObject.SetActive(true);
+        disprovePanel.SetActive(true);
     }
 
     public void confirmDisprove()
     {
-        string clueToShow = cardNames[disproveList.value];
-        GuessManager.Instance.disproveResult(clueToShow);
+        if (cardNames != null && cardNames.Count > 0)
+        {
+            string clueToShow = cardNames[disproveList.value];
+            GuessManager.Instance.disproveResult(clueToShow);
+        }
         HideDisproveUI();
-    }
-
-    public void showDisproveText()
-    {
-        disproveText.gameObject.SetActive(true);
-       //  Invoke("hideDisproveText", 5f);
     }
 
     public void hideDisproveText()
@@ -397,16 +313,9 @@ public class UIController : MonoBehaviour
         GuessManager.Instance.endDisprove();
     }
 
-
     public void cluePopUp()
     {
-        if (cluesheetToggled)
-        {
-            clueSheet.gameObject.SetActive(false);
-            cluesheetToggled = false;
-            return;
-        }
-        clueSheet.gameObject.SetActive(true);
-        cluesheetToggled = true;
+        cluesheetToggled = !cluesheetToggled;
+        clueSheet.SetActive(cluesheetToggled);
     }
 }

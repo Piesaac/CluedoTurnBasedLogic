@@ -1,12 +1,11 @@
 using TMPro;
 using Unity.Netcode;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Netcode = Unity.Netcode.NetworkManager;
 
-public class MenuController : MonoBehaviour
+public class MenuController : NetworkBehaviour
 {
     [Header("Panels")]
     [SerializeField] private GameObject loginPanel;  
@@ -17,108 +16,150 @@ public class MenuController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI playersText;
     [SerializeField] private Button startGameBtn;
     [SerializeField] private Button escape;
+    [SerializeField] private Button aiBtn;
+    [SerializeField] private TextMeshProUGUI aiText;
+
+    public NetworkVariable<int> aiCount = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+
+    public static int numBotsToSpawn;
 
     private void Start()
     {
-        // Ensures the "Host" and "Join" buttons are the only panel shown first
         loginPanel.SetActive(true);
         lobbyPanel.SetActive(false);
-        
-        // Hides the start button from all players until host is validated
         startGameBtn.gameObject.SetActive(false);
         escape.gameObject.SetActive(false);
     }
 
+    public override void OnNetworkSpawn()
+    {
+        aiCount.OnValueChanged += (oldVal, newVal) => {
+            refreshAIText(newVal);
+        };
+
+        if (IsServer)
+        {
+            aiBtn.gameObject.SetActive(true);
+        }
+
+        refreshAIText(aiCount.Value);
+    }
+
     private void Update()
     {
-        // Constantly updates to account for incoming players
-        GetPlayerCount();
-
-        // if esc is pressed then go back to lobby
+        if (Netcode.Singleton != null && Netcode.Singleton.IsListening)
+        {
+            if (Netcode.Singleton.ConnectedClients != null)
+            {
+                playersText.text = $"Players in Lobby: {Netcode.Singleton.ConnectedClients.Count}";
+            }
+        }
         if (Keyboard.current.escapeKey.wasPressedThisFrame)
         { 
             goBack();
-
         }
-
     }
 
-
-    // Once "Host" button is clicked, switches to lobby panel and "Start" button for the host.
-    public void OnHostClicked()
+    public void addAI()
     {
-        if (Netcode.Singleton.StartHost())
+        if (!NetworkManager.Singleton.IsServer) 
         {
-            displayLobby();
-            startGameBtn.gameObject.SetActive(true); // Only the Host sees the Start button
-            escape.gameObject.SetActive(true);
-            statusText.text = "Host Mode: Waiting for players...";
+            Debug.LogWarning("Only the Host can add AI!");
+            return;
+        }
+        Debug.Log("Add AI button clicked");
+        int numHuman = Netcode.Singleton.ConnectedClients.Count;
+        int numAI= aiCount.Value;
+        int totalPlayers = numHuman + numAI;
+
+        if (totalPlayers >= 5)
+        {
+            aiCount.Value = 0;
         }
         else
         {
-            statusText.text = "Failed to start Host.";
+            aiCount.Value++;
+        }
+        refreshAIText(aiCount.Value);
+    }
+
+    private void refreshAIText(int count)
+    {
+        aiText.text = $"There are currently: {count} AI players";
+    }
+
+    // --- Connection Logic ---
+
+    public void OnHostClicked()
+    {
+        Debug.Log("Host button clicked");
+        if (Netcode.Singleton.StartHost())
+        {
+            displayLobby();
+            startGameBtn.gameObject.SetActive(true);
+            escape.gameObject.SetActive(true);
+            statusText.text = "Host Mode: Waiting...";
         }
     }
 
-    // Once "Join" button is clicked, swicthes to lobby panel.
     public void OnJoinClicked()
     {
+        Debug.Log("Join button clicked");
         if (Netcode.Singleton.StartClient())
         {
             displayLobby();
             escape.gameObject.SetActive(true);
-            statusText.text = "Client Mode: Joining Host...";
-        }
-        else
-        {
-            statusText.text = "Failed to start Client.";
+            statusText.text = "Client Mode: Joining...";
         }
     }
 
-    // Method for switching to lobby panelS
     private void displayLobby()
     {
         loginPanel.SetActive(false);
         lobbyPanel.SetActive(true);
     }
 
-    // makes you go back to lobby screen (esc)
     private void goBack()
     {   
-        loginPanel.SetActive(true);
-        lobbyPanel.SetActive(false);
-        if (startGameBtn == true )
-        {
-            startGameBtn.gameObject.SetActive(false);
-        }
-
-        if (Netcode.Singleton.IsClient || Netcode.Singleton.IsHost)
+        if (Netcode.Singleton.IsClient || Netcode.Singleton.IsServer)
         {
             Netcode.Singleton.Shutdown();
-            Debug.Log("You got disconnected");
         }
 
+        loginPanel.SetActive(true);
+        lobbyPanel.SetActive(false);
+        startGameBtn.gameObject.SetActive(false);
         escape.gameObject.SetActive(false);
+        aiBtn.gameObject.SetActive(false);
     }
 
-    public void esc()
-    {
-        goBack();
-    }
-
-    // Once "Start" button is clicked, validates host has actioned before loading next scene
     public void OnStartGameClicked()
     {
-        if (Netcode.Singleton.IsServer)
+        Debug.Log("Start Button Clicked!");
+
+        // CRITICAL CHECK: In a Host/Client setup, IsServer must be true for the Host
+        if (NetworkManager.Singleton.IsServer)
         {
-            Netcode.Singleton.SceneManager.LoadScene("Game", UnityEngine.SceneManagement.LoadSceneMode.Single);
+            Debug.Log("Server validation passed. Loading Scene...");
+            
+            // Set the static variable so PlayerSpawner can find it
+            numBotsToSpawn = aiCount.Value;
+
+            // Use the NETWORK Scene Manager (Required for syncing scene loads)
+            NetworkManager.Singleton.SceneManager.LoadScene("Game", UnityEngine.SceneManagement.LoadSceneMode.Single);
+        }
+        else
+        {
+            Debug.LogError("Start failed: You are not the Server/Host or NetworkManager is not initialized.");
         }
     }
 
-    // This method is called every tick during update method to keep real time tracking of player count
     public void GetPlayerCount()
     {
-        int playerCount = Netcode.Singleton.ConnectedClients.Count;
-        playersText.text = $"Players in Lobby: {playerCount}";
+        if (Netcode.Singleton.ConnectedClients != null)
+        {
+            int playerCount = Netcode.Singleton.ConnectedClients.Count;
+            playersText.text = $"Players in Lobby: {playerCount}";
+        }
     }
 }
