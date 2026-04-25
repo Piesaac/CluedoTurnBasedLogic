@@ -1,9 +1,11 @@
 using UnityEngine;
 using Unity.Netcode;
+using System.Collections.Generic;
 
 public class PlayerSpawner : NetworkBehaviour
 {
-    public GameObject playerPrefab; 
+    public GameObject[] playerPrefabs; 
+
     public override void OnNetworkSpawn()
     {
         if (IsServer)
@@ -14,10 +16,55 @@ public class PlayerSpawner : NetworkBehaviour
 
     private void SpawnAllPlayers()
     {
-        // Gets all connected clients and spawns one for each
+        List<int> availableIndexes = new List<int>();
+        for (int i = 0; i < playerPrefabs.Length; i++)
+        {
+            availableIndexes.Add(i);
+        }
         foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
         {
-            SpawnPlayerForClient(clientId);
+            SpawnPlayer(clientId, true, availableIndexes);
+        }
+        int aiPlayers = MenuController.numBotsToSpawn; 
+        for (int i = 0; i < aiPlayers; i++)
+        {
+            SpawnPlayer((ulong)(100 + i), false, availableIndexes);
+        }
+
+    }
+
+    private void SpawnPlayer(ulong ownerId, bool isHuman, List<int> availableIndexes)
+    {
+        if (availableIndexes.Count == 0)
+        {
+            Debug.LogError("[Server] No more unique prefabs left in the list!");
+            return;
+        }
+
+        int prefabIndex = availableIndexes[0];
+        availableIndexes.RemoveAt(0);
+
+        GameObject prefabToSpawn = playerPrefabs[prefabIndex];
+
+        SpawnPoint[] points = FindObjectsByType<SpawnPoint>(FindObjectsSortMode.None);
+        SpawnPoint chosenPoint = System.Array.Find(points, p => p.index == prefabIndex);
+
+        if (chosenPoint == null)
+        {
+            Debug.LogWarning($"[Server] No specific spawn point for prefab {prefabIndex}, using default.");
+            chosenPoint = points[0];
+        }
+
+        GameObject playerInstance = Instantiate(prefabToSpawn, chosenPoint.transform.position, chosenPoint.transform.rotation);
+        NetworkObject netObj = playerInstance.GetComponent<NetworkObject>();
+
+        if (isHuman)
+        {
+            netObj.SpawnAsPlayerObject(ownerId);
+        }
+        else
+        {
+            netObj.Spawn();
         }
     }
 
@@ -30,6 +77,8 @@ public class PlayerSpawner : NetworkBehaviour
         // Chooses specific spawn point depending on client ID.
         SpawnPoint chosenPoint = System.Array.Find(points, p => p.index == (int)clientId);
 
+        GameObject chosenPrefab = playerPrefabs[clientId];
+                
         // If none are found, uses default spawn.
         if (chosenPoint == null && points.Length > 0)
         {
@@ -47,8 +96,9 @@ public class PlayerSpawner : NetworkBehaviour
         Quaternion rot = chosenPoint.transform.rotation;
 
         // Created player instance and spawns them.
-        GameObject player = Instantiate(playerPrefab, pos, rot);
-        player.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId);
+        GameObject playerInstance = Instantiate(chosenPrefab, pos, rot);
+
+        playerInstance.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId);
     
         Debug.Log($"[Server] Manually spawned client {clientId} at {pos}");
     }
