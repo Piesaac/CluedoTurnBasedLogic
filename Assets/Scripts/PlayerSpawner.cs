@@ -8,7 +8,7 @@ public class PlayerSpawner : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        // Only the Server should handle spawning logic
+        // Only the Server/Host handles the spawning logic
         if (IsServer)
         {
             SpawnAllPlayers();
@@ -17,6 +17,12 @@ public class PlayerSpawner : NetworkBehaviour
 
     private void SpawnAllPlayers()
     {
+        if (playerPrefabs == null || playerPrefabs.Length == 0)
+        {
+            Debug.LogError("PlayerSpawner: No prefabs assigned in the Inspector!");
+            return;
+        }
+
         List<int> availableIndexes = new List<int>();
         for (int i = 0; i < playerPrefabs.Length; i++)
         {
@@ -29,11 +35,13 @@ public class PlayerSpawner : NetworkBehaviour
             SpawnPlayer(clientId, true, availableIndexes);
         }
 
-        // 2. Spawn AI Players
+        // 2. Spawn AI Players using the static count from MenuController
         int aiPlayers = MenuController.numBotsToSpawn;
+        Debug.Log($"[Spawner] Spawning {aiPlayers} AI bots...");
+
         for (int i = 0; i < aiPlayers; i++)
         {
-            // Giving bots an ID starting at 100 to differentiate them from clients
+            // AI IDs start at 100
             SpawnPlayer((ulong)(100 + i), false, availableIndexes);
         }
     }
@@ -42,78 +50,47 @@ public class PlayerSpawner : NetworkBehaviour
     {
         if (availableIndexes.Count == 0)
         {
-            Debug.LogError("[Server] No more unique prefabs left in the list!");
+            Debug.LogWarning("PlayerSpawner: Ran out of character prefabs!");
             return;
         }
 
-        // Pick a prefab and remove it from availability to ensure uniqueness
         int prefabIndex = availableIndexes[0];
         availableIndexes.RemoveAt(0);
 
         GameObject prefabToSpawn = playerPrefabs[prefabIndex];
 
-        // Find the designated spawn point for this character index
+        // Find the spawn point matching this character index
         SpawnPoint[] points = FindObjectsByType<SpawnPoint>(FindObjectsSortMode.None);
         SpawnPoint chosenPoint = System.Array.Find(points, p => p.index == prefabIndex);
 
-        if (chosenPoint == null)
-        {
-            Debug.LogWarning($"[Server] No specific spawn point for prefab {prefabIndex}, using default index 0.");
-            chosenPoint = (points.Length > 0) ? points[0] : null;
-        }
+        if (chosenPoint == null) chosenPoint = (points.Length > 0) ? points[0] : null;
+        if (chosenPoint == null) return;
 
-        if (chosenPoint == null)
-        {
-            Debug.LogError("[Server] No SpawnPoints found in the scene!");
-            return;
-        }
-
-        // Instantiate the player
+        // 1. Instantiate the object
         GameObject playerInstance = Instantiate(prefabToSpawn, chosenPoint.transform.position, chosenPoint.transform.rotation);
         NetworkObject netObj = playerInstance.GetComponent<NetworkObject>();
 
-        // IMPORTANT: Mark the character as AI or Human before spawning across network
-        if (playerInstance.TryGetComponent<Character>(out var character))
-        {
-            character.isRobot.Value = !isHuman;
-        }
-
+        // 2. Spawn it on the network FIRST
         if (isHuman)
         {
-            // Spawn as a player object owned by the specific client
             netObj.SpawnAsPlayerObject(ownerId);
         }
         else
         {
-            // Spawn as a standard server-owned object (AI)
             netObj.Spawn();
         }
-        
-        Debug.Log($"[Server] Spawned {(isHuman ? "Human" : "AI")} ID {ownerId} using prefab {prefabIndex}");
-    }
 
-    // Manual spawn method for late-joining clients or specific requests
-    private void SpawnPlayerForClient(ulong clientId)
-    {
-        SpawnPoint[] points = FindObjectsByType<SpawnPoint>(FindObjectsSortMode.None);
-        SpawnPoint chosenPoint = System.Array.Find(points, p => p.index == (int)clientId);
-
-        if (chosenPoint == null && points.Length > 0)
-        {
-            chosenPoint = points[0];
-        }
-
-        if (chosenPoint == null) return;
-
-        GameObject chosenPrefab = playerPrefabs[(int)clientId % playerPrefabs.Length];
-        GameObject playerInstance = Instantiate(chosenPrefab, chosenPoint.transform.position, chosenPoint.transform.rotation);
-        
-        // Ensure standard human setup
+        // 3. SET DATA AFTER SPAWNING (This ensures NetworkVariables sync correctly)
         if (playerInstance.TryGetComponent<Character>(out var character))
         {
-            character.isRobot.Value = false;
-        }
+            character.isRobot.Value = !isHuman;
+            character.botID.Value = (int)ownerId;
 
-        playerInstance.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId);
+            Debug.Log($"<color=cyan>[Spawner] Configured {character.charName}: ID={ownerId}, Robot={!isHuman}</color>");
+        }
+        else
+        {
+            Debug.LogError($"[Spawner] {prefabToSpawn.name} is missing a Character-derived script!");
+        }
     }
 }
