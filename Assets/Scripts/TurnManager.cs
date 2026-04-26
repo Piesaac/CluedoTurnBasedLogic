@@ -19,7 +19,6 @@ public class TurnManager : NetworkBehaviour
     public List<ulong> turnOrder = new List<ulong>();
 
     private int allPlayers = 0;
-    private bool isAIBusy = false;
 
     public override void OnNetworkSpawn()
     {
@@ -52,17 +51,6 @@ public class TurnManager : NetworkBehaviour
         }
         allPlayers = turnOrder.Count;
         Debug.Log($"TurnManager: Sequence initialized with {allPlayers} players.");
-    }
-
-    private void Update()
-    {
-        if (!IsServer) return;
-
-        // Check if the current ID is one of our Bots (>= 100)
-        if (whosPlaying.Value >= 100 && !isAIBusy)
-        {
-            StartCoroutine(roboTurn());
-        }
     }
 
     public bool turingTest()
@@ -107,33 +95,6 @@ public class TurnManager : NetworkBehaviour
         return GetActivePlayerObject();
     }
 
-    private IEnumerator roboTurn()
-    {
-        isAIBusy = true;
-        Debug.Log($"AI Player {whosPlaying.Value + 1} is thinking...");
-
-        // Pause for realism so humans can read the UI
-        yield return new WaitForSeconds(2f);
-
-        GameObject activePlayerObj = NetworkManager.Singleton.ConnectedClientsIds.Contains((ulong)whosPlaying.Value) 
-        ? NetworkManager.Singleton.ConnectedClients[(ulong)whosPlaying.Value].PlayerObject.gameObject 
-        :  FindBotObject((ulong)whosPlaying.Value);
-
-        // AI Cycles through all 3 phases automatically
-        while (activePlayerObj != null && activePlayerObj.GetComponent<Character>().isRobot.Value)
-        {
-            nextPhaseServerRpc();
-            
-            // Wait for the next phase to be processed
-            yield return new WaitForSeconds(2f);
-
-            // If the phase reset to ROLLING, it means the turn ended
-            if (whatPhase.Value == TurnStage.ROLLING)
-                break;
-        }
-
-        isAIBusy = false;
-    }
 
     private void updateUI()
     {
