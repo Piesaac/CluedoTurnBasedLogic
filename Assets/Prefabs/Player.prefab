@@ -192,6 +192,7 @@ MonoBehaviour:
   moveSpeed: 5
   stage: {fileID: 0}
   nearby: []
+  currentRoomName: 
   move_tokens:
     UpdateTraits:
       MinSecondsBetweenUpdates: 0
