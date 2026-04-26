@@ -1920,6 +1920,7 @@ MonoBehaviour:
       MinSecondsBetweenUpdates: 0
       MaxSecondsBetweenUpdates: 0
     m_InternalValue: 0
+  turnOrder: 
 --- !u!1 &79756982
 GameObject:
   m_ObjectHideFlags: 0
@@ -3916,15 +3917,15 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 371914230}
-  - {fileID: 648539098}
-  - {fileID: 852048942}
-  - {fileID: 979576581}
   - {fileID: 1443596247}
   - {fileID: 2113088976}
   - {fileID: 50732339}
   - {fileID: 716370794}
   - {fileID: 1403022897}
+  - {fileID: 979576581}
+  - {fileID: 852048942}
+  - {fileID: 371914230}
+  - {fileID: 648539098}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}

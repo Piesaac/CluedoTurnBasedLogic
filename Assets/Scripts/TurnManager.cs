@@ -2,6 +2,7 @@ using UnityEngine;
 using TMPro;
 using Unity.Netcode;
 using System.Collections;
+using System.Collections.Generic;
 using turnyWurny; // Ensure this namespace matches your TurnStage enum
 
 public class TurnManager : NetworkBehaviour
@@ -14,35 +15,50 @@ public class TurnManager : NetworkBehaviour
     public NetworkVariable<TurnStage> whatPhase = new NetworkVariable<TurnStage>(TurnStage.ROLLING);
     public NetworkVariable<int> whosPlaying = new NetworkVariable<int>(0);
 
+    public List<ulong> turnOrder = new List<ulong>();
+
     private int allPlayers = 0;
     private bool isAIBusy = false;
 
     public override void OnNetworkSpawn()
     {
-        // 1. Calculate total player pool (Humans from NetworkManager + AI from Menu settings)
         if (IsServer)
         {
-            allPlayers = NetworkManager.Singleton.ConnectedClients.Count + MenuController.numBotsToSpawn;
-            Debug.Log($"TurnManager: Total players in rotation: {allPlayers}");
+            SetupTurnOrder();
+            // Start the game with the first ID in the list
+            whosPlaying.Value = (int)turnOrder[0];
         }
 
-        // 2. Subscribe to changes to keep UI in sync across all clients
         whatPhase.OnValueChanged += (oldVal, newVal) => updateUI();
         whosPlaying.OnValueChanged += (oldVal, newVal) => updateUI();
-        
         updateUI();
+    }
+
+    private void SetupTurnOrder()
+    {
+        turnOrder.Clear();
+
+        // 1. Add all human Client IDs (typically 0, 1, 2...)
+        foreach (var client in NetworkManager.Singleton.ConnectedClientsIds)
+        {
+            turnOrder.Add(client);
+        }
+
+        // 2. Add all Bot IDs (starting at 100 as per your PlayerSpawner)
+        for (int i = 0; i < MenuController.numBotsToSpawn; i++)
+        {
+            turnOrder.Add((ulong)(100 + i));
+        }
+
+        Debug.Log($"TurnManager: Sequence initialized with {turnOrder.Count} players.");
     }
 
     private void Update()
     {
-        // Only the Server/Host should run AI logic
         if (!IsServer) return;
 
-        // 3. Determine if it's currently an AI's turn
-        // Humans are indices 0 to (HumanCount - 1). Bots start after that.
-        int humanCount = NetworkManager.Singleton.ConnectedClients.Count;
-
-        if (whosPlaying.Value >= humanCount && !isAIBusy)
+        // Check if the current ID is one of our Bots (>= 100)
+        if (whosPlaying.Value >= 100 && !isAIBusy)
         {
             StartCoroutine(roboTurn());
         }

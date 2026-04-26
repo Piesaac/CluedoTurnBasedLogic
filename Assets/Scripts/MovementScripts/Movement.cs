@@ -47,6 +47,7 @@ public class Movement : NetworkBehaviour
         {
             return;
         }
+        
         else
         {
             uiobj = GameObject.FindFirstObjectByType<UIController>();
@@ -55,12 +56,12 @@ public class Movement : NetworkBehaviour
                 uiobj.localPlayerScript = this;
             }
         }
-
-        // Dynamically links the players script to the UI controller instance.
         if (UIController.Instance != null)
         {
             UIController.Instance.localPlayerScript = this;
         }
+
+        // Dynamically links the players script to the UI controller instance.
         // Searches for required references once, searches repeatedly for stage in case of delayed spawn.
         searchOnce();
         StartCoroutine(stageSearch());
@@ -270,11 +271,12 @@ public class Movement : NetworkBehaviour
         {   
             Debug.Log($"Raycast hit: {hit.collider.name}");
         
-            // 1. Check for DOOR first (This fixes your button issue)
             Door doorComponent = hit.collider.GetComponent<Door>();
             if (doorComponent != null)
             {
                 stage = hit.collider.gameObject;
+                IsInRoom();
+                UIController.Instance.UpdateUIVisibility();
                 Debug.Log($"Door detected: {stage.name}. Entry button should now show.");
             }
             // 2. Otherwise check for TILE
