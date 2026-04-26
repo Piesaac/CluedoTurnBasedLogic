@@ -6,20 +6,29 @@ using System.Collections;
 public class AIPlayer : NetworkBehaviour
 {
     private Movement movementScript;
+    private Character characterScript;
     private TurnManager turnMan;
     private bool roboToggle = false;
+    public bool aiFlag = false;
 
     void Start()
     {
         movementScript = GetComponent<Movement>();
+        characterScript = GetComponent<Character>();
         turnMan = GameObject.FindFirstObjectByType<TurnManager>();
+        if (characterScript.isRobot.Value == true)
+        {
+            aiFlag = true;
+        }
     }
 
     void Update()
     {
         if (!IsServer) return;
+        if (characterScript == null) return;
+        if (!aiFlag) return;
 
-        if (turnMan.whosPlaying.Value == (int)OwnerClientId)
+        if (turnMan.whosPlaying.Value == (int)OwnerClientId && aiFlag == true)
         {
             if (!roboToggle) StartCoroutine(AITurnReq());
         }

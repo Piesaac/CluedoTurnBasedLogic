@@ -271,35 +271,35 @@ public class Movement : NetworkBehaviour
     // Updates stage by raycasting downwards and scanning for valid object
     public void whereWeAt()
     {
-        Vector3 rayStart = transform.position + Vector3.up * 1.0f;
-        // Use QueryTriggerInteraction.Collide to ensure we hit Room triggers
-        if (Physics.Raycast(rayStart, Vector3.down, out RaycastHit hit, 2.5f, Physics.AllLayers, QueryTriggerInteraction.Collide))
-        {   
-            // Detect Stage (Tile or Door)
-            Door doorComponent = hit.collider.GetComponent<Door>();
-            Tile tileComponent = hit.collider.GetComponent<Tile>();
+        // Shoot ray from higher up to avoid clipping
+        Vector3 rayStart = transform.position + Vector3.up * 1.5f; 
+    
+        // Use RaycastAll to find the Tile even if a Room Trigger is in the way
+        RaycastHit[] hits = Physics.RaycastAll(rayStart, Vector3.down, 3.0f);
+        bool foundTile = false;
 
-            if (doorComponent != null) stage = hit.collider.gameObject;
-            else if (tileComponent != null) 
+        foreach (var hit in hits)
+        {
+            Tile tileComponent = hit.collider.GetComponent<Tile>();
+            if (tileComponent != null)
             {
                 stage = hit.collider.gameObject;
                 onWhite = hit.collider.GetComponent<White>() != null;
-            }
-
-            // Detect Room
-            Room roomComponent = hit.collider.GetComponentInParent<Room>();
-            if (roomComponent != null)
-            {
-                currentRoomName = roomComponent.myName;
-                Debug.Log($"<color=cyan>Movement: Inside Room {currentRoomName}</color>");
-            }
-            else 
-            {
-                currentRoomName = "";
+                foundTile = true;
+                Debug.Log($"<color=green>Movement:</color> whereWeAt found {stage.name}, White: {onWhite}");
+                break; 
             }
         }
-    
-        // CRITICAL: Tell the UI to refresh NOW because our state just changed
+
+        if (!foundTile) Debug.LogWarning("Movement: whereWeAt failed to find a Tile!");
+
+        // Detect Room separately
+        if (Physics.Raycast(rayStart, Vector3.down, out RaycastHit roomHit, 3.0f, Physics.AllLayers, QueryTriggerInteraction.Collide))
+        {
+            Room roomComponent = roomHit.collider.GetComponentInParent<Room>();
+            currentRoomName = roomComponent != null ? roomComponent.myName : "";
+        }
+
         if (IsOwner && UIController.Instance != null)
         {
             UIController.Instance.UpdateUIVisibility();
@@ -413,6 +413,7 @@ public class Movement : NetworkBehaviour
         Debug.Log("Movement: exitRoomClientRpc");
         targetPosition = exitPos;
         isMoving = true;
+        whereWeAt();
     }
 
     // Submits exit request to the server.
@@ -432,6 +433,7 @@ public class Movement : NetworkBehaviour
                 Debug.Log("The exit button hath been pressed");
             }
         }
+        whereWeAt();
     }
 
     // ------------ End of room entry logic ------------
