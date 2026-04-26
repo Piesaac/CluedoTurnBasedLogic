@@ -2,68 +2,145 @@ using UnityEngine;
 using Unity.Netcode;
 using turnyWurny;
 using System.Collections;
+using CardList;
 
-public class AIPlayer : NetworkBehaviour
+public class SimpleAIController : NetworkBehaviour
 {
-    private Movement movementScript;
+    private Movement moveScript;
     private Character characterScript;
-    private TurnManager turnMan;
-    private bool roboToggle = false;
-    public bool aiFlag = false;
+    private bool isThinking = false;
+    public GameObject stage; 
 
     void Start()
     {
-        movementScript = GetComponent<Movement>();
+        // Get references to the movement and identity components on this prefab
+        moveScript = GetComponent<Movement>();
         characterScript = GetComponent<Character>();
-        turnMan = GameObject.FindFirstObjectByType<TurnManager>();
-        if (characterScript.isRobot.Value == true)
-        {
-            aiFlag = true;
-        }
     }
 
     void Update()
     {
-        if (!IsServer) return;
-        if (characterScript == null) return;
-        if (!aiFlag) return;
+        if (!IsServer) return; // AI only runs on the Host
 
-        if (turnMan.whosPlaying.Value == (int)OwnerClientId && aiFlag == true)
+        // 1. Check if component exists
+        if (characterScript == null)
         {
-            if (!roboToggle) StartCoroutine(AITurnReq());
+            Debug.Log("<color=red>[AI DEBUG] Component missing on " + gameObject.name + "</color>");
+            return;
+        }
+
+        // 2. Check if it knows it's a Robot
+        if (!characterScript.isRobot.Value) return;
+
+        // 3. Check the ID assignment
+        if (characterScript.botID.Value == -1)
+        {
+            // If you see this, the PlayerSpawner failed to give the bot an ID
+            Debug.Log("<color=orange>[AI DEBUG] I am a robot, but my botID is still -1!</color>");
+            return;
+        }
+
+        TurnManager tm = FindFirstObjectByType<TurnManager>();
+        if (tm == null) return;
+
+        // 4. Check the Turn Match
+        bool isMyTurn = (characterScript.botID.Value == tm.whosPlaying.Value);
+
+        if (isMyTurn && !isThinking)
+        {
+            StartCoroutine(AIRoutine(tm));
         }
     }
 
-    IEnumerator AITurnReq()
+    IEnumerator AIRoutine(TurnManager tm)
     {
-        roboToggle = true;
-        yield return new WaitForSeconds(1f);
+        isThinking = true;
 
-        if (turnMan.whatPhase.Value == TurnStage.ROLLING)
+        // HEARTBEAT LOG: This confirms the bot has recognized its turn
+        Debug.Log($"<color=yellow>[AI BRAIN] {characterScript.charName} (ID {characterScript.botID.Value}) is starting its turn.</color>");
+
+        // --- PHASE: ROLLING ---
+        if (tm.whatPhase.Value == TurnStage.ROLLING)
         {
-            movementScript.setMovesServerRpc(Random.Range(1, 13));
-            yield return new WaitForSeconds(1f);
-            turnMan.pushNextPhase(); 
+            yield return new WaitForSeconds(2.0f);
+            int roll = Random.Range(2, 13);
+
+            // Set the move tokens on the server
+            moveScript.setMovesServerRpc(roll);
+            yield return new WaitForSeconds(1.0f);
+
+            // Tell TurnManager to move to the MOVING phase
+            tm.pushNextPhase();
         }
 
-        while (turnMan.whatPhase.Value == TurnStage.MOVING && movementScript.move_tokens.Value > 0)
+        // --- PHASE: MOVING ---
+        while (tm.whatPhase.Value == TurnStage.MOVING && moveScript.move_tokens.Value > 0)
         {
-            yield return new WaitForSeconds(0.5f);
-            
-            if (movementScript.nearby.Count > 0)
+            yield return new WaitForSeconds(0.8f);
+
+            // FIX: If the bot doesn't know what tile it's on, find the nearest one
+            if (moveScript.stage == null)
             {
-                GameObject randomTile = movementScript.nearby[Random.Range(0, movementScript.nearby.Count)];
-                movementScript.AIclick(randomTile);
+                Debug.Log("[AI] Stage is null. Searching for nearest tile...");
+                FindStartingTile();
+                yield return new WaitForSeconds(0.2f);
+                if (moveScript.stage == null) break; // Still null? Stop to avoid crash
             }
-            else { break; }
+
+            // 1. Check for doors
+            if (moveScript.IsOnDoor())
+            {
+                moveScript.submitEntryServerRpc(moveScript.stage.GetComponent<NetworkObject>().NetworkObjectId);
+                break;
+            }
+
+            // 2. Movement logic
+            Tile currentTile = moveScript.stage.GetComponent<Tile>();
+            if (currentTile != null && currentTile.neighbours.Count > 0)
+            {
+                GameObject target = currentTile.neighbours[Random.Range(0, currentTile.neighbours.Count)];
+                moveScript.AIMove(target);
+            }
         }
 
-        if (turnMan.whatPhase.Value == TurnStage.SUGGESTING)
+        // --- PHASE: SUGGESTING ---
+        if (tm.whatPhase.Value == TurnStage.SUGGESTING)
         {
-            yield return new WaitForSeconds(1f);
-            turnMan.pushNextPhase();
+            yield return new WaitForSeconds(2.0f);
+
+            // AI picks random card indices
+            Who who = (Who)Random.Range(0, 6);
+            What what = (What)Random.Range(0, 6);
+            Where where = (Where)Random.Range(0, 9);
+
+            Debug.Log($"[AI] Suggesting: {who} with the {what} in the {where}");
+            GuessManager.Instance.submitGuessServerRpc(who, what, where);
         }
 
-        roboToggle = false;
+        isThinking = false;
+    }
+
+    private void FindStartingTile()
+    {
+        // Find every tile in the scene
+        Tile[] allTiles = FindObjectsByType<Tile>(FindObjectsSortMode.None);
+        float closestDist = float.MaxValue;
+        GameObject closestTile = null;
+
+        foreach (Tile t in allTiles)
+        {
+            float dist = Vector3.Distance(transform.position, t.transform.position);
+            if (dist < closestDist)
+            {
+                closestDist = dist;
+                closestTile = t.gameObject;
+            }
+        }
+
+        if (closestTile != null)
+        {
+            moveScript.stage = closestTile; // Manually assign the missing reference
+            Debug.Log($"[AI] Assigned starting stage to: {closestTile.name}");
+        }
     }
 }
