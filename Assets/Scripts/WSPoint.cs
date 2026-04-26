@@ -1,3 +1,3 @@
 using UnityEngine;
 
-public class WSPoint : MonoBehaviour { public int index; }
+public class WSPoint : MonoBehaviour { public string Name; }
