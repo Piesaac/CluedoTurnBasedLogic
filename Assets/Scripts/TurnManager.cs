@@ -50,8 +50,8 @@ public class TurnManager : NetworkBehaviour
         {
             turnOrder.Add((ulong)(100 + i));
         }
-
-        Debug.Log($"TurnManager: Sequence initialized with {turnOrder.Count} players.");
+        allPlayers = turnOrder.Count;
+        Debug.Log($"TurnManager: Sequence initialized with {allPlayers} players.");
     }
 
     private void Update()
@@ -67,6 +67,7 @@ public class TurnManager : NetworkBehaviour
 
     public bool turingTest()
     {
+        Debug.Log($"TurnManager: turingTest() called");
         // Simple check: In your setup, IDs >= 100 are bots
         if (whosPlaying.Value >= 100) return true;
 
@@ -136,6 +137,7 @@ public class TurnManager : NetworkBehaviour
 
     private void updateUI()
     {
+        Debug.Log($"TurnManager: updateUI called");
         if (status != null)
         {
             status.text = whatPhase.Value.ToString() + "!";
@@ -176,6 +178,7 @@ public class TurnManager : NetworkBehaviour
         {
             Debug.Log("Not your turn!");
         }
+        Debug.Log($"TurnManager: reqNextPhase() called");
     }
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
@@ -188,29 +191,33 @@ public class TurnManager : NetworkBehaviour
         else if (whatPhase.Value == TurnStage.MOVING)
         {
             whatPhase.Value = TurnStage.SUGGESTING;
+            
         }
-        else
+        else if (whatPhase.Value == TurnStage.SUGGESTING)
         {
             nextTurn();
         }
+        Debug.Log($"TurnManager: nextPhaseServerRpc called | Phase is: {whatPhase.Value}");
     }
 
     public void nextTurn()
     {
         if (!IsServer) return;
-
-
+        foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+        {
+            client.PlayerObject.GetComponent<Movement>().move_tokens.Value = 0;
+        }
         if (allPlayers > 0)
         {
             whosPlaying.Value = (whosPlaying.Value + 1) % allPlayers;
         }
-        
         whatPhase.Value = TurnStage.ROLLING;
-        Debug.Log($"Turn passed to index: {whosPlaying.Value}");
+        Debug.Log($"TurnManager: nextTurn() called | Turn passed to index: {whosPlaying.Value}");
     }
 
     public void pushNextPhase()
     {
+        Debug.Log($"TurnManager: pushNextPhase() called");
         // Safety check to ensure only the Server actually changes the NetworkVariable
         if (!IsServer) return; 
         // Calls the Rpc to move the TurnStage enum forward

@@ -100,17 +100,28 @@ public class UIController : MonoBehaviour
 
     void Update()
     {
-        // Continuous check for room entry buttons while in moving phase
-        if (localPlayerScript != null && isMyTurn && turnMan.whatPhase.Value == TurnStage.MOVING)
+        if (localPlayerScript != null && isMyTurn)
         {
-            bool isOnDoor = localPlayerScript.IsOnDoor();
+            TurnStage phase = turnMan.whatPhase.Value;
         
-            // DEBUG: This will tell us exactly why it's not showing
-            if (isOnDoor && !entryButton.gameObject.activeSelf) {
-                Debug.Log("<color=green>UI: Standing on door, showing button!</color>");
-            }
+            // ONLY check for room/door UI if we are in the MOVING phase
+            if (phase == TurnStage.MOVING)
+            {
+                bool isInRoom = localPlayerScript.IsInRoom();
+                bool isOnDoor = localPlayerScript.IsOnDoor();
 
-            entryButton.gameObject.SetActive(isOnDoor);
+                entryButton.gameObject.SetActive(isOnDoor);
+            
+                exitList.gameObject.SetActive(isInRoom);
+                exitButton.gameObject.SetActive(isInRoom);
+                exitText.gameObject.SetActive(isInRoom);
+            }
+            else 
+            {
+                // Hide them in ROLLING or SUGGESTING phases to avoid UI clutter/bugs
+                entryButton.gameObject.SetActive(false);
+                exitButton.gameObject.SetActive(false);
+            }
         }
     }
 
@@ -154,6 +165,7 @@ public class UIController : MonoBehaviour
         // 4. Handle Human Turn logic
         if (isMyTurn)
         {
+            Debug.Log($"<color=orange>UI: It's my turn! Phase: {currentPhase}</color>");
             // Panels based on Phase
             rollPanel.SetActive(currentPhase == TurnStage.ROLLING);
             movePanel.SetActive(currentPhase == TurnStage.MOVING);
@@ -168,15 +180,13 @@ public class UIController : MonoBehaviour
                 bool isInRoom = localPlayerScript.IsInRoom();
                 bool isOnDoor = localPlayerScript.IsOnDoor();
 
+                exitList.gameObject.SetActive(isInRoom);
+                exitText.gameObject.SetActive(isInRoom);
+                exitButton.gameObject.SetActive(isInRoom);
+
                 entryButton.gameObject.SetActive(isOnDoor);
-
-                // Exit UI: Show only if already inside a room
-                bool showExitUI = isInRoom;
-                exitList.gameObject.SetActive(showExitUI);
-                exitText.gameObject.SetActive(showExitUI);
-                exitButton.gameObject.SetActive(showExitUI);
-
-                if (showExitUI) 
+                
+                if (isInRoom) 
                 {
                     exitDropdown();
                 }
@@ -264,7 +274,7 @@ public class UIController : MonoBehaviour
             
             if (doorNetObj != null)
             {
-                localPlayerScript.submitExitServerRPC(doorNetObj.NetworkObjectId);
+                localPlayerScript.submitExitServerRpc(doorNetObj.NetworkObjectId);
             }
         }
         UpdateUIVisibility();

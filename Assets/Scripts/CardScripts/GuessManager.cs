@@ -201,7 +201,14 @@ public class GuessManager : NetworkBehaviour
         notifDispResClientRpc(cardName, clientRpcParams);
         
         // Since a card was shown, the phase needs to end automatically after a delay
-        Invoke("endDisproveServerRpc", 4.1f);
+        if (turnMan.whatPhase.Value == TurnStage.SUGGESTING)
+        {
+            turnMan.pushNextPhase();
+        }
+        else 
+        {
+            Debug.LogWarning("GuessManager tried to push phase, but we are no longer suggesting!");
+        }
     }
 
     [ClientRpc]
@@ -220,6 +227,9 @@ public class GuessManager : NetworkBehaviour
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     public void endDisproveServerRpc()
     {
-        turnMan.pushNextPhase();
+        if (turnMan.whatPhase.Value == TurnStage.SUGGESTING)
+        {
+            turnMan.pushNextPhase();
+        }
     }
 }

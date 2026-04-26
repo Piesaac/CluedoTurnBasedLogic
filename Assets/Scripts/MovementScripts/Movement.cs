@@ -49,9 +49,9 @@ public class Movement : NetworkBehaviour
         else
         {
             uiobj = GameObject.FindFirstObjectByType<UIController>();
-            if (UIController.Instance != null)
+            if (uiobj != null)
             {
-            UIController.Instance.localPlayerScript = this;
+                uiobj.localPlayerScript = this;
             }
         }
 
@@ -63,12 +63,14 @@ public class Movement : NetworkBehaviour
 
     private bool turingTest() 
     {
+        Debug.Log("Movement: turingTest() called");
         if (TryGetComponent<Character>(out var c)) return c.isRobot.Value;
         return false;
     }
 
     private IEnumerator linkUI()
     {
+        Debug.Log("Movement: linkUI() called");
         // Waits until UI controller has spawned
         while (UIController.Instance == null) yield return null;
     
@@ -81,6 +83,7 @@ public class Movement : NetworkBehaviour
     // Looks for stage below the player repeatedly in case spawns are delayed
     private System.Collections.IEnumerator stageSearch()
     {
+        Debug.Log("Movement: stageSearch() called");
         int attempts = 0;
         while (stage == null && attempts < 20)
         {
@@ -98,6 +101,7 @@ public class Movement : NetworkBehaviour
     // Looks once for references needed so does not need to be called in Update method
     private void searchOnce()
     {   
+        Debug.Log("Movement: searchOnce() called");
         // Finds the turn manager
         if (whomst == null)
         {
@@ -134,6 +138,7 @@ public class Movement : NetworkBehaviour
     [ServerRpc]
     public void setMovesServerRpc(int value)
     {
+        Debug.Log("Movement: setMovesServerRpc() called");
         move_tokens.Value = value;
     }
 
@@ -168,6 +173,7 @@ public class Movement : NetworkBehaviour
     // Cheks clicked tile against the conditions for movement
     void checkInput()
     {
+        Debug.Log("Movement: checkInput() called");
         if (BoardCam == null) searchOnce();
         if (BoardCam == null) return;
 
@@ -209,6 +215,7 @@ public class Movement : NetworkBehaviour
     [ServerRpc]
     void requestMoveServerRpc(Vector3 destination, bool landingOnWhite)
     {   
+        Debug.Log("Movement: requestMoveServerRpc() called");
         // This is the tile the player has clicked to move to.
         Tile targetTile = GetTileAtPosition(destination);
 
@@ -219,11 +226,11 @@ public class Movement : NetworkBehaviour
         if (move_tokens.Value > 0 && targetTile != null && !targetTile.occupied.Value)
         {
             if (stage != null) stage.GetComponent<Tile>().updateOccupied(false);
-            move_tokens.Value--;
 
             // Marks tile as occupied if player moves onto it.
             targetTile.updateOccupied(true);
             movePositionClientRpc(destination, landingOnWhite);
+            move_tokens.Value--;
 
             // If player is out of moves, triggers turn change
             if (move_tokens.Value == 0)
@@ -237,6 +244,7 @@ public class Movement : NetworkBehaviour
     [ClientRpc]
     void movePositionClientRpc(Vector3 destination, bool landingOnWhite)
     {
+        Debug.Log("Movement: movePositionClientRpc() called");
         targetPosition = destination;
         isMoving = true;
         onWhite = landingOnWhite;
@@ -246,6 +254,7 @@ public class Movement : NetworkBehaviour
     // Actually moves the player to the tile selected and updates stage
     void movePlayer()
     {
+        Debug.Log("Movement: movePlayer() called");
         transform.position = Vector3.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
         if (Vector3.Distance(transform.position, targetPosition) < 0.001f)
         {
@@ -262,46 +271,35 @@ public class Movement : NetworkBehaviour
     // Updates stage by raycasting downwards and scanning for valid object
     public void whereWeAt()
     {
-        Vector3 rayStart = transform.position + Vector3.up * 0.5f;
-        float rayDistance = 2.0f;
-
-        if (Physics.Raycast(rayStart, Vector3.down, out RaycastHit hit, rayDistance))
+        Vector3 rayStart = transform.position + Vector3.up * 1.0f;
+        // Use QueryTriggerInteraction.Collide to ensure we hit Room triggers
+        if (Physics.Raycast(rayStart, Vector3.down, out RaycastHit hit, 2.5f, Physics.AllLayers, QueryTriggerInteraction.Collide))
         {   
-            Debug.Log($"Raycast hit: {hit.collider.name}");
-        
+            // Detect Stage (Tile or Door)
             Door doorComponent = hit.collider.GetComponent<Door>();
-            if (doorComponent != null)
-            {
-                stage = hit.collider.gameObject;
-                IsInRoom();
-                UIController.Instance.UpdateUIVisibility();
-                Debug.Log($"Door detected: {stage.name}. Entry button should now show.");
-            }
-            // 2. Otherwise check for TILE
-            else if (hit.collider.GetComponent<Tile>() != null)
+            Tile tileComponent = hit.collider.GetComponent<Tile>();
+
+            if (doorComponent != null) stage = hit.collider.gameObject;
+            else if (tileComponent != null) 
             {
                 stage = hit.collider.gameObject;
                 onWhite = hit.collider.GetComponent<White>() != null;
-                Debug.Log($"Found tile: {stage.name}");
             }
-        
-            // 3. Independent Room Detection (for currentRoomName)
+
+            // Detect Room
             Room roomComponent = hit.collider.GetComponentInParent<Room>();
             if (roomComponent != null)
             {
-                // If we aren't standing on a specific tile/door, the room is our stage
-                if (stage == null) stage = hit.collider.gameObject; 
-            
                 currentRoomName = roomComponent.myName;
-                Debug.Log($"Room detected: {currentRoomName}");
+                Debug.Log($"<color=cyan>Movement: Inside Room {currentRoomName}</color>");
+            }
+            else 
+            {
+                currentRoomName = "";
             }
         }
-        else
-        {
-            Debug.LogWarning("No stage found!");
-        }
-
-        // Refresh UI immediately after updating position/stage
+    
+        // CRITICAL: Tell the UI to refresh NOW because our state just changed
         if (IsOwner && UIController.Instance != null)
         {
             UIController.Instance.UpdateUIVisibility();
@@ -313,20 +311,31 @@ public class Movement : NetworkBehaviour
     public bool IsOnDoor()
     {
         // Check if the current stage has a Door component
-        if (stage != null)
+        if (Physics.Raycast(transform.position + Vector3.up, Vector3.down, out RaycastHit hit, 2f))
         {
-            return stage.GetComponent<Door>() != null;
+            return hit.collider.GetComponent<Door>() != null;
         }
         return false;
     }
 
     public bool IsInRoom()
     {
-        Debug.Log($"IsInRoom check: stage is {(stage != null ? stage.name : "NULL")}");
-        // Check if the current stage has a Room component
-        if (stage != null)
+        if (Physics.Raycast(transform.position + Vector3.up * 0.5f, Vector3.down, out RaycastHit hit, 1.5f, Physics.AllLayers, QueryTriggerInteraction.Collide))
         {
-            return stage.GetComponent<Room>() != null;
+            // If we hit a TILE, we are in a hallway, NOT a room
+            if (hit.collider.GetComponent<Tile>() != null && hit.collider.GetComponent<Door>() == null)
+            {
+                return false;
+            }
+
+            // If we hit something that has a Room script (and it's not just a parent of a tile)
+            Room r = hit.collider.GetComponentInParent<Room>();
+            if (r != null)
+            {
+                // Optional: Ensure the room script isn't on a parent of the board itself
+                // Debug.Log($"Movement: Actually inside room: {r.myName}");
+                return true;
+            }
         }
         return false;
     }
@@ -335,16 +344,23 @@ public class Movement : NetworkBehaviour
     [ClientRpc]
     private void moveToRoomClientRpc(Vector3 roomPos)
     {
+        if (!IsOwner) return;
+    
         transform.position = roomPos;
         targetPosition = roomPos;
         isMoving = false; 
         onWhite = false;
-        whereWeAt();
+
+        // CRITICAL: Clear the old door reference and find the new floor/room
+        stage = null; 
+        whereWeAt(); 
+
         StartCoroutine(delayedExitList());
     }
 
     private IEnumerator delayedExitList()
     {
+        Debug.Log("Movement: delayedExitList() called");
         yield return new WaitForSeconds(0.1f);
         if (UIController.Instance != null)
         {
@@ -356,6 +372,7 @@ public class Movement : NetworkBehaviour
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner)]
     public void submitEntryServerRpc(ulong stageNetworkObjectId)
     {
+        Debug.Log("Movement: submitEntryServerRpc() called");
         // Find the object on the server using the ID passed by the client
         if (NetworkManager.SpawnManager.SpawnedObjects.TryGetValue(stageNetworkObjectId, out NetworkObject stageNetObj))
         {
@@ -391,15 +408,16 @@ public class Movement : NetworkBehaviour
     
     // Moves the client to the exit selected.
     [ClientRpc]
-    private void exitRoomClientRPC(Vector3 exitPos)
+    private void exitRoomClientRpc(Vector3 exitPos)
     {
+        Debug.Log("Movement: exitRoomClientRpc");
         targetPosition = exitPos;
         isMoving = true;
     }
 
     // Submits exit request to the server.
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner)]
-    public void submitExitServerRPC(ulong doorId)
+    public void submitExitServerRpc(ulong doorId)
     {
         if (whomst.whosPlaying.Value != (int)OwnerClientId) return;
 
@@ -410,7 +428,7 @@ public class Movement : NetworkBehaviour
             if (exit != null)
             {
                 move_tokens.Value--;
-                exitRoomClientRPC(exit.transform.position);
+                exitRoomClientRpc(exit.transform.position);
                 Debug.Log("The exit button hath been pressed");
             }
         }
@@ -438,6 +456,7 @@ public class Movement : NetworkBehaviour
 
     void delayNextTurn()
     {
+        if (whomst.whatPhase.Value == TurnStage.SUGGESTING) return;
         // Ensures this is the host and turn manager has been found
         if (IsServer) 
         {

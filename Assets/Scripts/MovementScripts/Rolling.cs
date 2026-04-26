@@ -22,33 +22,30 @@ public class Rolling : NetworkBehaviour
     // Method used to roll the dice.
     public void callRoll()
     {
-        if (turnMan.whosPlaying.Value != (int)NetworkManager.Singleton.LocalClientId)
-        {
-            Debug.Log("Not your turn to roll!");
-            return;
-        }
+        Debug.Log("Rolling: callRoll() called");
+        // 1. Validation
+        if (turnMan.whosPlaying.Value != (int)NetworkManager.Singleton.LocalClientId) return;
+        if (turnMan.whatPhase.Value != TurnStage.ROLLING) return; // Prevent double-rolling
 
+        // 2. Roll Logic
         firstVal = UnityEngine.Random.Range(1, 7);
         secondVal = UnityEngine.Random.Range(1, 7);
         totalVal = firstVal + secondVal;
-        
-        diceResult.text = $"First dice rolled: {firstVal}; Second dice rolled: {secondVal}; Total score: {totalVal}";
+    
+        diceResult.text = $"Rolled: {firstVal} + {secondVal} = {totalVal}";
 
-        if (NetworkManager.Singleton != null && NetworkManager.Singleton.LocalClient != null)
+        // 3. Communicate to Server
+        if (NetworkManager.Singleton.LocalClient.PlayerObject.TryGetComponent<Movement>(out var moveScript))
         {
-            var localPlayer = NetworkManager.Singleton.LocalClient.PlayerObject;
-            if (localPlayer != null)
-            {
-                Movement moveScript = localPlayer.GetComponent<Movement>();
-                if (moveScript != null)
-                {
-                    moveScript.setMovesServerRpc(totalVal);
-                }
-            }
+            // Tell the server the value
+            moveScript.setMovesServerRpc(totalVal);
+        
+            // IMPORTANT: The TurnManager should handle the phase shift 
+            // ONLY after the moves are successfully set.
+            turnMan.reqNextPhase(); 
         }
 
-        turnMan.reqNextPhase();
-
+        // Reset local values
         firstVal = 0;
         secondVal = 0;
     }
