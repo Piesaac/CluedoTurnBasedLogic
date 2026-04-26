@@ -127,6 +127,7 @@ GameObject:
   - component: {fileID: 2246724311533109972}
   - component: {fileID: 3211303494096814768}
   - component: {fileID: 557308281975387352}
+  - component: {fileID: -1127596150587555553}
   m_Layer: 7
   m_Name: Scarlett
   m_TagString: Untagged
@@ -257,4 +258,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6844d168ccf03b74ba88d0c5a8b8b7a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Scarlett
-  isHuman: 0
+  ShowTopMostFoldoutHeaderGroup: 1
+  isRobot:
+    UpdateTraits:
+      MinSecondsBetweenUpdates: 0
+      MaxSecondsBetweenUpdates: 0
+    m_InternalValue: 0
+--- !u!114 &-1127596150587555553
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3842513763570155339}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5bd7d39dc317276448740d8702c75aa2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AIPlayer
+  ShowTopMostFoldoutHeaderGroup: 1
+  aiFlag: 0

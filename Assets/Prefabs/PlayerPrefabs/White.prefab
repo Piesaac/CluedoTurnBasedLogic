@@ -127,6 +127,7 @@ GameObject:
   - component: {fileID: 1627683346940496484}
   - component: {fileID: -3349457167549752102}
   - component: {fileID: 2910450185628089165}
+  - component: {fileID: 6438347673048982393}
   m_Layer: 7
   m_Name: White
   m_TagString: Untagged
@@ -257,4 +258,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3fbad7aa91483d245bbd3d52025a76ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Orchid
-  isHuman: 0
+  ShowTopMostFoldoutHeaderGroup: 1
+  isRobot:
+    UpdateTraits:
+      MinSecondsBetweenUpdates: 0
+      MaxSecondsBetweenUpdates: 0
+    m_InternalValue: 0
+--- !u!114 &6438347673048982393
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7535549396236755773}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5bd7d39dc317276448740d8702c75aa2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AIPlayer
+  ShowTopMostFoldoutHeaderGroup: 1
+  aiFlag: 0

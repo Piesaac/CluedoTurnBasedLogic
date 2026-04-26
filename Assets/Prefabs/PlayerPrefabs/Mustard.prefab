@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8869326068326919642}
   - component: {fileID: 1502791107873119148}
   - component: {fileID: 649891981852830004}
+  - component: {fileID: 7993663915562967077}
   m_Layer: 7
   m_Name: Mustard
   m_TagString: Untagged
@@ -143,7 +144,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abea3feeaa7a90842ae101c04266ea04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Mustard
-  isHuman: 0
+  ShowTopMostFoldoutHeaderGroup: 1
+  isRobot:
+    UpdateTraits:
+      MinSecondsBetweenUpdates: 0
+      MaxSecondsBetweenUpdates: 0
+    m_InternalValue: 0
+--- !u!114 &7993663915562967077
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2397551909139953815}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5bd7d39dc317276448740d8702c75aa2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AIPlayer
+  ShowTopMostFoldoutHeaderGroup: 1
+  aiFlag: 0
 --- !u!1 &2760809461850744505
 GameObject:
   m_ObjectHideFlags: 0

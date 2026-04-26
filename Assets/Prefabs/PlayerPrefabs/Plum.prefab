@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8215247370878170760}
   - component: {fileID: 7314879534337000589}
   - component: {fileID: 6960834086797800157}
+  - component: {fileID: -7035440038761292779}
   m_Layer: 7
   m_Name: Plum
   m_TagString: Untagged
@@ -143,7 +144,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20da2723c748dc843bb2c68d33867e9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Plum
-  isHuman: 0
+  ShowTopMostFoldoutHeaderGroup: 1
+  isRobot:
+    UpdateTraits:
+      MinSecondsBetweenUpdates: 0
+      MaxSecondsBetweenUpdates: 0
+    m_InternalValue: 0
+--- !u!114 &-7035440038761292779
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6283478621090050179}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5bd7d39dc317276448740d8702c75aa2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AIPlayer
+  ShowTopMostFoldoutHeaderGroup: 1
+  aiFlag: 0
 --- !u!1 &6616383677404247010
 GameObject:
   m_ObjectHideFlags: 0

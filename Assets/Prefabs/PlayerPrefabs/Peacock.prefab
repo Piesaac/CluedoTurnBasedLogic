@@ -127,6 +127,7 @@ GameObject:
   - component: {fileID: 6368974649931313049}
   - component: {fileID: 573475512316181664}
   - component: {fileID: -6409945244095037960}
+  - component: {fileID: 6546657085077901655}
   m_Layer: 7
   m_Name: Peacock
   m_TagString: Untagged
@@ -257,4 +258,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf2a76ad7bd8a8543ad6b33e97ba438e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Peacock
-  isHuman: 0
+  ShowTopMostFoldoutHeaderGroup: 1
+  isRobot:
+    UpdateTraits:
+      MinSecondsBetweenUpdates: 0
+      MaxSecondsBetweenUpdates: 0
+    m_InternalValue: 0
+--- !u!114 &6546657085077901655
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9081348292688425615}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5bd7d39dc317276448740d8702c75aa2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AIPlayer
+  ShowTopMostFoldoutHeaderGroup: 1
+  aiFlag: 0

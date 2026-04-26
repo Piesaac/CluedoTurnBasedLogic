@@ -291,7 +291,7 @@ public class Movement : NetworkBehaviour
             }
         }
 
-        if (!foundTile) Debug.LogWarning("Movement: whereWeAt failed to find a Tile!");
+        if (!foundTile) Debug.LogWarning("<color=green>Movement:</color> whereWeAt failed to find a Tile!");
 
         // Detect Room separately
         if (Physics.Raycast(rayStart, Vector3.down, out RaycastHit roomHit, 3.0f, Physics.AllLayers, QueryTriggerInteraction.Collide))
@@ -360,7 +360,7 @@ public class Movement : NetworkBehaviour
 
     private IEnumerator delayedExitList()
     {
-        Debug.Log("Movement: delayedExitList() called");
+        Debug.Log("<color=green>Movement: delayedExitList() called");
         yield return new WaitForSeconds(0.1f);
         if (UIController.Instance != null)
         {
