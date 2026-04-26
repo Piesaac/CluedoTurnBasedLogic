@@ -1,0 +1,1 @@
+public class Orchid : Character { public override string charName => "Orchid"; }
