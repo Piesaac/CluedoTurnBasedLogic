@@ -42,31 +42,29 @@ public class Movement : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        // Checks the player is the owner of the prefab.   
-        if (!IsOwner)
+        if (!IsOwner || turingTest())
         {
             return;
-        }
-        
+        } 
         else
         {
             uiobj = GameObject.FindFirstObjectByType<UIController>();
-            if (uiobj != null)
+            if (UIController.Instance != null)
             {
-                uiobj.localPlayerScript = this;
+            UIController.Instance.localPlayerScript = this;
             }
         }
-        if (UIController.Instance != null)
-        {
-            UIController.Instance.localPlayerScript = this;
-        }
 
-        // Dynamically links the players script to the UI controller instance.
-        // Searches for required references once, searches repeatedly for stage in case of delayed spawn.
         searchOnce();
         StartCoroutine(stageSearch());
         StartCoroutine(linkUI());
 
+    }
+
+    private bool turingTest() 
+    {
+        if (TryGetComponent<Character>(out var c)) return c.isRobot.Value;
+        return false;
     }
 
     private IEnumerator linkUI()

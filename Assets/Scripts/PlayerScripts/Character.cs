@@ -1,8 +1,16 @@
 using UnityEngine;
 using Unity.Netcode;
 
-public abstract class Character : MonoBehaviour
+public abstract class Character : NetworkBehaviour
 {
     public abstract string charName { get; }
-    public bool isHuman;
+    public NetworkVariable<bool> isRobot;
+
+    public void roboHunt()
+    {
+        if (IsServer)
+        {
+            isRobot.Value = true;
+        }
+    }
 }

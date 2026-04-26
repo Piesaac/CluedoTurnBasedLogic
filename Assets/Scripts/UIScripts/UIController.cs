@@ -123,86 +123,81 @@ public class UIController : MonoBehaviour
     }
 
     public void UpdateUIVisibility()
-{
-    // 1. Basic Identity Checks
-    if (turnMan == null || NetworkManager.Singleton == null) return;
-
-    int activeIndex = turnMan.whosPlaying.Value;
-    int myID = (int)NetworkManager.Singleton.LocalClientId;
-    int humanCount = NetworkManager.Singleton.ConnectedClients.Count;
+    {   
+        bool iRobot = turnMan.turingTest();
     
-    // Check if the current player index refers to a human or a bot
-    isMyTurn = (myID == activeIndex);
-    bool isAITurn = activeIndex >= humanCount;
+        
+        isMyTurn = (NetworkManager.Singleton.LocalClientId == (ulong)turnMan.whosPlaying.Value);
     
-    TurnStage currentPhase = turnMan.whatPhase.Value;
+        TurnStage currentPhase = turnMan.whatPhase.Value;
 
-    // 2. Clear panels by default
-    // We start by hiding everything, then selectively enable based on state.
-    rollPanel.SetActive(false);
-    movePanel.SetActive(false);
-    guessPanel.SetActive(false);
-    HideDisproveUI();
+        // 2. Clear panels by default
+        // We start by hiding everything, then selectively enable based on state.
+        rollPanel.SetActive(false);
+        movePanel.SetActive(false);
+        guessPanel.SetActive(false);
+        HideDisproveUI();
 
-    // 3. Handle AI Turn logic
-    if (isAITurn)
-    {
-        // If it's an AI turn, humans should generally see no action buttons.
-        // You might want to leave a "Waiting for AI..." text active here.
-        entryButton.gameObject.SetActive(false);
-        exitButton.gameObject.SetActive(false);
-        exitList.gameObject.SetActive(false);
-        exitText.gameObject.SetActive(false);
-        moves.gameObject.SetActive(false);
-        return; // Exit early as no further human UI logic is needed
-    }
-
-    // 4. Handle Human Turn logic
-    if (isMyTurn)
-    {
-        // Panels based on Phase
-        rollPanel.SetActive(currentPhase == TurnStage.ROLLING);
-        movePanel.SetActive(currentPhase == TurnStage.MOVING);
-        guessPanel.SetActive(currentPhase == TurnStage.SUGGESTING);
-
-        // Movement Phase Specifics (Doors and Rooms)
-        if (currentPhase == TurnStage.MOVING && localPlayerScript != null)
+        // 3. Handle AI Turn logic
+        if (iRobot)
         {
-            moves.gameObject.SetActive(true);
-            updateMoveText();
+            // If it's an AI turn, humans should generally see no action buttons.
+            // You might want to leave a "Waiting for AI..." text active here.
+            entryButton.gameObject.SetActive(false);
+            exitButton.gameObject.SetActive(false);
+            exitList.gameObject.SetActive(false);
+            exitText.gameObject.SetActive(false);
+            moves.gameObject.SetActive(false);
+            return; // Exit early as no further human UI logic is needed
+        }
 
-            bool isInRoom = localPlayerScript.IsInRoom();
-            bool isOnDoor = localPlayerScript.IsOnDoor();
+        // 4. Handle Human Turn logic
+        if (isMyTurn)
+        {
+            // Panels based on Phase
+            rollPanel.SetActive(currentPhase == TurnStage.ROLLING);
+            movePanel.SetActive(currentPhase == TurnStage.MOVING);
+            guessPanel.SetActive(currentPhase == TurnStage.SUGGESTING);
 
-            entryButton.gameObject.SetActive(isOnDoor);
-
-            // Exit UI: Show only if already inside a room
-            bool showExitUI = isInRoom;
-            exitList.gameObject.SetActive(showExitUI);
-            exitText.gameObject.SetActive(showExitUI);
-            exitButton.gameObject.SetActive(showExitUI);
-
-            if (showExitUI) 
+            // Movement Phase Specifics (Doors and Rooms)
+            if (currentPhase == TurnStage.MOVING && localPlayerScript != null)
             {
-                exitDropdown();
+                moves.gameObject.SetActive(true);
+                updateMoveText();
+
+                bool isInRoom = localPlayerScript.IsInRoom();
+                bool isOnDoor = localPlayerScript.IsOnDoor();
+
+                entryButton.gameObject.SetActive(isOnDoor);
+
+                // Exit UI: Show only if already inside a room
+                bool showExitUI = isInRoom;
+                exitList.gameObject.SetActive(showExitUI);
+                exitText.gameObject.SetActive(showExitUI);
+                exitButton.gameObject.SetActive(showExitUI);
+
+                if (showExitUI) 
+                {
+                    exitDropdown();
+                }
+            }
+            else
+            {
+                // Hide movement-specific elements if not in MOVING phase
+                entryButton.gameObject.SetActive(false);
+                exitButton.gameObject.SetActive(false);
+                moves.gameObject.SetActive(false);
             }
         }
         else
         {
-            // Hide movement-specific elements if not in MOVING phase
+            // It's another human's turn: Hide controls but maybe keep "status" text visible
             entryButton.gameObject.SetActive(false);
             exitButton.gameObject.SetActive(false);
             moves.gameObject.SetActive(false);
         }
     }
-    else
-    {
-        // It's another human's turn: Hide controls but maybe keep "status" text visible
-        entryButton.gameObject.SetActive(false);
-        exitButton.gameObject.SetActive(false);
-        moves.gameObject.SetActive(false);
-    }
-    }
+
 
     public void delayedUI()
     {

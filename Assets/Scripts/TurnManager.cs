@@ -3,6 +3,7 @@ using TMPro;
 using Unity.Netcode;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using turnyWurny; // Ensure this namespace matches your TurnStage enum
 
 public class TurnManager : NetworkBehaviour
@@ -64,6 +65,47 @@ public class TurnManager : NetworkBehaviour
         }
     }
 
+    public bool turingTest()
+    {
+        // Simple check: In your setup, IDs >= 100 are bots
+        if (whosPlaying.Value >= 100) return true;
+
+        // Fallback: Check the actual component if it exists
+        GameObject activeObj = GetActivePlayerObject();
+        if (activeObj != null && activeObj.TryGetComponent<Character>(out var character))
+        {
+            return character.isRobot.Value;
+        }
+
+        return false;
+    }
+
+    private GameObject GetActivePlayerObject()
+    {
+        ulong activeId = (ulong)whosPlaying.Value;
+        
+        // Check humans
+        if (NetworkManager.Singleton.ConnectedClients.TryGetValue(activeId, out var client))
+        {
+            return client.PlayerObject.gameObject;
+        }
+
+        // Check bots (searching spawned objects)
+        foreach (var obj in NetworkManager.Singleton.SpawnManager.SpawnedObjects.Values)
+        {
+            if (obj.NetworkObjectId == activeId || (obj.IsOwner == false && obj.gameObject.name.Contains(activeId.ToString())))
+            {
+                return obj.gameObject;
+            }
+        }
+        return null;
+    }
+
+    private GameObject FindBotObject(ulong id)
+    {
+        return GetActivePlayerObject();
+    }
+
     private IEnumerator roboTurn()
     {
         isAIBusy = true;
@@ -72,8 +114,12 @@ public class TurnManager : NetworkBehaviour
         // Pause for realism so humans can read the UI
         yield return new WaitForSeconds(2f);
 
+        GameObject activePlayerObj = NetworkManager.Singleton.ConnectedClientsIds.Contains((ulong)whosPlaying.Value) 
+        ? NetworkManager.Singleton.ConnectedClients[(ulong)whosPlaying.Value].PlayerObject.gameObject 
+        :  FindBotObject((ulong)whosPlaying.Value);
+
         // AI Cycles through all 3 phases automatically
-        while (whosPlaying.Value >= NetworkManager.Singleton.ConnectedClients.Count)
+        while (activePlayerObj != null && activePlayerObj.GetComponent<Character>().isRobot.Value)
         {
             nextPhaseServerRpc();
             
@@ -100,12 +146,10 @@ public class TurnManager : NetworkBehaviour
             int humanCount = NetworkManager.Singleton.ConnectedClients.Count;
             string playerName = "";
 
-            // Custom Names for the first two slots
             if (whosPlaying.Value == 0) playerName = "Miss Scarlett";
             else if (whosPlaying.Value == 1) playerName = "Colonel Mustard";
             else playerName = "Player " + (whosPlaying.Value + 1);
 
-            // Label as AI if applicable
             if (whosPlaying.Value >= humanCount)
             {
                 activePlayerText.text = $"{playerName} (AI)";
@@ -114,7 +158,6 @@ public class TurnManager : NetworkBehaviour
             {
                 activePlayerText.text = playerName;
                 
-                // Show (YOU) only to the specific local player
                 if (whosPlaying.Value == (int)NetworkManager.Singleton.LocalClientId)
                 {
                     activePlayerText.text += " (YOU)";
@@ -125,9 +168,6 @@ public class TurnManager : NetworkBehaviour
 
     public void reqNextPhase()
     {
-        // Allow the button to work if:
-        // A) It is the local player's turn
-        // B) It is an AI turn but the Host wants to force it forward
         if (NetworkManager.Singleton.LocalClientId == (ulong)whosPlaying.Value || IsServer) 
         {
             nextPhaseServerRpc();
@@ -159,7 +199,7 @@ public class TurnManager : NetworkBehaviour
     {
         if (!IsServer) return;
 
-        // Move to next player index and wrap around using the total (Humans + AI)
+
         if (allPlayers > 0)
         {
             whosPlaying.Value = (whosPlaying.Value + 1) % allPlayers;
@@ -176,4 +216,5 @@ public class TurnManager : NetworkBehaviour
         // Calls the Rpc to move the TurnStage enum forward
         nextPhaseServerRpc(); 
     }   
+
 }
