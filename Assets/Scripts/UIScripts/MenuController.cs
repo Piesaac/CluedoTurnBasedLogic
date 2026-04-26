@@ -20,11 +20,15 @@ public class MenuController : NetworkBehaviour
     [SerializeField] private TextMeshProUGUI aiText;
 
     public NetworkVariable<int> aiCount = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    public int numAI;
+    public int numHuman;
+    public int totalPlayers;
 
     public static int numBotsToSpawn;
 
     private void Start()
     {
+        numAI = 0;
         loginPanel.SetActive(true);
         lobbyPanel.SetActive(false);
         startGameBtn.gameObject.SetActive(false);
@@ -47,6 +51,7 @@ public class MenuController : NetworkBehaviour
 
     private void Update()
     {
+        
         if (Netcode.Singleton != null && Netcode.Singleton.IsListening)
         {
             if (Netcode.Singleton.ConnectedClients != null)
@@ -68,9 +73,9 @@ public class MenuController : NetworkBehaviour
             return;
         }
         Debug.Log("Add AI button clicked");
-        int numHuman = Netcode.Singleton.ConnectedClients.Count;
-        int numAI= aiCount.Value;
-        int totalPlayers = numHuman + numAI;
+        numHuman = Netcode.Singleton.ConnectedClients.Count;
+        numAI= aiCount.Value;
+        totalPlayers = numHuman + numAI;
 
         if (totalPlayers >= 6)
         {
@@ -135,9 +140,15 @@ public class MenuController : NetworkBehaviour
 
     public void OnStartGameClicked()
     {
-        Debug.Log("Start Button Clicked!");
-
-        // CRITICAL CHECK: In a Host/Client setup, IsServer must be true for the Host
+        numHuman = Netcode.Singleton.ConnectedClients.Count;
+        totalPlayers = numHuman + aiCount.Value;
+        if (totalPlayers < 2)
+        {
+            Debug.Log($"Total Human Players: {numHuman}");
+            Debug.Log($"Total AI Players: {aiCount.Value}");
+            Debug.LogError("Not enough players in lobby to start game");
+            return;
+        }
         if (NetworkManager.Singleton.IsServer)
         {
             Debug.Log("Server validation passed. Loading Scene...");
