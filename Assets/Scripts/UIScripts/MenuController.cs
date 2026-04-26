@@ -72,7 +72,7 @@ public class MenuController : NetworkBehaviour
         int numAI= aiCount.Value;
         int totalPlayers = numHuman + numAI;
 
-        if (totalPlayers >= 5)
+        if (totalPlayers >= 6)
         {
             aiCount.Value = 0;
         }

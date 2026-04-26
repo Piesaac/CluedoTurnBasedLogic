@@ -29,7 +29,7 @@ public class PlayerSpawner : NetworkBehaviour
             SpawnPlayer(clientId, true, availableIndexes);
         }
 
-        // 2. Spawn AI Players
+
         int aiPlayers = MenuController.numBotsToSpawn;
         for (int i = 0; i < aiPlayers; i++)
         {

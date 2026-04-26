@@ -23,6 +23,9 @@ public class GuessManager : NetworkBehaviour
     public Where chosenWhere;
     [SerializeField] public TextMeshProUGUI guessResult;
 
+    [SerializeField] public GameObject gameplayPanel;
+    [SerializeField] public GameObject spectatorPanel;
+
     public static GuessManager Instance;
 
     void Start()
@@ -45,7 +48,6 @@ public class GuessManager : NetworkBehaviour
 
     public void validateGuess()
     {
-        Debug.Log("Button actually clicked");
         uiscript.suggestionButton();
         chosenWho = uiscript.selectedSuspect;
         chosenWhat = uiscript.selectedWeapon;
@@ -126,10 +128,10 @@ public class GuessManager : NetworkBehaviour
 
         UIController.Instance.disproveText.text = "No cards found!";
         UIController.Instance.disproveText.gameObject.SetActive(true);
-        UIController.Instance.Invoke("hideDisproveText", 4f);
+        UIController.Instance.Invoke("hideDisproveText", 3f);
         
         // If Host, advance the phase because the sequence ended
-        if(IsServer) Invoke("endDisproveServerRpc", 4.1f);
+        if(IsServer) Invoke("endDisproveServerRpc", 3f);
     }
 
     [ClientRpc]
@@ -140,6 +142,7 @@ public class GuessManager : NetworkBehaviour
 
     public void validateAccuse()
     {
+        uiscript.confirmAccuse();
         chosenWho = uiscript.accuseWho;
         chosenWhat = uiscript.accuseWhat;
         chosenWhere = uiscript.accuseWhere;
@@ -148,7 +151,7 @@ public class GuessManager : NetworkBehaviour
     }
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
-    public void submitAccuseServerRpc(Who who, What what, Where where)
+    public void submitAccuseServerRpc(Who who, What what, Where where, RpcParams rpcParams = default)
     {
         bool foundWho = false;
         bool foundWhat = false;
@@ -160,27 +163,80 @@ public class GuessManager : NetworkBehaviour
             if (evidenceCard.type == Card.CardType.Weapon && evidenceCard.value == (int)what) foundWhat = true;
             if (evidenceCard.type == Card.CardType.Room && evidenceCard.value == (int)where) foundWhere = true;
         }
+        bool isWinner = foundWho && foundWhat && foundWhere;
 
-        string message = (foundWho && foundWhat && foundWhere) 
-            ? $"CORRECT! It was {who} with the {what} in the {where}!" 
-            : "WRONG! Youuuu'rrrreee OUT!";
+        if (isWinner)
+        {
+            ulong winnerId = rpcParams.Receive.SenderClientId;
+            string winnerName = "N/A";
+            if (NetworkManager.Singleton.ConnectedClients.TryGetValue(winnerId, out var client))
+            {
+                if (client.PlayerObject.TryGetComponent<Character>(out var character))
+                {
+                    winnerName = character.charName;
+                }
+            }
+            endGameClientRpc(winnerId, winnerName);    
+        }
+        else
+        {
+            ulong loserId = rpcParams.Receive.SenderClientId;
+            kickTheLoser(loserId);
+        }
 
-        returnAnswerClientRpc(message);
-        turnMan.pushNextPhase();
     }
+
+    private void kickTheLoser(ulong playerId)
+    {
+        // 1. Tell the TurnManager to remove them from the list
+        // You likely have a list like 'List<int> turnOrder' in TurnManager
+        if (turnMan != null)
+        {
+            turnMan.removePlayer(playerId);
+        }
+
+        // 2. Tell the Client they are now a spectator
+        tellEmTheyLostClientRpc(RpcTarget.Single((ulong)playerId, RpcTargetUse.Temp));
+
+        // 3. Remove the Player Object from the board
+        if (NetworkManager.Singleton.ConnectedClients.TryGetValue((ulong)playerId, out var client))
+        {
+            var playerObj = client.PlayerObject;
+            if (playerObj != null)
+            {
+                // Despawn will remove it from all clients
+                playerObj.Despawn(true); 
+            }
+        }
+    }
+
+    private void tellEmTheyLostClientRpc()
+    {
+        gameplayPanel.SetActive(false);
+        spectatorText.text = "Accusation Wrong! You are now spectating.";
+        spectatorPanel.SetActive(true);
+    }
+
+
+
+
 
     [ClientRpc]
-    private void returnAnswerClientRpc(string resultText)
+    private void endGameClientRpc(ulong id, string name)
     {
-        guessResult.text = resultText;
-        uiscript.clearGuessDropdowns();
-        Invoke("clearAnswerText", 5f);
+        // Save data to our static class on EVERY client
+        AccuseResult.winID = id;
+        AccuseResult.winName = name;
+        AccuseResult.gameEnd = true;
+
+
+        if (IsServer)
+        {
+            NetworkManager.SceneManager.LoadScene("End", UnityEngine.SceneManagement.LoadSceneMode.Single);
+        }
     }
 
-    private void clearAnswerText()
-    {
-        guessResult.text = "";
-    }   
+
 
     public void disproveResult(string cardName)
     {

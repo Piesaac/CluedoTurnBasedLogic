@@ -180,4 +180,18 @@ public class TurnManager : NetworkBehaviour
         nextPhaseServerRpc(); 
     }   
 
+    public void removePlayer(ulong id)
+    {
+        if (turnOrder.Contains((int)id))
+        {
+            turnOrder.Remove((int)id);
+        }
+
+        // If the person eliminated was the one currently playing, 
+        // move to the next person immediately.
+        if (whosPlaying.Value == (int)id)
+        {
+            nextTurn();
+        }
+    }
 }

@@ -59,6 +59,11 @@ public class UIController : MonoBehaviour
     [SerializeField] private GameObject disprovePanel;
     [SerializeField] private TMP_Dropdown disproveList;
     [SerializeField] public TextMeshProUGUI disproveText;
+
+    [SerializeField] private Button guessButton;
+    [SerializeField] private Button accuseButton;
+    [SerializeField] private Button confirmAccuseButton;
+
     public CardDistributor cardDist;
     List<string> cardNames;
 
@@ -316,6 +321,26 @@ public class UIController : MonoBehaviour
         weaponList.AddOptions(new List<string>(Enum.GetNames(typeof(What))));
         locationList.AddOptions(new List<string>(Enum.GetNames(typeof(Where))));
     }
+
+    public void startAccuse()
+    {
+        clearGuessDropdowns();
+        guessButton.gameObject.SetActive(false);
+        accuseButton.gameObject.SetActive(false);
+        confirmAccuseButton.gameObject.SetActive(true);
+        ShowSuggestionUI();
+    }
+
+    public void confirmAccuse()
+    {
+        accuseWho = (Who)suspectList.value;
+        accuseWhat = (What)weaponList.value;
+        accuseWhere = (Where)locationList.value;
+        HideSuggestionUI();
+        confirmAccuseButton.gameObject.SetActive(false);
+        
+    }
+
 
     public void clearGuessDropdowns()
     {
