@@ -4,7 +4,7 @@ using turnyWurny;
 using System.Collections;
 using CardList;
 
-public class SimpleAIController : NetworkBehaviour
+public class AIPLayer : NetworkBehaviour
 {
     private Movement moveScript;
     private Character characterScript;
