@@ -72,10 +72,16 @@ public class PlayerSpawner : NetworkBehaviour
         GameObject playerInstance = Instantiate(prefabToSpawn, chosenPoint.transform.position, chosenPoint.transform.rotation);
         NetworkObject netObj = playerInstance.GetComponent<NetworkObject>();
 
-        // IMPORTANT: Mark the character as AI or Human before spawning across network
         if (playerInstance.TryGetComponent<Character>(out var character))
         {
             character.isRobot.Value = !isHuman;
+            character.botID.Value = (int)ownerId;
+
+            Debug.Log($"<color=cyan>[Spawner] Configured {character.charName}: ID={ownerId}, Robot={!isHuman}</color>");
+        }
+        else
+        {
+            Debug.LogError($"[Spawner] {prefabToSpawn.name} is missing a Character-derived script!");
         }
 
         if (isHuman)
