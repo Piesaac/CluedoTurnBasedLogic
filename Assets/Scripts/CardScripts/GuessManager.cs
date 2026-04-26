@@ -25,6 +25,7 @@ public class GuessManager : NetworkBehaviour
 
     [SerializeField] public GameObject gameplayPanel;
     [SerializeField] public GameObject spectatorPanel;
+    [SerializeField] public TextMeshProUGUI spectatorText;
 
     public static GuessManager Instance;
 
@@ -195,8 +196,16 @@ public class GuessManager : NetworkBehaviour
             turnMan.removePlayer(playerId);
         }
 
-        // 2. Tell the Client they are now a spectator
-        tellEmTheyLostClientRpc(RpcTarget.Single((ulong)playerId, RpcTargetUse.Temp));
+        ClientRpcParams clientRpcParams = new ClientRpcParams
+        {
+            Send = new ClientRpcSendParams 
+            { 
+                TargetClientIds = new ulong[] { playerId } 
+            }
+        };
+
+        // Pass the parameters to the RPC
+        tellEmTheyLostClientRpc(clientRpcParams);
 
         // 3. Remove the Player Object from the board
         if (NetworkManager.Singleton.ConnectedClients.TryGetValue((ulong)playerId, out var client))
@@ -210,11 +219,18 @@ public class GuessManager : NetworkBehaviour
         }
     }
 
-    private void tellEmTheyLostClientRpc()
+    [ClientRpc]
+    private void tellEmTheyLostClientRpc(ClientRpcParams rpcParams = default)
     {
         gameplayPanel.SetActive(false);
         spectatorText.text = "Accusation Wrong! You are now spectating.";
         spectatorPanel.SetActive(true);
+        Invoke("hideSpectatorText", 4f);
+    }
+
+    private void hideSpectatorText()
+    {
+        spectatorPanel.SetActive(false);
     }
 
 

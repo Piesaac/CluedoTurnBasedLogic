@@ -182,14 +182,14 @@ public class TurnManager : NetworkBehaviour
 
     public void removePlayer(ulong id)
     {
-        if (turnOrder.Contains((int)id))
+        if (turnOrder.Contains(id))
         {
-            turnOrder.Remove((int)id);
+            turnOrder.Remove(id);
         }
 
         // If the person eliminated was the one currently playing, 
         // move to the next person immediately.
-        if (whosPlaying.Value == (int)id)
+        if ((ulong)whosPlaying.Value == id)
         {
             nextTurn();
         }
