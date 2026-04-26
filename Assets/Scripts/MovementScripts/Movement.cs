@@ -458,20 +458,29 @@ public class Movement : NetworkBehaviour
 
     void delayNextTurn()
     {
-        if (whomst.whatPhase.Value == TurnStage.SUGGESTING) return;
-        // Ensures this is the host and turn manager has been found
-        if (IsServer) 
+        if (!IsServer)
         {
-            if (whomst != null)
-            {
-                whomst.nextTurn();
-            }
-            else
-            {
-                // If turn manager is not found, find it again and then pushes to next phase
-                whomst = GameObject.FindFirstObjectByType<TurnManager>();
-                whomst?.nextTurn();
-            }
+            reqTurnChangeServerRpc();
+            return;
+        }
+
+        forceNextTurn();
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    private void reqTurnChangeServerRpc()
+    {
+        forceNextTurn();
+    }
+
+    private void forceNextTurn()
+    {
+        if (whomst == null) whomst = GameObject.FindFirstObjectByType<TurnManager>();
+    
+        // Safety: Only end turn if we aren't already suggesting
+        if (whomst != null && whomst.whatPhase.Value != TurnStage.SUGGESTING)
+        {
+            whomst.nextTurn();
         }
     }
 
