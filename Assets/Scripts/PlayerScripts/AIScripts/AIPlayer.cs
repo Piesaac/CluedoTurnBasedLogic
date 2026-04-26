@@ -10,6 +10,7 @@ public class AIPLayer : NetworkBehaviour
     private Character characterScript;
     private bool isThinking = false;
     public GameObject stage; 
+    private Rolling dice;
 
     void Start()
     {
@@ -62,7 +63,10 @@ public class AIPLayer : NetworkBehaviour
         // --- PHASE: ROLLING ---
         if (tm.whatPhase.Value == TurnStage.ROLLING)
         {
+            dice = FindFirstObjectByType<Rolling>();
             yield return new WaitForSeconds(2.0f);
+            dice.callRoll();
+            /*
             int roll = Random.Range(2, 13);
 
             // Set the move tokens on the server
@@ -71,6 +75,9 @@ public class AIPLayer : NetworkBehaviour
 
             // Tell TurnManager to move to the MOVING phase
             tm.pushNextPhase();
+            */
+
+
         }
 
         // --- PHASE: MOVING ---

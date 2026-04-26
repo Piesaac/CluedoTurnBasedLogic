@@ -5,56 +5,77 @@ using turnyWurny;
 
 public class Rolling : NetworkBehaviour
 {
-    private int firstVal;
-    private int secondVal;
-    private int totalVal;
     public TurnManager turnMan;
     public TextMeshProUGUI diceResult;
 
-    // Initialises dice values as 0 and finds TurnManager. 
     void Start()
     {
-        firstVal = 0;
-        secondVal = 0;
         if (turnMan == null) turnMan = Object.FindFirstObjectByType<TurnManager>();
     }
 
-    // Method used to roll the dice.
+    // This is the new "Unified" roll method
     public void callRoll()
     {
-        Debug.Log("Rolling: callRoll() called");
-        // 1. Validation
-        if (turnMan.whosPlaying.Value != (int)NetworkManager.Singleton.LocalClientId) return;
-        if (turnMan.whatPhase.Value != TurnStage.ROLLING) return; // Prevent double-rolling
+        // 1. Validation Logic
+        // Use the TurnManager's current ID instead of LocalClientId
+        ulong activePlayerId = (ulong)turnMan.whosPlaying.Value;
 
-        // 2. Roll Logic
-        firstVal = UnityEngine.Random.Range(1, 7);
-        secondVal = UnityEngine.Random.Range(1, 7);
-        totalVal = firstVal + secondVal;
-    
-        diceResult.text = $"Rolled: {firstVal} + {secondVal} = {totalVal}";
-
-        // 3. Communicate to Server
-        if (NetworkManager.Singleton.LocalClient.PlayerObject.TryGetComponent<Movement>(out var moveScript))
-        {
-            // Tell the server the value
-            moveScript.setMovesServerRpc(totalVal);
+        // If we are a client, only allow rolling if we own the active player
+        if (!IsServer && activePlayerId != NetworkManager.Singleton.LocalClientId) return;
         
-            // IMPORTANT: The TurnManager should handle the phase shift 
-            // ONLY after the moves are successfully set.
+        // Ensure we are in the correct phase
+        if (turnMan.whatPhase.Value != TurnStage.ROLLING) return;
+
+        ExecuteRollServerRpc(activePlayerId);
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    private void ExecuteRollServerRpc(ulong playerId)
+    {
+        // Roll logic happens on the Server for security
+        int firstVal = Random.Range(1, 7);
+        int secondVal = Random.Range(1, 7);
+        int totalVal = firstVal + secondVal;
+
+        // Update the UI for everyone
+        UpdateDiceUIClientRpc(firstVal, secondVal, totalVal);
+
+        // Find the specific player object (Human or Bot)
+        GameObject playerObj = GetPlayerObject(playerId);
+        
+        if (playerObj != null && playerObj.TryGetComponent<Movement>(out var moveScript))
+        {
+            moveScript.setMovesServerRpc(totalVal);
             turnMan.reqNextPhase(); 
         }
+    }
 
-        // Reset local values
-        firstVal = 0;
-        secondVal = 0;
+    [ClientRpc]
+    private void UpdateDiceUIClientRpc(int f, int s, int total)
+    {
+        if (diceResult != null)
+            diceResult.text = $"Rolled: {f} + {s} = {total}";
+    }
+
+    private GameObject GetPlayerObject(ulong id)
+    {
+        // Search for human clients
+        if (NetworkManager.Singleton.ConnectedClients.TryGetValue(id, out var client))
+            return client.PlayerObject.gameObject;
+
+        // Search for bot objects in the scene
+        foreach (var obj in NetworkManager.Singleton.SpawnManager.SpawnedObjects.Values)
+        {
+            if (obj.TryGetComponent<Character>(out var character) && (ulong)character.botID.Value == id)
+                return obj.gameObject;
+        }
+        return null;
     }
 
     void Update()
     {
         if (turnMan == null) return;
-
-        if (turnMan.whatPhase.Value == TurnStage.SUGGESTING)
+        if (turnMan.whatPhase.Value == TurnStage.SUGGESTING && diceResult != null)
         {
             diceResult.text = " ";
         }

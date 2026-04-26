@@ -164,14 +164,9 @@ public class TurnManager : NetworkBehaviour
     public void nextTurn()
     {
         if (!IsServer) return;
-        foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
-        {
-            client.PlayerObject.GetComponent<Movement>().move_tokens.Value = 0;
-        }
-        if (allPlayers > 0)
-        {
-            whosPlaying.Value = (whosPlaying.Value + 1) % allPlayers;
-        }
+        int currentIndex = turnOrder.IndexOf((ulong)whosPlaying.Value);
+        int nextIndex = (currentIndex + 1) % turnOrder.Count;
+        whosPlaying.Value = (int)turnOrder[nextIndex];
         whatPhase.Value = TurnStage.ROLLING;
         Debug.Log($"TurnManager: nextTurn() called | Turn passed to index: {whosPlaying.Value}");
     }
