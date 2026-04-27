@@ -34,7 +34,8 @@ public class Movement : NetworkBehaviour
     private bool isMoving = false;
 
     // Stores room player is currently in for room exit logic.
-    public string currentRoomName;
+    public NetworkVariable<Unity.Collections.FixedString32Bytes> currentRoomName = 
+    new NetworkVariable<Unity.Collections.FixedString32Bytes>("", NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
 
     public NetworkVariable<int> move_tokens = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
@@ -301,7 +302,7 @@ public class Movement : NetworkBehaviour
         if (Physics.Raycast(rayStart, Vector3.down, out RaycastHit roomHit, 3.0f, Physics.AllLayers, QueryTriggerInteraction.Collide))
         {
             Room roomComponent = roomHit.collider.GetComponentInParent<Room>();
-            currentRoomName = roomComponent != null ? roomComponent.myName : "";
+            currentRoomName.Value = roomComponent != null ? roomComponent.myName : "";
         }
 
         if (IsOwner && UIController.Instance != null)
@@ -355,7 +356,6 @@ public class Movement : NetworkBehaviour
         isMoving = false; 
         onWhite = false;
 
-        // CRITICAL: Clear the old door reference and find the new floor/room
         stage = null; 
         whereWeAt(); 
 
@@ -377,6 +377,7 @@ public class Movement : NetworkBehaviour
     public void submitEntryServerRpc(ulong stageNetworkObjectId)
     {
         Debug.Log("Movement: submitEntryServerRpc() called");
+        CancelInvoke("delayNextTurn");
         // Find the object on the server using the ID passed by the client
         if (NetworkManager.SpawnManager.SpawnedObjects.TryGetValue(stageNetworkObjectId, out NetworkObject stageNetObj))
         {
@@ -443,6 +444,7 @@ public class Movement : NetworkBehaviour
     [ServerRpc]
     public void activateSecPassServerRpc()
     {
+        CancelInvoke("delayNextTurn");
         // 1. Map the connections
         Dictionary<string, string> passages = new Dictionary<string, string>
         {
@@ -451,10 +453,12 @@ public class Movement : NetworkBehaviour
             { "Conservatory", "Lounge" },
             { "Lounge", "Conservatory" }
         };
+        string currentNameStr = currentRoomName.Value.ToString();
 
-        if (passages.ContainsKey(currentRoomName))
+        if (passages.ContainsKey(currentNameStr))
         {
-            string targetRoomName = passages[currentRoomName];
+            
+            string targetRoomName = passages[currentNameStr];
         
             // 2. Find any Door that belongs to the destination room
             Door targetDoor = FindDoorForRoom(targetRoomName);
@@ -522,10 +526,11 @@ public class Movement : NetworkBehaviour
         if (!IsServer)
         {
             reqTurnChangeServerRpc();
-            return;
         }
-
-        forceNextTurn();
+        else
+        {
+            forceNextTurn();
+        }
     }
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]

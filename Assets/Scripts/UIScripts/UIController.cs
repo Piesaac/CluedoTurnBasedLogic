@@ -195,7 +195,7 @@ public class UIController : MonoBehaviour
                 if (isInRoom) 
                 {
                     exitDropdown();
-                    if (localPlayerScript.currentRoomName == "Study" || localPlayerScript.currentRoomName == "Kitchen" || localPlayerScript.currentRoomName == "Conservatory" || localPlayerScript.currentRoomName == "Lounge")
+                    if (localPlayerScript.currentRoomName.Value == "Study" || localPlayerScript.currentRoomName.Value == "Kitchen" || localPlayerScript.currentRoomName.Value == "Conservatory" || localPlayerScript.currentRoomName.Value == "Lounge")
                     {
                         secPasBtn.gameObject.SetActive(true);
                     }
@@ -264,7 +264,7 @@ public class UIController : MonoBehaviour
 
         foreach (var door in allDoors)
         {
-            if (door.roomName == localPlayerScript.currentRoomName) 
+            if (door.roomName == localPlayerScript.currentRoomName.Value) 
             {
                 currentDoors.Add(door);
                 exitNames.Add(door.exitName);   
