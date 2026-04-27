@@ -39,6 +39,7 @@ public class UIController : MonoBehaviour
     public Button entryButton;
     private List<Door> currentDoors = new List<Door>();
     private List<string> exitNames = new List<string>();
+    public Button secPasBtn;
 
     // Instance of this UI controller
     public static UIController Instance;
@@ -194,6 +195,10 @@ public class UIController : MonoBehaviour
                 if (isInRoom) 
                 {
                     exitDropdown();
+                    if (localPlayerScript.currentRoomName == "Study" || localPlayerScript.currentRoomName == "Kitchen" || localPlayerScript.currentRoomName == "Conservatory" || localPlayerScript.currentRoomName == "Lounge")
+                    {
+                        secPasBtn.gameObject.SetActive(true);
+                    }
                 }
             }
             else
@@ -202,6 +207,7 @@ public class UIController : MonoBehaviour
                 entryButton.gameObject.SetActive(false);
                 exitButton.gameObject.SetActive(false);
                 moves.gameObject.SetActive(false);
+                secPasBtn.gameObject.SetActive(false);
             }
         }
         else
@@ -393,5 +399,13 @@ public class UIController : MonoBehaviour
     {
         cluesheetToggled = !cluesheetToggled;
         clueSheet.SetActive(cluesheetToggled);
+    }
+
+    public void secretPassageBtn()
+    {
+        if (localPlayerScript != null)
+        {
+            localPlayerScript.activateSecPassServerRpc();
+        }
     }
 }

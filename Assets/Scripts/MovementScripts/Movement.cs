@@ -71,7 +71,7 @@ public class Movement : NetworkBehaviour
         return false;
     }
 
-    
+
     private IEnumerator linkUI()
     {
         Debug.Log("Movement: linkUI() called");
@@ -364,7 +364,7 @@ public class Movement : NetworkBehaviour
 
     private IEnumerator delayedExitList()
     {
-        Debug.Log("<color=green>Movement: delayedExitList() called");
+        Debug.Log("Movement: delayedExitList() called");
         yield return new WaitForSeconds(0.1f);
         if (UIController.Instance != null)
         {
@@ -438,6 +438,63 @@ public class Movement : NetworkBehaviour
             }
         }
         whereWeAt();
+    }
+
+    [ServerRpc]
+    public void activateSecPassServerRpc()
+    {
+        // 1. Map the connections
+        Dictionary<string, string> passages = new Dictionary<string, string>
+        {
+            { "Study", "Kitchen" },
+            { "Kitchen", "Study" },
+            { "Conservatory", "Lounge" },
+            { "Lounge", "Conservatory" }
+        };
+
+        if (passages.ContainsKey(currentRoomName))
+        {
+            string targetRoomName = passages[currentRoomName];
+        
+            // 2. Find any Door that belongs to the destination room
+            Door targetDoor = FindDoorForRoom(targetRoomName);
+
+            if (targetDoor != null)
+            {
+
+                Vector3 targetPos = targetDoor.GetRoomPosition((int)OwnerClientId);
+
+                // 5. Authoritative Move
+                transform.position = targetPos;
+                moveToRoomClientRpc(targetPos);
+            
+                move_tokens.Value = 0;
+            
+                if (whomst.whatPhase.Value == TurnStage.MOVING)
+                {
+                    whomst.pushNextPhase();
+                }
+            }
+            else
+            {
+                Debug.LogError($"SecretPassage: Could not find a Door associated with {targetRoomName}");
+            }
+        }
+    }
+
+    private Door FindDoorForRoom(string targetRoom)
+    {
+        Door[] allDoors = GameObject.FindObjectsByType<Door>(FindObjectsSortMode.None);
+    
+        foreach (Door d in allDoors)
+        {
+            // Option 1: Check the new string variable (Most Reliable)
+            if (d.roomName == targetRoom)
+            {
+                return d;
+            }
+        }
+        return null;
     }
 
     // ------------ End of room entry logic ------------
