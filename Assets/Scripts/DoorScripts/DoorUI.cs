@@ -27,7 +27,7 @@ public class DoorUI : MonoBehaviour
     public void UpdateVisibility()
     {
         // 1. Get the current active player ID
-        int activePlayerId = turnMan.whosPlaying.Value;
+        int activePlayerId = (int) turnMan.whosPlaying.Value;
     
         // 2. Get the local player's ID
         int myId = (int)NetworkManager.Singleton.LocalClientId;

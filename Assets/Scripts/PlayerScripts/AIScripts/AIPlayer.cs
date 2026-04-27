@@ -45,7 +45,7 @@ public class AIPLayer : NetworkBehaviour
         if (tm == null) return;
 
         // 4. Check the Turn Match
-        bool isMyTurn = (characterScript.botID.Value == tm.whosPlaying.Value);
+        bool isMyTurn = ((ulong)characterScript.botID.Value == tm.whosPlaying.Value);
 
         if (isMyTurn && !isThinking)
         {

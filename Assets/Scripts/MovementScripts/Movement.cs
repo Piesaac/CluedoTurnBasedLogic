@@ -37,9 +37,9 @@ public class Movement : NetworkBehaviour
     public string currentRoomName;
 
 
-    // Allows the variable to be viewable by all players but only changable by the host
     public NetworkVariable<int> move_tokens = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
+    // Links Player to their own UI Controller 
     public override void OnNetworkSpawn()
     {
         if (!IsOwner || turingTest())
@@ -48,11 +48,13 @@ public class Movement : NetworkBehaviour
         } 
         else
         {
+            /*
             uiobj = GameObject.FindFirstObjectByType<UIController>();
             if (uiobj != null)
             {
                 uiobj.localPlayerScript = this;
             }
+            */
         }
 
         searchOnce();
@@ -61,6 +63,7 @@ public class Movement : NetworkBehaviour
 
     }
 
+    // Returns if the local player has been marked as an AI in their Character script.
     private bool turingTest() 
     {
         Debug.Log("Movement: turingTest() called");
@@ -68,6 +71,7 @@ public class Movement : NetworkBehaviour
         return false;
     }
 
+    
     private IEnumerator linkUI()
     {
         Debug.Log("Movement: linkUI() called");
@@ -142,7 +146,6 @@ public class Movement : NetworkBehaviour
         move_tokens.Value = value;
     }
 
-    // Runs 60 times in a second
     void Update()
     {
         if (!IsOwner) return;
@@ -157,7 +160,7 @@ public class Movement : NetworkBehaviour
         if (whomst != null && Mouse.current.leftButton.wasPressedThisFrame)
         {
             Debug.Log($"Click registered! Turn: {whomst.whosPlaying.Value}, Phase: {whomst.whatPhase.Value}, Moving: {isMoving}");
-            bool isMyTurn = (whomst.whosPlaying.Value == (int)NetworkManager.Singleton.LocalClientId);
+            bool isMyTurn = (whomst.whosPlaying.Value == NetworkManager.Singleton.LocalClientId);
             bool isMovingPhase = (whomst.whatPhase.Value == TurnStage.MOVING);
 
             if (isMyTurn && isMovingPhase && !isMoving)
@@ -217,6 +220,7 @@ public class Movement : NetworkBehaviour
     {   
         Debug.Log("Movement: requestMoveServerRpc() called");
         // This is the tile the player has clicked to move to.
+        Tile currentTile = GetTileAtPosition(transform.position);
         Tile targetTile = GetTileAtPosition(destination);
 
         // Validates movements and updates onto the server
@@ -225,7 +229,7 @@ public class Movement : NetworkBehaviour
         // Allows movement if the tile is not occupied and the player has enough move tokens.
         if (move_tokens.Value > 0 && targetTile != null && !targetTile.occupied.Value)
         {
-            if (stage != null) stage.GetComponent<Tile>().updateOccupied(false);
+            if (currentTile != null) currentTile.updateOccupied(false);
 
             // Marks tile as occupied if player moves onto it.
             targetTile.updateOccupied(true);
@@ -420,7 +424,7 @@ public class Movement : NetworkBehaviour
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner)]
     public void submitExitServerRpc(ulong doorId)
     {
-        if (whomst.whosPlaying.Value != (int)OwnerClientId) return;
+        if (whomst.whosPlaying.Value != OwnerClientId) return;
 
         // Find the NetworkObject by its ID on the server
         if (NetworkManager.SpawnManager.SpawnedObjects.TryGetValue(doorId, out NetworkObject doorNetworkObject))
@@ -521,6 +525,30 @@ public class Movement : NetworkBehaviour
                 requestMoveServerRpc(clickedTile.getTopPosition(), isWhite);
             }
         }
+    }
+
+    [ClientRpc]
+    public void SetPlayerVisibilityClientRpc(bool isVisible)
+    {
+        // 1. Handle Mesh Renderers (including children)
+        foreach (var renderer in GetComponentsInChildren<Renderer>())
+        {
+            renderer.enabled = isVisible;
+        }
+
+        // 2. Handle Colliders (so players can walk through the ghost)
+        foreach (var col in GetComponentsInChildren<Collider>())
+        {
+            col.enabled = isVisible;
+        }
+
+        // 3. Handle Canvas/UI (if the player has a name tag floating over them)
+        foreach (var canvas in GetComponentsInChildren<Canvas>())
+        {
+            canvas.enabled = isVisible;
+        }
+    
+        Debug.Log($"<color=orange>Visibility set to {isVisible} for {gameObject.name}</color>");
     }
 
 }

@@ -190,31 +190,51 @@ public class GuessManager : NetworkBehaviour
     private void kickTheLoser(ulong playerId)
     {
         // 1. Tell the TurnManager to remove them from the list
-        // You likely have a list like 'List<int> turnOrder' in TurnManager
         if (turnMan != null)
         {
             turnMan.removePlayer(playerId);
         }
 
+        // 2. Get the Player Object and clear their tile
+        if (NetworkManager.Singleton.ConnectedClients.TryGetValue(playerId, out var client))
+        {
+            if (client.PlayerObject != null)
+            {
+                // Get the Movement script from the player prefab
+                if (client.PlayerObject.TryGetComponent<Movement>(out var moveScript))
+                {
+                    Tile currentTile = moveScript.stage.GetComponent<Tile>();
+                    currentTile.updateOccupied(false);
+                    moveScript.SetPlayerVisibilityClientRpc(false); 
+                }
+            }
+        }
+
+        // 3. Notify the loser
         ClientRpcParams clientRpcParams = new ClientRpcParams
         {
-            Send = new ClientRpcSendParams 
-            { 
-                TargetClientIds = new ulong[] { playerId } 
-            }
+            Send = new ClientRpcSendParams { TargetClientIds = new ulong[] { playerId } }
         };
-
-        // Pass the parameters to the RPC
         tellEmTheyLostClientRpc(clientRpcParams);
+}
 
-        // 3. Remove the Player Object from the board
-        if (NetworkManager.Singleton.ConnectedClients.TryGetValue((ulong)playerId, out var client))
+    [Rpc(SendTo.Everyone)]
+    public void HidePlayerRpc(ulong networkObjectId)
+    {
+        // Find the object by its NetworkId
+        if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(networkObjectId, out var netObj))
         {
-            var playerObj = client.PlayerObject;
-            if (playerObj != null)
+            // Disable all renderers so the player "vanishes"
+            Renderer[] allRenderers = netObj.GetComponentsInChildren<Renderer>();
+            foreach (Renderer r in allRenderers)
             {
-                // Despawn will remove it from all clients
-                playerObj.Despawn(true); 
+                r.enabled = false;
+            }
+
+            // Optional: Disable the collider so they don't block other players
+            if (netObj.TryGetComponent<Collider>(out var col))
+            {
+                col.enabled = false;
             }
         }
     }

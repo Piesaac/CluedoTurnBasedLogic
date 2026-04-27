@@ -14,43 +14,54 @@ public class TurnManager : NetworkBehaviour
 
     [Header("Settings")]
     public NetworkVariable<TurnStage> whatPhase = new NetworkVariable<TurnStage>(TurnStage.ROLLING);
-    public NetworkVariable<int> whosPlaying = new NetworkVariable<int>(0);
+    public NetworkVariable<ulong> whosPlaying = new NetworkVariable<ulong>(0);
 
-    public List<ulong> turnOrder = new List<ulong>();
+    public NetworkList<ulong> turnOrder = new NetworkList<ulong>(null, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
-    private int allPlayers = 0;
+
 
     public override void OnNetworkSpawn()
     {
+        // Important: List events should be subscribed to by everyone
+        turnOrder.OnListChanged += (changeEvent) => {
+            Debug.Log("Client: Turn Order List Changed!");
+            updateUI();
+        };
+
         if (IsServer)
         {
             SetupTurnOrder();
-            // Start the game with the first ID in the list
-            whosPlaying.Value = (int)turnOrder[0];
+            whosPlaying.Value = turnOrder[0];
         }
 
+        // Subscribe to variable changes
         whatPhase.OnValueChanged += (oldVal, newVal) => updateUI();
         whosPlaying.OnValueChanged += (oldVal, newVal) => updateUI();
+    
         updateUI();
     }
 
     private void SetupTurnOrder()
     {
-        turnOrder.Clear();
+        if (!IsServer) return;
 
-        // 1. Add all human Client IDs (typically 0, 1, 2...)
+        List<ulong> initialOrder = new List<ulong>();
+    
         foreach (var client in NetworkManager.Singleton.ConnectedClientsIds)
         {
-            turnOrder.Add(client);
+            initialOrder.Add(client);
         }
 
-        // 2. Add all Bot IDs (starting at 100 as per your PlayerSpawner)
         for (int i = 0; i < MenuController.numBotsToSpawn; i++)
         {
-            turnOrder.Add((ulong)(100 + i));
+            initialOrder.Add((ulong)(100 + i));
         }
-        allPlayers = turnOrder.Count;
-        Debug.Log($"TurnManager: Sequence initialized with {allPlayers} players.");
+
+        turnOrder.Clear();
+        foreach (var id in initialOrder)
+        {
+            turnOrder.Add(id);
+        }
     }
 
     public bool turingTest()
@@ -71,7 +82,7 @@ public class TurnManager : NetworkBehaviour
 
     private GameObject GetActivePlayerObject()
     {
-        ulong activeId = (ulong)whosPlaying.Value;
+        ulong activeId = whosPlaying.Value;
         
         // Check humans
         if (NetworkManager.Singleton.ConnectedClients.TryGetValue(activeId, out var client))
@@ -98,40 +109,60 @@ public class TurnManager : NetworkBehaviour
 
     private void updateUI()
     {
-        Debug.Log($"TurnManager: updateUI called");
-        if (status != null)
-        {
-            status.text = whatPhase.Value.ToString() + "!";
-        }
-
+        // 1. Update the Active Player Name
         if (activePlayerText != null)
         {
-            int humanCount = NetworkManager.Singleton.ConnectedClients.Count;
-            string playerName = "";
+            ulong activeId = whosPlaying.Value;
+            activePlayerText.text = "Current Player: " + getCharacter(activeId); 
 
-            if (whosPlaying.Value == 0) playerName = "Miss Scarlett";
-            else if (whosPlaying.Value == 1) playerName = "Colonel Mustard";
-            else playerName = "Player " + (whosPlaying.Value + 1);
+            if (activeId == NetworkManager.Singleton.LocalClientId)
+                activePlayerText.text += " (YOU)";
+        }
 
-            if (whosPlaying.Value >= humanCount)
+        // 2. Update the Phase Text (This is what was missing)
+        if (status != null)
+        {
+            // Converts the Enum (ROLLING, MOVING, etc.) to a string
+            status.text = "Current Phase: " + whatPhase.Value.ToString();
+        
+            // Optional: Add a little color so it's obvious it changed
+            status.color = Color.yellow; 
+        }
+
+        // Debug to console to verify values are actually reaching the client
+        Debug.Log($"[UI DEBUG] Player: {whosPlaying.Value} | Phase: {whatPhase.Value}");
+    }
+
+    private string getCharacter(ulong id)
+    {
+        // 1. Try to find a human client first
+        if (NetworkManager.Singleton.ConnectedClients.TryGetValue(id, out var client))
+        {
+            if (client.PlayerObject != null && client.PlayerObject.TryGetComponent<Character>(out var character))
             {
-                activePlayerText.text = $"{playerName} (AI)";
+                return character.charName;
             }
-            else
+        }
+
+
+        foreach (var obj in NetworkManager.Singleton.SpawnManager.SpawnedObjects.Values)
+        {
+            if (obj.TryGetComponent<Character>(out var character))
             {
-                activePlayerText.text = playerName;
-                
-                if (whosPlaying.Value == (int)NetworkManager.Singleton.LocalClientId)
+
+                if (character.isRobot.Value && id >= 100) 
                 {
-                    activePlayerText.text += " (YOU)";
+                    if (obj.gameObject.name.Contains(id.ToString())) return character.charName;
                 }
             }
         }
+
+        return "Spectator";
     }
 
     public void reqNextPhase()
     {
-        if (NetworkManager.Singleton.LocalClientId == (ulong)whosPlaying.Value || IsServer) 
+        if (NetworkManager.Singleton.LocalClientId == whosPlaying.Value || IsServer) 
         {
             nextPhaseServerRpc();
         }
@@ -164,9 +195,9 @@ public class TurnManager : NetworkBehaviour
     public void nextTurn()
     {
         if (!IsServer) return;
-        int currentIndex = turnOrder.IndexOf((ulong)whosPlaying.Value);
+        int currentIndex = turnOrder.IndexOf(whosPlaying.Value);
         int nextIndex = (currentIndex + 1) % turnOrder.Count;
-        whosPlaying.Value = (int)turnOrder[nextIndex];
+        whosPlaying.Value = turnOrder[nextIndex];
         whatPhase.Value = TurnStage.ROLLING;
         Debug.Log($"TurnManager: nextTurn() called | Turn passed to index: {whosPlaying.Value}");
     }
@@ -182,16 +213,42 @@ public class TurnManager : NetworkBehaviour
 
     public void removePlayer(ulong id)
     {
-        if (turnOrder.Contains(id))
+        if (!IsServer) return;
+
+        // Find the index manually to ensure we have it
+        int indexToRemove = -1;
+        for (int i = 0; i < turnOrder.Count; i++)
         {
-            turnOrder.Remove(id);
+            if (turnOrder[i] == id)
+            {
+                indexToRemove = i;
+                break;
+            }
         }
 
-        // If the person eliminated was the one currently playing, 
-        // move to the next person immediately.
-        if ((ulong)whosPlaying.Value == id)
+        if (indexToRemove != -1)
         {
-            nextTurn();
+            // Use RemoveAt - this triggers a specific 'Remove' event for Clients
+            turnOrder.RemoveAt(indexToRemove);
+            Debug.Log($"[Server] Removed ID {id} from Turn Order.");
         }
+
+        // Logic for passing the turn if the current player was kicked
+        if (whosPlaying.Value == id && turnOrder.Count > 0)
+        {
+            // Move to the next available person in the list
+            int nextIndex = indexToRemove % turnOrder.Count;
+            whosPlaying.Value = turnOrder[nextIndex];
+            whatPhase.Value = TurnStage.ROLLING;
+        }
+
+        // Force an immediate UI refresh for the Host
+        updateUI();
+    }
+
+    [ClientRpc]
+    private void updateClientUIClientRpc()
+    {
+        updateUI();
     }
 }
