@@ -97,6 +97,10 @@ public class MenuController : NetworkBehaviour
 
     public void OnHostClicked()
     {
+        if (NetworkManager.Singleton.IsListening || NetworkManager.Singleton.IsClient || NetworkManager.Singleton.IsServer)
+        {
+            NetworkManager.Singleton.Shutdown();
+        }
         Debug.Log("Host button clicked");
         if (Netcode.Singleton.StartHost())
         {
