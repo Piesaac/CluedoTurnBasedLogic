@@ -62,8 +62,10 @@ public class AIPLayer : NetworkBehaviour
     {
         isThinking = true;
 
-        // HEARTBEAT LOG: This confirms the bot has recognized its turn
-        Debug.Log($"<color=yellow>[AI BRAIN] {characterScript.charName} (ID {characterScript.botID.Value}) is starting its turn.</color>");
+        // Tiny random delay so they don't act instantly
+        yield return new WaitForSeconds(Random.Range(0.5f, 1.5f));
+
+        Debug.Log($"<color=yellow>[AI BRAIN] {characterScript.charName} starting turn.</color>");
 
         // --- PHASE: ROLLING ---
         if (tm.whatPhase.Value == TurnStage.ROLLING)
@@ -71,18 +73,9 @@ public class AIPLayer : NetworkBehaviour
             dice = FindFirstObjectByType<Rolling>();
             yield return new WaitForSeconds(2.0f);
             dice.callRoll();
-            /*
-            int roll = Random.Range(2, 13);
-
-            // Set the move tokens on the server
-            moveScript.setMovesServerRpc(roll);
-            yield return new WaitForSeconds(1.0f);
-
-            // Tell TurnManager to move to the MOVING phase
-            tm.pushNextPhase();
-            */
-
-
+            // We exit here because the phase will change and Update will restart this routine
+            isThinking = false;
+            yield break;
         }
 
         // --- PHASE: MOVING ---
@@ -90,23 +83,20 @@ public class AIPLayer : NetworkBehaviour
         {
             yield return new WaitForSeconds(0.8f);
 
-            // FIX: If the bot doesn't know what tile it's on, find the nearest one
             if (moveScript.stage == null)
             {
-                Debug.Log("[AI] Stage is null. Searching for nearest tile...");
                 FindStartingTile();
                 yield return new WaitForSeconds(0.2f);
-                if (moveScript.stage == null) break; // Still null? Stop to avoid crash
+                if (moveScript.stage == null) break;
             }
 
-            // 1. Check for doors
             if (moveScript.IsOnDoor())
             {
                 moveScript.submitEntryServerRpc(moveScript.stage.GetComponent<NetworkObject>().NetworkObjectId);
+                yield return new WaitForSeconds(1.0f);
                 break;
             }
 
-            // 2. Movement logic
             Tile currentTile = moveScript.stage.GetComponent<Tile>();
             if (currentTile != null && currentTile.neighbours.Count > 0)
             {
@@ -115,34 +105,40 @@ public class AIPLayer : NetworkBehaviour
             }
         }
 
-        // --- PHASE: SUGGESTING ---
+        // --- PHASE: SUGGESTING (Only if in a room) ---
         if (tm.whatPhase.Value == TurnStage.SUGGESTING)
         {
             yield return new WaitForSeconds(2.0f);
-
-            // AI picks random card indices
             Who who = (Who)Random.Range(0, 6);
             What what = (What)Random.Range(0, 6);
             Where where = (Where)Random.Range(0, 9);
 
-            Debug.Log($"[AI] Suggesting: {who} with the {what} in the {where}");
+            Debug.Log($"[AI] Suggesting: {who} with {what} in {where}");
             GuessManager.Instance.submitGuessServerRpc(who, what, where);
+
+            // Wait for the suggestion to finish before checking for accusation
+            yield return new WaitForSeconds(2.0f);
         }
 
-        // --- RECKLESS ACCUSATION ---
-        if (Random.value < accusationChance)
+        // --- THE FIX: RECKLESS ACCUSATION (End of Turn Check) ---
+        // We only check for accusation if the AI is DONE moving (0 tokens) 
+        // OR it is currently in the Suggestion phase.
+        if (moveScript.move_tokens.Value == 0 || tm.whatPhase.Value == TurnStage.SUGGESTING)
         {
-            Debug.Log($"<color=red>[AI] {characterScript.charName} is making a final accusation!</color>");
+            if (Random.value < accusationChance)
+            {
+                Debug.Log($"<color=red>[AI] {characterScript.charName} making final accusation!</color>");
 
-            // 1. Pick the three random values
-            Who finalWho = (Who)Random.Range(0, 6);
-            What finalWhat = (What)Random.Range(0, 6);
-            Where finalWhere = (Where)Random.Range(0, 9);
+                Who finalWho = (Who)Random.Range(0, 6);
+                What finalWhat = (What)Random.Range(0, 6);
+                Where finalWhere = (Where)Random.Range(0, 9);
 
-            // 2. Call the EXACT name from your screenshot with all 3 arguments
-            // It must be (Who, What, Where) in that order!
-            // Pass 'NetworkObjectId' so the server knows which BOT to kick
-            GuessManager.Instance.submitAccuseServerRpc(finalWho, finalWhat, finalWhere, NetworkObjectId);
+                GuessManager.Instance.submitAccuseServerRpc(finalWho, finalWhat, finalWhere, NetworkObjectId);
+
+                // If we accuse, we stop the routine here (because we are either winning or kicked)
+                isThinking = false;
+                yield break;
+            }
         }
 
         isThinking = false;
