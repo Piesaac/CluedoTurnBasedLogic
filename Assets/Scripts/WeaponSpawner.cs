@@ -3,8 +3,8 @@ using Unity.Netcode;
 
 public class WeaponSpawner : NetworkBehaviour
 {
-    [Header("Scene Weapons (already in scene)")]
-    [SerializeField] private NetworkObject[] weapons;
+    [Header("Weapon Prefabs")]
+    [SerializeField] private GameObject[] weaponPrefabs;
 
     [Header("Spawn Points")]
     [SerializeField] private Transform[] spawnPoints;
@@ -13,34 +13,45 @@ public class WeaponSpawner : NetworkBehaviour
     {
         if (!IsServer) return;
 
-        PlaceWeapons();
+        SpawnWeapons();
     }
 
-    private void PlaceWeapons()
+    private void SpawnWeapons()
     {
-        if (weapons.Length == 0 || spawnPoints.Length == 0)
+        if (weaponPrefabs.Length == 0 || spawnPoints.Length == 0)
         {
-            Debug.LogWarning("WeaponSpawner: Missing weapons or spawn points.");
+            Debug.LogWarning("WeaponSpawner: Missing prefabs or spawn points.");
             return;
         }
 
-        // Shuffle spawn points
+        // Shuffle spawn points for randomness
         Transform[] shuffledPoints = (Transform[])spawnPoints.Clone();
         ShuffleArray(shuffledPoints);
 
-        int count = Mathf.Min(weapons.Length, shuffledPoints.Length);
+        int count = Mathf.Min(weaponPrefabs.Length, shuffledPoints.Length);
 
         for (int i = 0; i < count; i++)
         {
-            NetworkObject weapon = weapons[i];
+            GameObject weaponPrefab = weaponPrefabs[Random.Range(0, weaponPrefabs.Length)];
             Transform spawnPoint = shuffledPoints[i];
 
-            // Move weapon on server
-            weapon.transform.position = spawnPoint.position;
-            weapon.transform.rotation = spawnPoint.rotation;
+            // Instantiate on server
+            GameObject weaponInstance = Instantiate(
+                weaponPrefab,
+                spawnPoint.position,
+                spawnPoint.rotation
+            );
 
-            // Make sure it's spawned on the network
-            
+            // Spawn across network
+            NetworkObject netObj = weaponInstance.GetComponent<NetworkObject>();
+            if (netObj != null)
+            {
+                netObj.Spawn();
+            }
+            else
+            {
+                Debug.LogError($"Weapon {weaponPrefab.name} is missing a NetworkObject!");
+            }
         }
     }
 
