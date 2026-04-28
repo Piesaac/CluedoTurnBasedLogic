@@ -5,6 +5,7 @@ using turnyWurny;
 using CardList;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 public class GuessManager : NetworkBehaviour
 {
@@ -26,6 +27,8 @@ public class GuessManager : NetworkBehaviour
     [SerializeField] public GameObject gameplayPanel;
     [SerializeField] public GameObject spectatorPanel;
     [SerializeField] public TextMeshProUGUI spectatorText;
+
+    [SerializeField] private WSPoint[] spawnPoints;
 
     public static GuessManager Instance;
 
@@ -324,4 +327,50 @@ public class GuessManager : NetworkBehaviour
             turnMan.pushNextPhase();
         }
     }
+
+    public void RequestMoveWeapon(string weaponName, string roomName)
+    {
+        MoveWeaponServerRpc(weaponName, roomName);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void MoveWeaponServerRpc(string weaponName, string roomName)
+    {
+        // Find the weapon in the scene
+        Weapon weapon = FindObjectsOfType<Weapon>()
+            .FirstOrDefault(w => w.myName == weaponName);
+
+        if (weapon == null)
+        {
+            Debug.LogWarning($"Weapon not found: {weaponName}");
+            return;
+        }
+
+        // Find matching room spawn point
+        WSPoint targetPoint = spawnPoints
+            .FirstOrDefault(p => p.Name == roomName);
+
+        if (targetPoint == null)
+        {
+            Debug.LogWarning($"Room not found: {roomName}");
+            return;
+        }
+
+        // Move weapon
+        weapon.transform.position = targetPoint.transform.position;
+        weapon.transform.rotation = targetPoint.transform.rotation;
+
+        // Ensure it's networked
+        NetworkObject netObj = weapon.GetComponent<NetworkObject>();
+        if (netObj != null && !netObj.IsSpawned)
+        {
+            netObj.Spawn();
+        }
+    }
+
+    public void testTP()
+    {
+        RequestMoveWeapon("Candle_stick", "Kitchen");
+    }
+
 }
