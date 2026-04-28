@@ -192,14 +192,53 @@ public class TurnManager : NetworkBehaviour
         Debug.Log($"TurnManager: nextPhaseServerRpc called | Phase is: {whatPhase.Value}");
     }
 
+    // Inside TurnManager.cs
     public void nextTurn()
     {
         if (!IsServer) return;
-        int currentIndex = turnOrder.IndexOf(whosPlaying.Value);
+
+        // 1. Get the next player in the rotation
+        int currentIndex = turnOrder.IndexOf((ulong)whosPlaying.Value);
         int nextIndex = (currentIndex + 1) % turnOrder.Count;
-        whosPlaying.Value = turnOrder[nextIndex];
-        whatPhase.Value = TurnStage.ROLLING;
-        Debug.Log($"TurnManager: nextTurn() called | Turn passed to index: {whosPlaying.Value}");
+        ulong nextPlayerId = turnOrder[nextIndex];
+
+        // 2. Find their Character script
+        GameObject nextPlayerObj = GetPlayerObjectById(nextPlayerId);
+        if (nextPlayerObj != null && nextPlayerObj.TryGetComponent<Character>(out var character))
+        {
+            // 3. If they are out, skip them and call this function again
+            if (character.isOut.Value)
+            {
+                whosPlaying.Value = nextPlayerId;
+                nextTurn(); // Recursive call to find the next valid player
+                return;
+            }
+        }
+
+        // 4. Finally set the valid player and reset the phase
+        whosPlaying.Value = nextPlayerId;
+        whatPhase.Value = TurnStage.ROLLING; // This is what makes your Roll button reappear!
+    }
+
+    //use for removing the ais if they make a false accusation, rather than using other IDs since that caused bugs
+    private GameObject GetPlayerObjectById(ulong id)
+    {
+        // 1. Check if it's a human player
+        if (NetworkManager.Singleton.ConnectedClients.TryGetValue(id, out var client))
+        {
+            if (client.PlayerObject != null) return client.PlayerObject.gameObject;
+        }
+
+        // 2. Check if it's a bot (searching all spawned objects)
+        foreach (var obj in NetworkManager.Singleton.SpawnManager.SpawnedObjects.Values)
+        {
+            if (obj.TryGetComponent<Character>(out var character))
+            {
+                // Match the ID to the bot's ID
+                if ((ulong)character.botID.Value == id) return obj.gameObject;
+            }
+        }
+        return null;
     }
 
     public void pushNextPhase()

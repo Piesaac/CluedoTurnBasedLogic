@@ -148,12 +148,14 @@ public class GuessManager : NetworkBehaviour
         chosenWhat = uiscript.accuseWhat;
         chosenWhere = uiscript.accuseWhere;
 
-        submitAccuseServerRpc(chosenWho, chosenWhat, chosenWhere);
+        // Add 'NetworkObjectId' so the server knows who won or is removed
+        submitAccuseServerRpc(chosenWho, chosenWhat, chosenWhere, NetworkObjectId);
     }
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
-    public void submitAccuseServerRpc(Who who, What what, Where where, RpcParams rpcParams = default)
+    public void submitAccuseServerRpc(Who who, What what, Where where, ulong requesterNetId, RpcParams rpcParams = default)
     {
+        // 1. Check against Envelope/Evidence
         bool foundWho = false;
         bool foundWhat = false;
         bool foundWhere = false;
@@ -164,10 +166,12 @@ public class GuessManager : NetworkBehaviour
             if (evidenceCard.type == Card.CardType.Weapon && evidenceCard.value == (int)what) foundWhat = true;
             if (evidenceCard.type == Card.CardType.Room && evidenceCard.value == (int)where) foundWhere = true;
         }
+
         bool isWinner = foundWho && foundWhat && foundWhere;
 
         if (isWinner)
         {
+            // ... (Keep your winner logic as is) ...
             ulong winnerId = rpcParams.Receive.SenderClientId;
             string winnerName = "N/A";
             if (NetworkManager.Singleton.ConnectedClients.TryGetValue(winnerId, out var client))
@@ -177,14 +181,53 @@ public class GuessManager : NetworkBehaviour
                     winnerName = character.charName;
                 }
             }
-            endGameClientRpc(winnerId, winnerName);    
+            endGameClientRpc(winnerId, winnerName);
         }
         else
         {
-            ulong loserId = rpcParams.Receive.SenderClientId;
-            kickTheLoser(loserId);
+            // FIX: Use the NetID passed by the AI or Human, NOT the Sender ID
+            kickTheLoser(requesterNetId, rpcParams.Receive.SenderClientId);
+        }
+    }
+
+    private void kickTheLoser(ulong netObjId, ulong clientId)
+    {
+        // Find the specific object (AI or Human) using its NetworkID
+        if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(netObjId, out var netObj))
+        {
+            // 1. Tell TurnManager to skip them 
+            if (netObj.TryGetComponent<Character>(out var character))
+            {
+                // Set the 'isOut' variable so TurnManager knows to skip this specific bot/player
+                character.isOut.Value = true;
+
+                // If it's a Bot, use their custom ID (100, 101, etc) to remove from list
+                // If it's a Human, use the clientId
+                ulong idToRemove = character.isRobot.Value ? (ulong)character.botID.Value : clientId;
+                turnMan.removePlayer(idToRemove);
+
+                Debug.Log($"<color=red>Kicking {character.charName} (NetID: {netObjId})</color>");
+            }
+
+            // 2. Hide the capsule and clear the tile
+            if (netObj.TryGetComponent<Movement>(out var moveScript))
+            {
+                if (moveScript.stage != null && moveScript.stage.TryGetComponent<Tile>(out var currentTile))
+                {
+                    currentTile.updateOccupied(false);
+                }
+                // Hide them for everyone
+                HidePlayerRpc(netObjId);
+            }
+            checkForLoneSurvivor();
         }
 
+        // 3. Notify the human UI (only if the one who lost was a human)
+        ClientRpcParams clientRpcParams = new ClientRpcParams
+        {
+            Send = new ClientRpcSendParams { TargetClientIds = new ulong[] { clientId } }
+        };
+        tellEmTheyLostClientRpc(clientRpcParams);
     }
 
     private void kickTheLoser(ulong playerId)
@@ -322,6 +365,37 @@ public class GuessManager : NetworkBehaviour
         if (turnMan.whatPhase.Value == TurnStage.SUGGESTING)
         {
             turnMan.pushNextPhase();
+        }
+    }
+
+
+    private void checkForLoneSurvivor()
+    {
+        if (!IsServer) return;
+
+        // 1. Find all Character scripts in the scene
+        Character[] allCharacters = FindObjectsByType<Character>(FindObjectsSortMode.None);
+        List<Character> activePlayers = new List<Character>();
+
+        foreach (Character c in allCharacters)
+        {
+            // Only count players who haven't been kicked
+            if (!c.isOut.Value)
+            {
+                activePlayers.Add(c);
+            }
+        }
+
+        // 2. If only 1 player remains, they win!
+        if (activePlayers.Count == 1)
+        {
+            Character winner = activePlayers[0];
+            Debug.Log($"<color=green>WIN BY DEFAULT: {winner.charName} is the last survivor!</color>");
+
+            // Use the Host's ID or the Bot's ID depending on who it is
+            ulong winnerId = winner.isRobot.Value ? (ulong)winner.botID.Value : winner.OwnerClientId;
+
+            endGameClientRpc(winnerId, winner.charName);
         }
     }
 }

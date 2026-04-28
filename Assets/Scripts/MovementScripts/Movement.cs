@@ -1,9 +1,10 @@
-using UnityEngine;
-using UnityEngine.InputSystem;
+using CardList;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Netcode;
 using turnyWurny;
+using Unity.Netcode;
+using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Movement : NetworkBehaviour
 {
@@ -611,6 +612,22 @@ public class Movement : NetworkBehaviour
         }
     
         Debug.Log($"<color=orange>Visibility set to {isVisible} for {gameObject.name}</color>");
+    }
+
+    // Inside Movement.cs
+    public Where GetCurrentRoomEnum()
+    {
+        // If we aren't in a room, return a default or handle accordingly
+        if (stage == null) return Where.Kitchen;
+
+        // Check if the current 'stage' object (the room) has a component that tells us its name
+        // Assuming your Room objects have a script called 'Room' with an 'identity' variable
+        if (stage.TryGetComponent<Room>(out var room))
+        {   //from room.cs
+            return room.roomIdentity; // This should be the 'Where' enum value
+        }
+
+        return Where.Kitchen; // Fallback
     }
 
 }

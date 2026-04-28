@@ -1,8 +1,10 @@
-using UnityEngine;
-using Unity.Netcode;
-using turnyWurny;
-using System.Collections;
 using CardList;
+using System.Collections;
+using turnyWurny;
+using Unity.Netcode;
+using Unity.VisualScripting;
+using UnityEngine;
+using static UnityEditor.ShaderData;
 
 public class AIPLayer : NetworkBehaviour
 {
@@ -11,6 +13,9 @@ public class AIPLayer : NetworkBehaviour
     private bool isThinking = false;
     public GameObject stage; 
     private Rolling dice;
+
+    //chance that the AI makes an accusation (0.1f = 10% chance)
+    [SerializeField] private float accusationChance = 1f;
 
     void Start()
     {
@@ -124,8 +129,25 @@ public class AIPLayer : NetworkBehaviour
             GuessManager.Instance.submitGuessServerRpc(who, what, where);
         }
 
+        // --- RECKLESS ACCUSATION ---
+        if (Random.value < accusationChance)
+        {
+            Debug.Log($"<color=red>[AI] {characterScript.charName} is making a final accusation!</color>");
+
+            // 1. Pick the three random values
+            Who finalWho = (Who)Random.Range(0, 6);
+            What finalWhat = (What)Random.Range(0, 6);
+            Where finalWhere = (Where)Random.Range(0, 9);
+
+            // 2. Call the EXACT name from your screenshot with all 3 arguments
+            // It must be (Who, What, Where) in that order!
+            // Pass 'NetworkObjectId' so the server knows which BOT to kick
+            GuessManager.Instance.submitAccuseServerRpc(finalWho, finalWhat, finalWhere, NetworkObjectId);
+        }
+
         isThinking = false;
     }
+
 
     private void FindStartingTile()
     {
