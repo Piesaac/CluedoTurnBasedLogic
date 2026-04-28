@@ -7,7 +7,7 @@ using Netcode = Unity.Netcode.NetworkManager;
 
 public class MenuController : NetworkBehaviour
 {
-    [Header("Panels")]
+    [Header("UI Panels")]
     [SerializeField] private GameObject loginPanel;  
     [SerializeField] private GameObject lobbyPanel; 
 
@@ -19,13 +19,14 @@ public class MenuController : NetworkBehaviour
     [SerializeField] private Button aiBtn;
     [SerializeField] private TextMeshProUGUI aiText;
 
+    [Header("Player/AI Count")]
     public NetworkVariable<int> aiCount = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     public int numAI;
     public int numHuman;
     public int totalPlayers;
-
     public static int numBotsToSpawn;
 
+    //Sets initial login panel on as default
     private void Start()
     {
         numAI = 0;
@@ -35,6 +36,23 @@ public class MenuController : NetworkBehaviour
         escape.gameObject.SetActive(false);
     }
 
+    private void Update()
+    {
+        
+        if (Netcode.Singleton != null && Netcode.Singleton.IsListening)
+        {
+            if (Netcode.Singleton.ConnectedClients != null)
+            {
+                playersText.text = $"Human Suspects: {Netcode.Singleton.ConnectedClients.Count}\n AI Suspects: {numAI}";
+            }
+        }
+        if (Keyboard.current.escapeKey.wasPressedThisFrame)
+        { 
+            goBack();
+        }
+    }
+
+    // Refreshes AI text when player joins and only shows add AI button for the host.
     public override void OnNetworkSpawn()
     {
         aiCount.OnValueChanged += (oldVal, newVal) => {
@@ -45,25 +63,14 @@ public class MenuController : NetworkBehaviour
         {
             aiBtn.gameObject.SetActive(true);
         }
+        else
+        {
+            aiBtn.gameObject.SetActive(false);
+        }
 
         refreshAIText(aiCount.Value);
     }
 
-    private void Update()
-    {
-        
-        if (Netcode.Singleton != null && Netcode.Singleton.IsListening)
-        {
-            if (Netcode.Singleton.ConnectedClients != null)
-            {
-                playersText.text = $"Players in Lobby: {Netcode.Singleton.ConnectedClients.Count}";
-            }
-        }
-        if (Keyboard.current.escapeKey.wasPressedThisFrame)
-        { 
-            goBack();
-        }
-    }
 
     public void addAI()
     {
@@ -154,18 +161,9 @@ public class MenuController : NetworkBehaviour
             return;
         }
         if (NetworkManager.Singleton.IsServer)
-        {
-            Debug.Log("Server validation passed. Loading Scene...");
-            
-            // Set the static variable so PlayerSpawner can find it
+        {   
             numBotsToSpawn = aiCount.Value;
-
-            // Use the NETWORK Scene Manager (Required for syncing scene loads)
             NetworkManager.Singleton.SceneManager.LoadScene("Game", UnityEngine.SceneManagement.LoadSceneMode.Single);
-        }
-        else
-        {
-            Debug.LogError("Start failed: You are not the Server/Host or NetworkManager is not initialized.");
         }
     }
 
