@@ -4,52 +4,37 @@ using turnyWurny;
 using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
-using static UnityEditor.ShaderData;
+
 
 public class AIPLayer : NetworkBehaviour
 {
     private Movement moveScript;
     private Character characterScript;
     private bool isThinking = false;
-    public GameObject stage; 
+    public GameObject stage;
     private Rolling dice;
-
-    //chance that the AI makes an accusation (0.1f = 10% chance)
-    [SerializeField] private float accusationChance = 1f;
+    //accusation chance, 0.1 = 10%
+    //can use 1 for testing purposes
+    //no longer a SerializeField because we want to be able to change the accusation chance in here, rather than in all the prefabs
+    private float accusationChance = 0.1f;
 
     void Start()
     {
-        // Get references to the movement and identity components on this prefab
         moveScript = GetComponent<Movement>();
         characterScript = GetComponent<Character>();
     }
 
     void Update()
     {
-        if (!IsServer) return; // AI only runs on the Host
+        if (!IsServer) return;
 
-        // 1. Check if component exists
-        if (characterScript == null)
-        {
-            Debug.Log("<color=red>[AI DEBUG] Component missing on " + gameObject.name + "</color>");
-            return;
-        }
+        if (characterScript == null || !characterScript.isRobot.Value) return;
 
-        // 2. Check if it knows it's a Robot
-        if (!characterScript.isRobot.Value) return;
-
-        // 3. Check the ID assignment
-        if (characterScript.botID.Value == -1)
-        {
-            // If you see this, the PlayerSpawner failed to give the bot an ID
-            Debug.Log("<color=orange>[AI DEBUG] I am a robot, but my botID is still -1!</color>");
-            return;
-        }
+        if (characterScript.botID.Value == -1) return;
 
         TurnManager tm = FindFirstObjectByType<TurnManager>();
         if (tm == null) return;
 
-        // 4. Check the Turn Match
         bool isMyTurn = ((ulong)characterScript.botID.Value == tm.whosPlaying.Value);
 
         if (isMyTurn && !isThinking)
@@ -62,10 +47,10 @@ public class AIPLayer : NetworkBehaviour
     {
         isThinking = true;
 
-        // Tiny random delay so they don't act instantly
+        //give the game a second to breathe
         yield return new WaitForSeconds(Random.Range(0.5f, 1.5f));
 
-        Debug.Log($"<color=yellow>[AI BRAIN] {characterScript.charName} starting turn.</color>");
+        Debug.Log($"<color=yellow>[AI BRAIN] {characterScript.charName} is taking over.</color>");
 
         // --- PHASE: ROLLING ---
         if (tm.whatPhase.Value == TurnStage.ROLLING)
@@ -73,7 +58,8 @@ public class AIPLayer : NetworkBehaviour
             dice = FindFirstObjectByType<Rolling>();
             yield return new WaitForSeconds(2.0f);
             dice.callRoll();
-            // We exit here because the phase will change and Update will restart this routine
+
+            //break here because the dice roll will trigger a phase change automatically
             isThinking = false;
             yield break;
         }
@@ -105,49 +91,76 @@ public class AIPLayer : NetworkBehaviour
             }
         }
 
-        // --- PHASE: SUGGESTING (Only if in a room) ---
-        if (tm.whatPhase.Value == TurnStage.SUGGESTING)
+        // If the bot finishes moving in a hallway, it needs to tell the game to move on
+        if (tm.whatPhase.Value == TurnStage.MOVING && moveScript.move_tokens.Value == 0)
         {
-            yield return new WaitForSeconds(2.0f);
-            Who who = (Who)Random.Range(0, 6);
-            What what = (What)Random.Range(0, 6);
-            Where where = (Where)Random.Range(0, 9);
+            Debug.Log("Out of moves in the hallway, skipping to the next phase.");
+            tm.pushNextPhase();
+            yield return new WaitForSeconds(1.0f);
+            //still moves to suggestion phase even though it may be able to
 
-            Debug.Log($"[AI] Suggesting: {who} with {what} in {where}");
-            GuessManager.Instance.submitGuessServerRpc(who, what, where);
-
-            // Wait for the suggestion to finish before checking for accusation
-            yield return new WaitForSeconds(2.0f);
         }
 
-        // --- THE FIX: RECKLESS ACCUSATION (End of Turn Check) ---
-        // We only check for accusation if the AI is DONE moving (0 tokens) 
-        // OR it is currently in the Suggestion phase.
-        if (moveScript.move_tokens.Value == 0 || tm.whatPhase.Value == TurnStage.SUGGESTING)
+        // --- PHASE: SUGGESTING ---
+        if (tm.whatPhase.Value == TurnStage.SUGGESTING)
         {
-            if (Random.value < accusationChance)
+            //only try to suggest if we actually made it into a room
+            if (moveScript.IsInRoom())
             {
-                Debug.Log($"<color=red>[AI] {characterScript.charName} making final accusation!</color>");
+                yield return new WaitForSeconds(2.0f);
+                Who who = (Who)Random.Range(0, 6);
+                What what = (What)Random.Range(0, 6);
+                Where where = (Where)Random.Range(0, 9);
 
-                Who finalWho = (Who)Random.Range(0, 6);
-                What finalWhat = (What)Random.Range(0, 6);
-                Where finalWhere = (Where)Random.Range(0, 9);
+                Debug.Log($"[AI] Suggesting: {who} with {what} in {where}");
+                GuessManager.Instance.submitGuessServerRpc(who, what, where);
 
-                GuessManager.Instance.submitAccuseServerRpc(finalWho, finalWhat, finalWhere, NetworkObjectId);
+                //give the players a moment to show their cards
+                yield return new WaitForSeconds(4.0f);
+            }
+            else
+            {
+                //not in room therefore no suggestion
+                Debug.Log("Not in a room, so I can't suggest anything. Moving on.");
+                tm.pushNextPhase();
+                yield return new WaitForSeconds(1.0f);
+            }
+        }
 
-                // If we accuse, we stop the routine here (because we are either winning or kicked)
-                isThinking = false;
-                yield break;
+        // --- RECKLESS ACCUSATION --
+        if (Random.value < accusationChance)
+        {
+            Debug.Log($"<color=red>[AI] {characterScript.charName} is going for the win (or the boot)!</color>");
+
+            Who finalWho = (Who)Random.Range(0, 6);
+            What finalWhat = (What)Random.Range(0, 6);
+            Where finalWhere = (Where)Random.Range(0, 9);
+
+            GuessManager.Instance.submitAccuseServerRpc(finalWho, finalWhat, finalWhere, NetworkObjectId);
+
+            //accusation means we are complete no matter correct or incorrect
+            isThinking = false;
+            yield break;
+        }
+        else
+        {
+            //if theres no accusation then we end the turn manually
+            if (tm.whatPhase.Value == TurnStage.SUGGESTING)
+            {
+                Debug.Log("Decided not to accuse. Turn's over.");
+                tm.pushNextPhase();
             }
         }
 
         isThinking = false;
     }
+    
 
 
-    private void FindStartingTile()
+
+private void FindStartingTile()
     {
-        // Find every tile in the scene
+        //find every tile in the scene
         Tile[] allTiles = FindObjectsByType<Tile>(FindObjectsSortMode.None);
         float closestDist = float.MaxValue;
         GameObject closestTile = null;
@@ -164,7 +177,7 @@ public class AIPLayer : NetworkBehaviour
 
         if (closestTile != null)
         {
-            moveScript.stage = closestTile; // Manually assign the missing reference
+            moveScript.stage = closestTile; //manually assign missing reference
             Debug.Log($"[AI] Assigned starting stage to: {closestTile.name}");
         }
     }

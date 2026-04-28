@@ -4,7 +4,7 @@ using Unity.Netcode;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using turnyWurny; // Ensure this namespace matches your TurnStage enum
+using turnyWurny;
 
 public class TurnManager : NetworkBehaviour
 {
@@ -113,23 +113,37 @@ public class TurnManager : NetworkBehaviour
         if (activePlayerText != null)
         {
             ulong activeId = whosPlaying.Value;
-            activePlayerText.text = "Current Player: " + getCharacter(activeId); 
+            activePlayerText.text = "Current Player: " + getCharacter(activeId);
 
             if (activeId == NetworkManager.Singleton.LocalClientId)
+            {
                 activePlayerText.text += " (YOU)";
+
+                // --- UI WAKE-UP CALL ---
+                // If it's your turn, we force the gameplay buttons to turn back on
+                if (GuessManager.Instance != null)
+                {
+                    if (GuessManager.Instance.gameplayPanel != null)
+                    {
+                        GuessManager.Instance.gameplayPanel.SetActive(true);
+                    }
+
+                    // Also hide the spectator view just in case it was left on
+                    if (GuessManager.Instance.spectatorPanel != null)
+                    {
+                        GuessManager.Instance.spectatorPanel.SetActive(false);
+                    }
+                }
+            }
         }
 
-        // 2. Update the Phase Text (This is what was missing)
+        // 2. Update the Phase Text
         if (status != null)
         {
-            // Converts the Enum (ROLLING, MOVING, etc.) to a string
             status.text = "Current Phase: " + whatPhase.Value.ToString();
-        
-            // Optional: Add a little color so it's obvious it changed
-            status.color = Color.yellow; 
+            status.color = Color.yellow;
         }
 
-        // Debug to console to verify values are actually reaching the client
         Debug.Log($"[UI DEBUG] Player: {whosPlaying.Value} | Phase: {whatPhase.Value}");
     }
 
