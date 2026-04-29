@@ -215,7 +215,6 @@ public class GuessManager : NetworkBehaviour
             }
         }
 
-        // 3. Notify the loser
         ClientRpcParams clientRpcParams = new ClientRpcParams
         {
             Send = new ClientRpcSendParams { TargetClientIds = new ulong[] { playerId } }
