@@ -151,7 +151,7 @@ public class GuessManager : NetworkBehaviour
         chosenWhat = uiscript.accuseWhat;
         chosenWhere = uiscript.accuseWhere;
 
-        submitAccuseServerRpc(chosenWho, chosenWhat, chosenWhere);
+        submitAccuseServerRpc(chosenWho, chosenWhat, chosenWhere, NetworkObjectId);
     }
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
