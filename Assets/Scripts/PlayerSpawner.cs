@@ -8,7 +8,6 @@ public class PlayerSpawner : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        // Only the Server should handle spawning logic
         if (IsServer)
         {
             SpawnAllPlayers();
@@ -23,7 +22,6 @@ public class PlayerSpawner : NetworkBehaviour
             availableIndexes.Add(i);
         }
 
-        // 1. Spawn Human Players
         foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
         {
             SpawnPlayer(clientId, true, availableIndexes);
@@ -33,7 +31,6 @@ public class PlayerSpawner : NetworkBehaviour
         int aiPlayers = MenuController.numBotsToSpawn;
         for (int i = 0; i < aiPlayers; i++)
         {
-            // Giving bots an ID starting at 100 to differentiate them from clients
             SpawnPlayer((ulong)(100 + i), false, availableIndexes);
         }
     }
@@ -45,14 +42,11 @@ public class PlayerSpawner : NetworkBehaviour
             Debug.LogError("[Server] No more unique prefabs left in the list!");
             return;
         }
-
-        // Pick a prefab and remove it from availability to ensure uniqueness
         int prefabIndex = availableIndexes[0];
         availableIndexes.RemoveAt(0);
 
         GameObject prefabToSpawn = playerPrefabs[prefabIndex];
 
-        // Find the designated spawn point for this character index
         SpawnPoint[] points = FindObjectsByType<SpawnPoint>(FindObjectsSortMode.None);
         SpawnPoint chosenPoint = System.Array.Find(points, p => p.index == prefabIndex);
 

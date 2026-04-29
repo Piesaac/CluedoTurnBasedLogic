@@ -333,11 +333,10 @@ public class GuessManager : NetworkBehaviour
         MoveWeaponServerRpc(weaponName, roomName);
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void MoveWeaponServerRpc(string weaponName, string roomName)
     {
-        // Find the weapon in the scene
-        Weapon weapon = FindObjectsOfType<Weapon>()
+        Weapon weapon = FindObjectsByType<Weapon>(FindObjectsSortMode.None)
             .FirstOrDefault(w => w.myName == weaponName);
 
         if (weapon == null)

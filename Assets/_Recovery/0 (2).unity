@@ -1507,6 +1507,7 @@ GameObject:
   - component: {fileID: 1133212021}
   - component: {fileID: 1133212020}
   - component: {fileID: 1133212023}
+  - component: {fileID: 1133212022}
   m_Layer: 0
   m_Name: ConnectionManager
   m_TagString: Untagged
@@ -1542,6 +1543,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1133212022
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1133212019}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8fdfb118eef83404a9de551ca09e8178, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerSpawner
+  ShowTopMostFoldoutHeaderGroup: 1
+  playerPrefabs: []
 --- !u!114 &1133212023
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1554,7 +1569,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 3960799160
+  GlobalObjectIdHash: 2484088133
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
