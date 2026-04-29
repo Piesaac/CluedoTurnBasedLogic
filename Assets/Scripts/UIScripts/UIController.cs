@@ -94,7 +94,6 @@ public class UIController : MonoBehaviour
         clueSheetBtn.gameObject.SetActive(true);
         fillGuessDropdowns();
 
-        // Subscribe to turn changes to refresh UI automatically
         if (turnMan != null)
         {
             turnMan.whatPhase.OnValueChanged += (oldVal, newVal) => UpdateUIVisibility();
@@ -109,8 +108,7 @@ public class UIController : MonoBehaviour
         if (localPlayerScript != null && isMyTurn)
         {
             TurnStage phase = turnMan.whatPhase.Value;
-        
-            // ONLY check for room/door UI if we are in the MOVING phase
+
             if (phase == TurnStage.MOVING)
             {
                 bool isInRoom = localPlayerScript.IsInRoom();
@@ -124,7 +122,6 @@ public class UIController : MonoBehaviour
             }
             else 
             {
-                // Hide them in ROLLING or SUGGESTING phases to avoid UI clutter/bugs
                 entryButton.gameObject.SetActive(false);
                 exitButton.gameObject.SetActive(false);
             }
@@ -148,36 +145,29 @@ public class UIController : MonoBehaviour
     
         TurnStage currentPhase = turnMan.whatPhase.Value;
 
-        // 2. Clear panels by default
-        // We start by hiding everything, then selectively enable based on state.
         rollPanel.SetActive(false);
         movePanel.SetActive(false);
         guessPanel.SetActive(false);
         HideDisproveUI();
 
-        // 3. Handle AI Turn logic
         if (iRobot)
         {
-            // If it's an AI turn, humans should generally see no action buttons.
-            // You might want to leave a "Waiting for AI..." text active here.
             entryButton.gameObject.SetActive(false);
             exitButton.gameObject.SetActive(false);
             exitList.gameObject.SetActive(false);
             exitText.gameObject.SetActive(false);
             moves.gameObject.SetActive(false);
-            return; // Exit early as no further human UI logic is needed
+            return;
         }
 
-        // 4. Handle Human Turn logic
         if (isMyTurn)
         {
             Debug.Log($"<color=orange>UI: It's my turn! Phase: {currentPhase}</color>");
-            // Panels based on Phase
+
             rollPanel.SetActive(currentPhase == TurnStage.ROLLING);
             movePanel.SetActive(currentPhase == TurnStage.MOVING);
             guessPanel.SetActive(currentPhase == TurnStage.SUGGESTING);
 
-            // Movement Phase Specifics (Doors and Rooms)
             if (currentPhase == TurnStage.MOVING && localPlayerScript != null)
             {
                 moves.gameObject.SetActive(true);
@@ -203,16 +193,23 @@ public class UIController : MonoBehaviour
             }
             else
             {
-                // Hide movement-specific elements if not in MOVING phase
                 entryButton.gameObject.SetActive(false);
                 exitButton.gameObject.SetActive(false);
                 moves.gameObject.SetActive(false);
                 secPasBtn.gameObject.SetActive(false);
             }
+            if (currentPhase == TurnStage.SUGGESTING)
+            {
+                fillGuessDropdowns();
+                guessPanel.SetActive(true);
+            }
+            else
+            {
+                guessPanel.SetActive(false);
+            }
         }
         else
         {
-            // It's another human's turn: Hide controls but maybe keep "status" text visible
             entryButton.gameObject.SetActive(false);
             exitButton.gameObject.SetActive(false);
             moves.gameObject.SetActive(false);
@@ -249,8 +246,6 @@ public class UIController : MonoBehaviour
                 localPlayerScript.submitEntryServerRpc(stageNet.NetworkObjectId);
             }
         }
-        
-        // Immediately update visibility to swap Entry button for Exit/Suggestion UI
         UpdateUIVisibility();
     }
 
@@ -302,8 +297,6 @@ public class UIController : MonoBehaviour
             names.Add(whatCard(card));
         }
         handList.AddOptions(names);
-        
-        if (handText != null) handText.text = "<b>YOUR HAND:</b>";
     }
 
     private string whatCard(Card card)
@@ -325,7 +318,16 @@ public class UIController : MonoBehaviour
 
         suspectList.AddOptions(new List<string>(Enum.GetNames(typeof(Who))));
         weaponList.AddOptions(new List<string>(Enum.GetNames(typeof(What))));
-        locationList.AddOptions(new List<string>(Enum.GetNames(typeof(Where))));
+        if (turnMan.whatPhase.Value == TurnStage.SUGGESTING)
+        {
+            List<string> currentRoom = new List<string> {$"{localPlayerScript.currentRoomName.Value}"};
+            locationList.AddOptions(currentRoom);
+            Debug.Log($"Current room {localPlayerScript.currentRoomName.Value}");
+        }
+        else
+        {
+            locationList.AddOptions(new List<string>(Enum.GetNames(typeof(Where))));
+        }
     }
 
     public void startAccuse()
@@ -360,10 +362,22 @@ public class UIController : MonoBehaviour
 
     public void suggestionButton()
     {
-        selectedSuspect = (Who)suspectList.value;
-        selectedWeapon = (What)weaponList.value;
-        selectedRoom = (Where)locationList.value;
-        HideSuggestionUI();
+        int suspectIndex = suspectList.value;
+        int weaponIndex = weaponList.value;
+        int roomIndex = locationList.value;
+        string suspName = suspectList.options[suspectIndex].text; 
+        string weapName = weaponList.options[weaponIndex].text;
+        string roomName = locationList.options[roomIndex].text;
+
+        if (Enum.TryParse(suspName.Replace(" ", ""), true, out Who hooWho))
+            selectedSuspect = hooWho;
+
+        if (Enum.TryParse(weapName.Replace(" ", ""), true, out What wutWhat))
+            selectedWeapon = wutWhat;
+
+        if (Enum.TryParse(roomName.Replace(" ", ""), true, out Where werWhere))
+            selectedRoom = werWhere;
+
     }
 
     public void ShowDisprovePanel(Card[] cards)

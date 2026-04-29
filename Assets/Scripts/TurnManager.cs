@@ -60,7 +60,6 @@ public class TurnManager : NetworkBehaviour
 
     public bool turingTest()
     {
-        Debug.Log($"TurnManager: turingTest() called");
         if (whosPlaying.Value >= 100) return true;
 
         GameObject activeObj = findActiveplayer();
@@ -108,7 +107,6 @@ public class TurnManager : NetworkBehaviour
             status.text = "Current Phase: " + whatPhase.Value.ToString();
         }
 
-        Debug.Log($"[UI DEBUG] Player: {whosPlaying.Value} | Phase: {whatPhase.Value}");
     }
 
     private string getCharacter(ulong id)
@@ -144,9 +142,8 @@ public class TurnManager : NetworkBehaviour
         }
         else
         {
-            Debug.Log("Not your turn!");
+            Debug.Log("Not your turn");
         }
-        Debug.Log($"TurnManager: reqNextPhase() called");
     }
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
@@ -174,15 +171,11 @@ public class TurnManager : NetworkBehaviour
         int nextIndex = (currentIndex + 1) % turnOrder.Count;
         whosPlaying.Value = turnOrder[nextIndex];
         whatPhase.Value = TurnStage.ROLLING;
-        Debug.Log($"TurnManager: nextTurn() called | Turn passed to index: {whosPlaying.Value}");
     }
 
     public void pushNextPhase()
     {
-        Debug.Log($"TurnManager: pushNextPhase() called");
-        // Safety check to ensure only the Server actually changes the NetworkVariable
         if (!IsServer) return; 
-        // Calls the Rpc to move the TurnStage enum forward
         nextPhaseServerRpc(); 
     }   
 
@@ -190,7 +183,6 @@ public class TurnManager : NetworkBehaviour
     {
         if (!IsServer) return;
 
-        // Find the index manually to ensure we have it
         int indexToRemove = -1;
         for (int i = 0; i < turnOrder.Count; i++)
         {

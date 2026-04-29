@@ -67,7 +67,6 @@ public class Movement : NetworkBehaviour
     // Returns if the local player has been marked as an AI in their Character script.
     private bool turingTest() 
     {
-        Debug.Log("Movement: turingTest() called");
         if (TryGetComponent<Character>(out var c)) return c.isRobot.Value;
         return false;
     }
@@ -75,7 +74,6 @@ public class Movement : NetworkBehaviour
 
     private IEnumerator linkUI()
     {
-        Debug.Log("Movement: linkUI() called");
         // Waits until UI controller has spawned
         while (UIController.Instance == null) yield return null;
     
@@ -88,7 +86,6 @@ public class Movement : NetworkBehaviour
     // Looks for stage below the player repeatedly in case spawns are delayed
     private System.Collections.IEnumerator stageSearch()
     {
-        Debug.Log("Movement: stageSearch() called");
         int attempts = 0;
         while (stage == null && attempts < 20)
         {
@@ -99,26 +96,21 @@ public class Movement : NetworkBehaviour
             yield return new WaitForSeconds(0.2f);
         }
 
-        if (stage == null)
-        Debug.LogError("Could not find stage below player");
     }
 
     // Looks once for references needed so does not need to be called in Update method
     private void searchOnce()
     {   
-        Debug.Log("Movement: searchOnce() called");
         // Finds the turn manager
         if (whomst == null)
         {
             whomst = GameObject.FindFirstObjectByType<TurnManager>();
-            Debug.Log(whomst != null ? "Found TurnManager!" : "CRITICAL: Could not find TurnManager");
         }
 
         // Finds the Board camera
         if (BoardCam == null)
         {
             Camera[] allCameras = Resources.FindObjectsOfTypeAll<Camera>();
-            Debug.Log($"Found {allCameras.Length} cameras in total.");
             foreach (Camera cam in allCameras)
             {
                 if (cam.name == "BoardCam")
@@ -133,17 +125,12 @@ public class Movement : NetworkBehaviour
                 BoardCam = Camera.main;
             }
         }
-
-        // Indicates if any references are missing
-        if (whomst == null) Debug.LogWarning("Movement: Still looking for TurnManager...");
-        if (BoardCam == null) Debug.LogError("Movement: BoardCam not found! Input will fail.");
     }
 
     // This links to the rolling script to set the move tokens.
     [ServerRpc]
     public void setMovesServerRpc(int value)
     {
-        Debug.Log("Movement: setMovesServerRpc() called");
         move_tokens.Value = value;
     }
 
@@ -160,7 +147,6 @@ public class Movement : NetworkBehaviour
         // Checks if mouse was clicked for input
         if (whomst != null && Mouse.current.leftButton.wasPressedThisFrame)
         {
-            Debug.Log($"Click registered! Turn: {whomst.whosPlaying.Value}, Phase: {whomst.whatPhase.Value}, Moving: {isMoving}");
             bool isMyTurn = (whomst.whosPlaying.Value == NetworkManager.Singleton.LocalClientId);
             bool isMovingPhase = (whomst.whatPhase.Value == TurnStage.MOVING);
 
@@ -177,7 +163,6 @@ public class Movement : NetworkBehaviour
     // Cheks clicked tile against the conditions for movement
     void checkInput()
     {
-        Debug.Log("Movement: checkInput() called");
         if (BoardCam == null) searchOnce();
         if (BoardCam == null) return;
 
@@ -219,13 +204,9 @@ public class Movement : NetworkBehaviour
     [ServerRpc]
     void requestMoveServerRpc(Vector3 destination, bool landingOnWhite)
     {   
-        Debug.Log("Movement: requestMoveServerRpc() called");
         // This is the tile the player has clicked to move to.
         Tile currentTile = GetTileAtPosition(transform.position);
         Tile targetTile = GetTileAtPosition(destination);
-
-        // Validates movements and updates onto the server
-        if (targetTile == null) Debug.LogError($"SERVER: Failed to find tile at {destination}");
 
         // Allows movement if the tile is not occupied and the player has enough move tokens.
         if (move_tokens.Value > 0 && targetTile != null && !targetTile.occupied.Value)
@@ -249,7 +230,6 @@ public class Movement : NetworkBehaviour
     [ClientRpc]
     void movePositionClientRpc(Vector3 destination, bool landingOnWhite)
     {
-        Debug.Log("Movement: movePositionClientRpc() called");
         targetPosition = destination;
         isMoving = true;
         onWhite = landingOnWhite;
@@ -259,7 +239,6 @@ public class Movement : NetworkBehaviour
     // Actually moves the player to the tile selected and updates stage
     void movePlayer()
     {
-        Debug.Log("Movement: movePlayer() called");
         transform.position = Vector3.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
         if (Vector3.Distance(transform.position, targetPosition) < 0.001f)
         {
@@ -273,16 +252,10 @@ public class Movement : NetworkBehaviour
         }
     }
 
-    // Updates stage by raycasting downwards and scanning for valid object
     public void whereWeAt()
     {
-        // Shoot ray from higher up to avoid clipping
         Vector3 rayStart = transform.position + Vector3.up * 1.5f; 
-    
-        // Use RaycastAll to find the Tile even if a Room Trigger is in the way
         RaycastHit[] hits = Physics.RaycastAll(rayStart, Vector3.down, 3.0f);
-        bool foundTile = false;
-
         foreach (var hit in hits)
         {
             Tile tileComponent = hit.collider.GetComponent<Tile>();
@@ -290,15 +263,10 @@ public class Movement : NetworkBehaviour
             {
                 stage = hit.collider.gameObject;
                 onWhite = hit.collider.GetComponent<White>() != null;
-                foundTile = true;
-                Debug.Log($"<color=green>Movement:</color> whereWeAt found {stage.name}, White: {onWhite}");
                 break; 
             }
         }
 
-        if (!foundTile) Debug.LogWarning("<color=green>Movement:</color> whereWeAt failed to find a Tile!");
-
-        // Detect Room separately
         if (Physics.Raycast(rayStart, Vector3.down, out RaycastHit roomHit, 3.0f, Physics.AllLayers, QueryTriggerInteraction.Collide))
         {
             Room roomComponent = roomHit.collider.GetComponentInParent<Room>();
@@ -315,7 +283,6 @@ public class Movement : NetworkBehaviour
 
     public bool IsOnDoor()
     {
-        // Check if the current stage has a Door component
         if (Physics.Raycast(transform.position + Vector3.up, Vector3.down, out RaycastHit hit, 2f))
         {
             return hit.collider.GetComponent<Door>() != null;
@@ -327,25 +294,20 @@ public class Movement : NetworkBehaviour
     {
         if (Physics.Raycast(transform.position + Vector3.up * 0.5f, Vector3.down, out RaycastHit hit, 1.5f, Physics.AllLayers, QueryTriggerInteraction.Collide))
         {
-            // If we hit a TILE, we are in a hallway, NOT a room
             if (hit.collider.GetComponent<Tile>() != null && hit.collider.GetComponent<Door>() == null)
             {
                 return false;
             }
 
-            // If we hit something that has a Room script (and it's not just a parent of a tile)
             Room r = hit.collider.GetComponentInParent<Room>();
             if (r != null)
             {
-                // Optional: Ensure the room script isn't on a parent of the board itself
-                // Debug.Log($"Movement: Actually inside room: {r.myName}");
                 return true;
             }
         }
         return false;
     }
 
-    // Moves client side to the room of the door
     [ClientRpc]
     private void moveToRoomClientRpc(Vector3 roomPos)
     {
@@ -364,7 +326,6 @@ public class Movement : NetworkBehaviour
 
     private IEnumerator delayedExitList()
     {
-        Debug.Log("Movement: delayedExitList() called");
         yield return new WaitForSeconds(0.1f);
         if (UIController.Instance != null)
         {
@@ -372,16 +333,13 @@ public class Movement : NetworkBehaviour
         }
     }
 
-    // Submits request to move player to room
+
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner)]
     public void submitEntryServerRpc(ulong stageNetworkObjectId)
     {
-        Debug.Log("Movement: submitEntryServerRpc() called");
         CancelInvoke("delayNextTurn");
-        // Find the object on the server using the ID passed by the client
         if (NetworkManager.SpawnManager.SpawnedObjects.TryGetValue(stageNetworkObjectId, out NetworkObject stageNetObj))
         {
-            // Now use this netObj instead of the local 'stage' variable
             Tile tileComp = stageNetObj.GetComponent<Tile>();
             if (tileComp != null)
             {
@@ -402,17 +360,12 @@ public class Movement : NetworkBehaviour
                 whomst.pushNextPhase();
             }
         }
-        else
-        {
-            Debug.LogError("Server could not find stage with ID: " + stageNetworkObjectId);
-        }
     }
     
     // Moves the client to the exit selected.
     [ClientRpc]
     private void exitRoomClientRpc(Vector3 exitPos)
     {
-        Debug.Log("Movement: exitRoomClientRpc");
         targetPosition = exitPos;
         isMoving = true;
         whereWeAt();
@@ -424,7 +377,6 @@ public class Movement : NetworkBehaviour
     {
         if (whomst.whosPlaying.Value != OwnerClientId) return;
 
-        // Find the NetworkObject by its ID on the server
         if (NetworkManager.SpawnManager.SpawnedObjects.TryGetValue(doorId, out NetworkObject doorNetworkObject))
         {
             Door exit = doorNetworkObject.GetComponent<Door>();
@@ -442,7 +394,6 @@ public class Movement : NetworkBehaviour
     public void activateSecPassServerRpc()
     {
         CancelInvoke("delayNextTurn");
-        // 1. Map the connections
         Dictionary<string, string> passages = new Dictionary<string, string>
         {
             { "Study", "Kitchen" },
@@ -457,7 +408,6 @@ public class Movement : NetworkBehaviour
             
             string targetRoomName = passages[currentNameStr];
         
-            // 2. Find any Door that belongs to the destination room
             Door targetDoor = FindDoorForRoom(targetRoomName);
 
             if (targetDoor != null)
@@ -465,20 +415,14 @@ public class Movement : NetworkBehaviour
 
                 Vector3 targetPos = targetDoor.GetRoomPosition((int)OwnerClientId);
 
-                // 5. Authoritative Move
                 transform.position = targetPos;
                 moveToRoomClientRpc(targetPos);
-            
                 move_tokens.Value = 0;
             
                 if (whomst.whatPhase.Value == TurnStage.MOVING)
                 {
                     whomst.pushNextPhase();
                 }
-            }
-            else
-            {
-                Debug.LogError($"SecretPassage: Could not find a Door associated with {targetRoomName}");
             }
         }
     }
@@ -514,7 +458,6 @@ public class Movement : NetworkBehaviour
             }
         }
     
-        Debug.LogWarning($"GetTileAtPosition: No Tile found near {pos}");
         return null;
     }
 
@@ -545,17 +488,6 @@ public class Movement : NetworkBehaviour
         {
             whomst.nextTurn();
         }
-    }
-
-    public void AIclick(GameObject tileToTraverse)
-    {
-        if (!IsServer) return;
-
-        Tile clickedTile = tileToTraverse.GetComponent<Tile>();
-        if (clickedTile == null || stage == null) return;
-
-        bool isWhite = tileToTraverse.GetComponent<White>() != null;
-        requestMoveServerRpc(clickedTile.getTopPosition(), isWhite);
     }
 
      public void AIMove(GameObject targetTileObject)

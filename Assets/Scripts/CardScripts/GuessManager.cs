@@ -63,7 +63,7 @@ public class GuessManager : NetworkBehaviour
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     public void submitGuessServerRpc(Who who, What what, Where where, RpcParams rpcParams = default)
     {   
-        Debug.Log("GuessManager: submitGuessServerRpc() called");
+        Debug.Log($"GuessManager: submitGuessServerRpc() called {who.ToString()} {what.ToString()} {where.ToString()}");
         ulong guesserId = rpcParams.Receive.SenderClientId;
         int nextCW_Player = ((int)guesserId + 1) % cardDist.playerHands.Count;
         StartCoroutine(checkTheirMFHands(who, what, where, nextCW_Player, guesserId));
@@ -99,10 +99,8 @@ public class GuessManager : NetworkBehaviour
             
             if (foundCards.Count > 0)
             {
-                // CHECK IF AI OR HUMAN
                 if (idxToCheck < humanCount)
                 {
-                    // HUMAN: Send RPC to their specific ClientID
                     ulong clientToNotify = NetworkManager.Singleton.ConnectedClientsIds[idxToCheck];
                     ClientRpcParams param = new ClientRpcParams
                     {
@@ -112,9 +110,7 @@ public class GuessManager : NetworkBehaviour
                 }
                 else
                 {
-                    // AI: Automatically pick the first card and disprove
                     string aiCardName = cardDist.whatCard(foundCards[0]);
-                    Debug.Log($"AI Player {idxToCheck} disproving with {aiCardName}");
                     disproveServerRpc(aiCardName); 
                 }
                 yield break;
@@ -126,25 +122,20 @@ public class GuessManager : NetworkBehaviour
     [ClientRpc]
     private void notifyNoMatchesClientRpc(ulong playerID)
     {
-        // Only show this to the player who guessed
         if (NetworkManager.Singleton.LocalClientId != playerID) return;
 
         UIController.Instance.disproveText.text = "No cards found!";
         UIController.Instance.disproveText.gameObject.SetActive(true);
         UIController.Instance.Invoke("hideDisproveText", 3f);
         
-        // If Host, advance the phase because the sequence ended
         if(IsServer) Invoke("endDisproveServerRpc", 3f);
     }
 
     private void activateGuessMoves(Who who, What what, Where where)
     {
-        string whoName = who.ToString(); 
-        string whatName = what.ToString();
-        string whereName = where.ToString();
-
-        MoveCharacterServerRpc(whoName, whereName);
-        MoveWeaponServerRpc(whatName, whereName);
+        Debug.Log($"{who.ToString()} {what.ToString()} {where.ToString()} ");
+        MoveCharacter(who.ToString(), where.ToString());
+        MoveWeapon(what.ToString(), where.ToString());
     }
 
 
@@ -255,12 +246,9 @@ public class GuessManager : NetworkBehaviour
 
 
 
-
-
     [ClientRpc]
     private void endGameClientRpc(ulong id, string name)
     {
-        // Save data to our static class on EVERY client
         AccuseResult.winID = id;
         AccuseResult.winName = name;
         AccuseResult.gameEnd = true;
@@ -327,11 +315,11 @@ public class GuessManager : NetworkBehaviour
 
     public void RequestMoveWeapon(string weaponName, string roomName)
     {
-        MoveWeaponServerRpc(weaponName, roomName);
+        MoveWeapon(weaponName, roomName);
     }
 
-    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
-    private void MoveWeaponServerRpc(string weaponName, string roomName)
+
+    private void MoveWeapon(string weaponName, string roomName)
     {
         Weapon weapon = FindObjectsByType<Weapon>(FindObjectsSortMode.None)
             .FirstOrDefault(w => w.myName == weaponName);
@@ -359,13 +347,19 @@ public class GuessManager : NetworkBehaviour
         }
     }
 
-    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
-    private void MoveCharacterServerRpc(string charName, string roomName)
+ 
+    private void MoveCharacter(string susName, string roomName)
     {
+        Debug.Log("MoveCharacterServerRpc()");
         Character targetChar = FindObjectsByType<Character>(FindObjectsSortMode.None)
-            .FirstOrDefault(c => c.charName == charName);
+            .FirstOrDefault(c => c.charName == susName);
 
-        if (targetChar == null) return;
+        if (targetChar == null)
+        {
+            Debug.Log("Character not found");
+
+        }
+        Debug.Log($"Room name: {roomName}");
 
         Door targetDoor = FindObjectsByType<Door>(FindObjectsSortMode.None)
             .FirstOrDefault(d => d.roomName == roomName);
@@ -381,8 +375,8 @@ public class GuessManager : NetworkBehaviour
             {
                 if (targetChar.TryGetComponent<Movement>(out var moveScript))
                 {
+                    Debug.Log("Movement component found");
                     moveScript.TeleportToRoomServerRpc(spawnPos, roomName);
-                    Debug.Log($"[Server] Teleported {charName} (ID: {idToMatch}) to {roomName} via {targetDoor.name}");
                 }
             }
         }
