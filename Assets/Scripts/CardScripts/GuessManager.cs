@@ -5,7 +5,6 @@ using turnyWurny;
 using CardList;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 public class GuessManager : NetworkBehaviour
 {
@@ -27,8 +26,6 @@ public class GuessManager : NetworkBehaviour
     [SerializeField] public GameObject gameplayPanel;
     [SerializeField] public GameObject spectatorPanel;
     [SerializeField] public TextMeshProUGUI spectatorText;
-
-    [SerializeField] private WSPoint[] spawnPoints;
 
     public static GuessManager Instance;
 
@@ -151,11 +148,12 @@ public class GuessManager : NetworkBehaviour
         chosenWhat = uiscript.accuseWhat;
         chosenWhere = uiscript.accuseWhere;
 
-        submitAccuseServerRpc(chosenWho, chosenWhat, chosenWhere);
+        // Add 'NetworkObjectId' so the server knows who won or is removed
+        submitAccuseServerRpc(chosenWho, chosenWhat, chosenWhere, NetworkObjectId);
     }
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
-    public void submitAccuseServerRpc(Who who, What what, Where where, RpcParams rpcParams = default)
+    public void submitAccuseServerRpc(Who who, What what, Where where, ulong requesterNetId, RpcParams rpcParams = default)
     {
         bool foundWho = false;
         bool foundWhat = false;
@@ -167,10 +165,12 @@ public class GuessManager : NetworkBehaviour
             if (evidenceCard.type == Card.CardType.Weapon && evidenceCard.value == (int)what) foundWhat = true;
             if (evidenceCard.type == Card.CardType.Room && evidenceCard.value == (int)where) foundWhere = true;
         }
+
         bool isWinner = foundWho && foundWhat && foundWhere;
 
         if (isWinner)
         {
+            // ... (Keep your winner logic as is) ...
             ulong winnerId = rpcParams.Receive.SenderClientId;
             string winnerName = "N/A";
             if (NetworkManager.Singleton.ConnectedClients.TryGetValue(winnerId, out var client))
@@ -180,30 +180,65 @@ public class GuessManager : NetworkBehaviour
                     winnerName = character.charName;
                 }
             }
-            endGameClientRpc(winnerId, winnerName);    
+            endGameClientRpc(winnerId, winnerName);
         }
         else
         {
-            ulong loserId = rpcParams.Receive.SenderClientId;
-            kickTheLoser(loserId);
+            kickTheLoser(requesterNetId, rpcParams.Receive.SenderClientId);
+        }
+    }
+
+    private void kickTheLoser(ulong netObjId, ulong clientId)
+    {
+        // Find the specific object (AI or Human) using its NetworkID
+        if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(netObjId, out var netObj))
+        {
+            // 1. Tell TurnManager to skip them 
+            if (netObj.TryGetComponent<Character>(out var character))
+            {
+                // Set the 'isOut' variable so TurnManager knows to skip this specific bot/player
+                character.isOut.Value = true;
+
+                // If it's a Bot, use their custom ID (100, 101, etc) to remove from list
+                // If it's a Human, use the clientId
+                ulong idToRemove = character.isRobot.Value ? (ulong)character.botID.Value : clientId;
+                turnMan.removePlayer(idToRemove);
+
+                Debug.Log($"<color=red>Kicking {character.charName} (NetID: {netObjId})</color>");
+            }
+
+            // 2. Hide the capsule and clear the tile
+            if (netObj.TryGetComponent<Movement>(out var moveScript))
+            {
+                if (moveScript.stage != null && moveScript.stage.TryGetComponent<Tile>(out var currentTile))
+                {
+                    currentTile.updateOccupied(false);
+                }
+                // Hide them for everyone
+                HidePlayerRpc(netObjId);
+            }
+            checkForLoneSurvivor();
         }
 
+        // 3. Notify the human UI (only if the one who lost was a human)
+        ClientRpcParams clientRpcParams = new ClientRpcParams
+        {
+            Send = new ClientRpcSendParams { TargetClientIds = new ulong[] { clientId } }
+        };
+        tellEmTheyLostClientRpc(clientRpcParams);
     }
 
     private void kickTheLoser(ulong playerId)
     {
-        // 1. Tell the TurnManager to remove them from the list
         if (turnMan != null)
         {
             turnMan.removePlayer(playerId);
         }
 
-        // 2. Get the Player Object and clear their tile
         if (NetworkManager.Singleton.ConnectedClients.TryGetValue(playerId, out var client))
         {
             if (client.PlayerObject != null)
             {
-                // Get the Movement script from the player prefab
                 if (client.PlayerObject.TryGetComponent<Movement>(out var moveScript))
                 {
                     Tile currentTile = moveScript.stage.GetComponent<Tile>();
@@ -213,28 +248,25 @@ public class GuessManager : NetworkBehaviour
             }
         }
 
-        // 3. Notify the loser
         ClientRpcParams clientRpcParams = new ClientRpcParams
         {
             Send = new ClientRpcSendParams { TargetClientIds = new ulong[] { playerId } }
         };
         tellEmTheyLostClientRpc(clientRpcParams);
+        checkForLoneSurvivor();
 }
 
     [Rpc(SendTo.Everyone)]
     public void HidePlayerRpc(ulong networkObjectId)
     {
-        // Find the object by its NetworkId
         if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(networkObjectId, out var netObj))
         {
-            // Disable all renderers so the player "vanishes"
             Renderer[] allRenderers = netObj.GetComponentsInChildren<Renderer>();
             foreach (Renderer r in allRenderers)
             {
                 r.enabled = false;
             }
 
-            // Optional: Disable the collider so they don't block other players
             if (netObj.TryGetComponent<Collider>(out var col))
             {
                 col.enabled = false;
@@ -328,48 +360,28 @@ public class GuessManager : NetworkBehaviour
         }
     }
 
-    public void RequestMoveWeapon(string weaponName, string roomName)
-    {
-        MoveWeaponServerRpc(weaponName, roomName);
-    }
 
-    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
-    private void MoveWeaponServerRpc(string weaponName, string roomName)
+    private void checkForLoneSurvivor()
     {
-        Weapon weapon = FindObjectsByType<Weapon>(FindObjectsSortMode.None)
-            .FirstOrDefault(w => w.myName == weaponName);
 
-        if (weapon == null)
+        Character[] allCharacters = FindObjectsByType<Character>(FindObjectsSortMode.None);
+        List<Character> activePlayers = new List<Character>();
+
+        foreach (Character c in allCharacters)
         {
-            Debug.LogWarning($"Weapon not found: {weaponName}");
-            return;
+            if (!c.isOut.Value)
+            {
+                activePlayers.Add(c);
+            }
         }
 
-        // Find matching room spawn point
-        WSPoint targetPoint = spawnPoints
-            .FirstOrDefault(p => p.Name == roomName);
-
-        if (targetPoint == null)
+        if (activePlayers.Count == 1)
         {
-            Debug.LogWarning($"Room not found: {roomName}");
-            return;
-        }
+            Character winner = activePlayers[0];
 
-        // Move weapon
-        weapon.transform.position = targetPoint.transform.position;
-        weapon.transform.rotation = targetPoint.transform.rotation;
+            ulong winnerId = winner.isRobot.Value ? (ulong)winner.botID.Value : winner.OwnerClientId;
 
-        // Ensure it's networked
-        NetworkObject netObj = weapon.GetComponent<NetworkObject>();
-        if (netObj != null && !netObj.IsSpawned)
-        {
-            netObj.Spawn();
+            endGameClientRpc(winnerId, winner.charName);
         }
     }
-
-    public void testTP()
-    {
-        RequestMoveWeapon("Candle_stick", "Kitchen");
-    }
-
 }
