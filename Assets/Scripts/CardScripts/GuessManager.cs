@@ -248,7 +248,7 @@ public class GuessManager : NetworkBehaviour
                 }
                 if (client.PlayerObject.TryGetComponent<Character>(out var charScript))
                 {
-                    character.isOut.Value = true;
+                    charScript.isOut.Value = true;
                 }
             }
         }
