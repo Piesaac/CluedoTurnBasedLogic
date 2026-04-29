@@ -184,15 +184,17 @@ public class GuessManager : NetworkBehaviour
         }
         else
         {
-            kickTheLoser(requesterNetId, rpcParams.Receive.SenderClientId);
+            kickTheLoser(rpcParams.Receive.SenderClientId);
         }
     }
 
 
-    private void kickTheLoser(ulong playerId, ulong networkId)
+    private void kickTheLoser(ulong playerId)
     {
+        Debug.Log("kicktheLoser() called");
         if (turnMan != null)
         {
+            Debug.Log("kicktheLoser(): turnman not null");
             turnMan.removePlayer(playerId);
         }
 
@@ -205,10 +207,12 @@ public class GuessManager : NetworkBehaviour
                     Tile currentTile = moveScript.stage.GetComponent<Tile>();
                     currentTile.updateOccupied(false);
                     moveScript.SetPlayerVisibilityClientRpc(false); 
+                    Debug.Log("kicktheLoser(): movement script found and player made invisible");
                 }
                 if (client.PlayerObject.TryGetComponent<Character>(out var charScript))
                 {
                     charScript.isOut.Value = true;
+                    Debug.Log("kicktheLoser(): player marked as out");
                 }
             }
         }

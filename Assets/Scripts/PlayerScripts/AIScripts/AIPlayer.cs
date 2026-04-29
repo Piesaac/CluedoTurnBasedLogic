@@ -43,15 +43,14 @@ public class AIPLayer : NetworkBehaviour
         bool isMyTurn = ((ulong)characterScript.botID.Value == tm.whosPlaying.Value);
 
         if (isMyTurn && !isThinking)
-        {
-            StartCoroutine(AIRoutine(tm));
-        }
+    {
+        isThinking = true;
+        StartCoroutine(AIRoutine(tm));
+    }
     }
 
     IEnumerator AIRoutine(TurnManager tm)
     {
-        isThinking = true;
-
         yield return new WaitForSeconds(Random.Range(0.5f, 1.5f));
 
         if (tm.whatPhase.Value == TurnStage.ROLLING)
@@ -83,25 +82,30 @@ public class AIPLayer : NetworkBehaviour
             }
 
             Tile currentTile = moveScript.stage.GetComponent<Tile>();
+            bool moveMade = false;
             if (currentTile != null && currentTile.neighbours.Count > 0)
             {
-                GameObject target = currentTile.neighbours[Random.Range(0, currentTile.neighbours.Count)];
-                moveScript.AIMove(target);
+                while (!moveMade)
+                {
+                    GameObject target = currentTile.neighbours[Random.Range(0, currentTile.neighbours.Count)];
+                    if (moveScript.onWhite && target.GetComponent<Black>() != null || !moveScript.onWhite && target.GetComponent<White>() != null)
+                    {
+                        moveScript.AIMove(target);
+                    }
+                    moveMade = true;
+                }
             }
         }
 
-        // If the bot finishes moving in a hallway, it needs to tell the game to move on
         if (tm.whatPhase.Value == TurnStage.MOVING && moveScript.move_tokens.Value == 0)
         {
             tm.pushNextPhase();
             yield return new WaitForSeconds(1.0f);
-            //still moves to suggestion phase even though it may be able to
 
         }
 
         if (tm.whatPhase.Value == TurnStage.SUGGESTING)
         {
-            //only try to suggest if we actually made it into a room
             if (moveScript.IsInRoom())
             {
                 yield return new WaitForSeconds(2.0f);

@@ -25,7 +25,7 @@ public class Movement : NetworkBehaviour
     public List<GameObject> nearby = new List<GameObject>();
 
     // Bool showing if the player is currently on a white tile.
-    private bool onWhite = false;
+    public bool onWhite = false;
 
     // Field for movement.
     private Vector3 targetPosition;
@@ -563,27 +563,22 @@ public class Movement : NetworkBehaviour
 
      public void AIMove(GameObject targetTileObject)
     {
-        // Safety check: Don't try to move to nothing
         if (targetTileObject == null) return;
 
-        // 1. Get the Tile data
+
         Tile clickedTile = targetTileObject.GetComponent<Tile>();
         if (clickedTile == null || stage == null) return;
 
-        // 2. Check if the tile is occupied or if we are out of moves
         if (clickedTile.occupied.Value || move_tokens.Value <= 0) return;
 
-        // 3. Re-use your existing color-based movement logic
         Tile currentStand = stage.GetComponent<Tile>();
         if (currentStand.neighbours.Contains(targetTileObject))
         {
             bool isWhite = targetTileObject.GetComponent<White>() != null;
             bool isBlack = targetTileObject.GetComponent<Black>() != null;
 
-            // Only move if the colors are alternating (White -> Black or Black -> White)
             if ((isWhite && !onWhite) || (isBlack && onWhite))
             {
-                // Call your existing ServerRpc to perform the actual move
                 requestMoveServerRpc(clickedTile.getTopPosition(), isWhite);
             }
         }
