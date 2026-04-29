@@ -235,6 +235,7 @@ public class GuessManager : NetworkBehaviour
             turnMan.removePlayer(playerId);
         }
 
+
         if (NetworkManager.Singleton.ConnectedClients.TryGetValue(playerId, out var client))
         {
             if (client.PlayerObject != null)
@@ -244,6 +245,10 @@ public class GuessManager : NetworkBehaviour
                     Tile currentTile = moveScript.stage.GetComponent<Tile>();
                     currentTile.updateOccupied(false);
                     moveScript.SetPlayerVisibilityClientRpc(false); 
+                }
+                if (client.PlayerObject.TryGetComponent<Character>(out var charScript))
+                {
+                    character.isOut.Value = true;
                 }
             }
         }
