@@ -133,7 +133,7 @@ public class AIPLayer : NetworkBehaviour
             What finalWhat = (What)Random.Range(0, 6);
             Where finalWhere = (Where)Random.Range(0, 9);
 
-            GuessManager.Instance.submitAccuseServerRpc(finalWho, finalWhat, finalWhere, NetworkObjectId);
+            GuessManager.Instance.submitAccuseServerRpc(finalWho, finalWhat, finalWhere);
 
             //accusation means we are complete no matter correct or incorrect
             isThinking = false;

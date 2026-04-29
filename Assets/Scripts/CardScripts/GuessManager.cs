@@ -188,38 +188,8 @@ public class GuessManager : NetworkBehaviour
         }
     }
 
-    private void kickTheLoser(ulong netObjId, ulong clientId)
-    {
-        // Find the specific object (AI or Human) using its NetworkID
-        if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(netObjId, out var netObj))
-        {
-            // 1. Tell TurnManager to skip them 
-            if (netObj.TryGetComponent<Character>(out var character))
-            {
-                character.isOut.Value = true;
 
-                ulong idToRemove = character.isRobot.Value ? (ulong)character.botID.Value : clientId;
-                turnMan.removePlayer(idToRemove);
-
-                Debug.Log($"<color=red>Kicking {character.charName} (NetID: {netObjId})</color>");
-            }
-
-            // 2. Hide the capsule and clear the tile
-            if (netObj.TryGetComponent<Movement>(out var moveScript))
-            {
-                if (moveScript.stage != null && moveScript.stage.TryGetComponent<Tile>(out var currentTile))
-                {
-                    currentTile.updateOccupied(false);
-                }
-                // Hide them for everyone
-                HidePlayerRpc(netObjId);
-            }
-            checkForLoneSurvivor();
-        }
-
-    }
-
-    private void kickTheLoser(ulong playerId)
+    private void kickTheLoser(ulong playerId, ulong networkId)
     {
         // 1. Tell the TurnManager to remove them from the list
         if (turnMan != null)
@@ -251,7 +221,8 @@ public class GuessManager : NetworkBehaviour
             Send = new ClientRpcSendParams { TargetClientIds = new ulong[] { playerId } }
         };
         tellEmTheyLostClientRpc(clientRpcParams);
-}
+        checkForLoneSurvivor();
+    }
 
     [Rpc(SendTo.Everyone)]
     public void HidePlayerRpc(ulong networkObjectId)
@@ -277,6 +248,7 @@ public class GuessManager : NetworkBehaviour
     [ClientRpc]
     private void tellEmTheyLostClientRpc(ClientRpcParams rpcParams = default)
     {
+        if (!IsOwner) return;
         gameplayPanel.SetActive(false);
         spectatorText.text = "Accusation Wrong! You are now spectating.";
         spectatorPanel.SetActive(true);
