@@ -43,7 +43,7 @@ public class MenuController : NetworkBehaviour
         {
             if (Netcode.Singleton.ConnectedClients != null)
             {
-                playersText.text = $"Human Suspects: {Netcode.Singleton.ConnectedClients.Count}\n AI Suspects: {numAI}";
+                playersText.text = $"Human Suspects: {Netcode.Singleton.ConnectedClients.Count}\n AI Suspects: {aiCount.Value}";
             }
         }
         if (Keyboard.current.escapeKey.wasPressedThisFrame)
