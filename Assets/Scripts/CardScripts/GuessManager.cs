@@ -148,7 +148,6 @@ public class GuessManager : NetworkBehaviour
         chosenWhat = uiscript.accuseWhat;
         chosenWhere = uiscript.accuseWhere;
 
-        // Add 'NetworkObjectId' so the server knows who won or is removed
         submitAccuseServerRpc(chosenWho, chosenWhat, chosenWhere, NetworkObjectId);
     }
 
@@ -170,7 +169,6 @@ public class GuessManager : NetworkBehaviour
 
         if (isWinner)
         {
-            // ... (Keep your winner logic as is) ...
             ulong winnerId = rpcParams.Receive.SenderClientId;
             string winnerName = "N/A";
             if (NetworkManager.Singleton.ConnectedClients.TryGetValue(winnerId, out var client))
@@ -196,11 +194,8 @@ public class GuessManager : NetworkBehaviour
             // 1. Tell TurnManager to skip them 
             if (netObj.TryGetComponent<Character>(out var character))
             {
-                // Set the 'isOut' variable so TurnManager knows to skip this specific bot/player
                 character.isOut.Value = true;
 
-                // If it's a Bot, use their custom ID (100, 101, etc) to remove from list
-                // If it's a Human, use the clientId
                 ulong idToRemove = character.isRobot.Value ? (ulong)character.botID.Value : clientId;
                 turnMan.removePlayer(idToRemove);
 
