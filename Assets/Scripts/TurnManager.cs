@@ -22,21 +22,15 @@ public class TurnManager : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        // Important: List events should be subscribed to by everyone
-        turnOrder.OnListChanged += (changeEvent) => {
-            Debug.Log("Client: Turn Order List Changed!");
-            updateUI();
-        };
+        turnOrder.OnListChanged += (changeEvent) => updateUI();
+        whatPhase.OnValueChanged += (oldVal, newVal) => updateUI();
+        whosPlaying.OnValueChanged += (oldVal, newVal) => updateUI();
 
         if (IsServer)
         {
             SetupTurnOrder();
             whosPlaying.Value = turnOrder[0];
         }
-
-        // Subscribe to variable changes
-        whatPhase.OnValueChanged += (oldVal, newVal) => updateUI();
-        whosPlaying.OnValueChanged += (oldVal, newVal) => updateUI();
     
         updateUI();
     }
@@ -67,11 +61,9 @@ public class TurnManager : NetworkBehaviour
     public bool turingTest()
     {
         Debug.Log($"TurnManager: turingTest() called");
-        // Simple check: In your setup, IDs >= 100 are bots
         if (whosPlaying.Value >= 100) return true;
 
-        // Fallback: Check the actual component if it exists
-        GameObject activeObj = GetActivePlayerObject();
+        GameObject activeObj = findActiveplayer();
         if (activeObj != null && activeObj.TryGetComponent<Character>(out var character))
         {
             return character.isRobot.Value;
@@ -80,17 +72,15 @@ public class TurnManager : NetworkBehaviour
         return false;
     }
 
-    private GameObject GetActivePlayerObject()
+    private GameObject findActiveplayer()
     {
         ulong activeId = whosPlaying.Value;
         
-        // Check humans
         if (NetworkManager.Singleton.ConnectedClients.TryGetValue(activeId, out var client))
         {
             return client.PlayerObject.gameObject;
         }
 
-        // Check bots (searching spawned objects)
         foreach (var obj in NetworkManager.Singleton.SpawnManager.SpawnedObjects.Values)
         {
             if (obj.NetworkObjectId == activeId || (obj.IsOwner == false && obj.gameObject.name.Contains(activeId.ToString())))
@@ -101,15 +91,9 @@ public class TurnManager : NetworkBehaviour
         return null;
     }
 
-    private GameObject FindBotObject(ulong id)
-    {
-        return GetActivePlayerObject();
-    }
-
 
     private void updateUI()
     {
-        // 1. Update the Active Player Name
         if (activePlayerText != null)
         {
             ulong activeId = whosPlaying.Value;
@@ -119,23 +103,16 @@ public class TurnManager : NetworkBehaviour
                 activePlayerText.text += " (YOU)";
         }
 
-        // 2. Update the Phase Text (This is what was missing)
         if (status != null)
         {
-            // Converts the Enum (ROLLING, MOVING, etc.) to a string
             status.text = "Current Phase: " + whatPhase.Value.ToString();
-        
-            // Optional: Add a little color so it's obvious it changed
-            status.color = Color.yellow; 
         }
 
-        // Debug to console to verify values are actually reaching the client
         Debug.Log($"[UI DEBUG] Player: {whosPlaying.Value} | Phase: {whatPhase.Value}");
     }
 
     private string getCharacter(ulong id)
     {
-        // 1. Try to find a human client first
         if (NetworkManager.Singleton.ConnectedClients.TryGetValue(id, out var client))
         {
             if (client.PlayerObject != null && client.PlayerObject.TryGetComponent<Character>(out var character))
@@ -145,14 +122,13 @@ public class TurnManager : NetworkBehaviour
         }
 
 
-        foreach (var obj in NetworkManager.Singleton.SpawnManager.SpawnedObjects.Values)
+        foreach (var netObj in NetworkManager.Singleton.SpawnManager.SpawnedObjects.Values)
         {
-            if (obj.TryGetComponent<Character>(out var character))
+            if (netObj.TryGetComponent<Character>(out var character))
             {
-
-                if (character.isRobot.Value && id >= 100) 
+                if (character.isRobot.Value && (ulong)character.botID.Value == id)
                 {
-                    if (obj.gameObject.name.Contains(id.ToString())) return character.charName;
+                    return character.charName;
                 }
             }
         }
@@ -189,7 +165,6 @@ public class TurnManager : NetworkBehaviour
         {
             nextTurn();
         }
-        Debug.Log($"TurnManager: nextPhaseServerRpc called | Phase is: {whatPhase.Value}");
     }
 
     public void nextTurn()
@@ -228,21 +203,17 @@ public class TurnManager : NetworkBehaviour
 
         if (indexToRemove != -1)
         {
-            // Use RemoveAt - this triggers a specific 'Remove' event for Clients
             turnOrder.RemoveAt(indexToRemove);
-            Debug.Log($"[Server] Removed ID {id} from Turn Order.");
+            Debug.Log($"TurnManager: removePlayer() called | Removed ID {id} from Turn Order.");
         }
 
-        // Logic for passing the turn if the current player was kicked
         if (whosPlaying.Value == id && turnOrder.Count > 0)
         {
-            // Move to the next available person in the list
             int nextIndex = indexToRemove % turnOrder.Count;
             whosPlaying.Value = turnOrder[nextIndex];
             whatPhase.Value = TurnStage.ROLLING;
         }
-
-        // Force an immediate UI refresh for the Host
+        
         updateUI();
     }
 
