@@ -393,10 +393,7 @@ public class Movement : NetworkBehaviour
 
             Vector3 targetPos = door.GetRoomPosition((int)OwnerClientId);
 
-            // Update position on server
             transform.position = targetPos;
-        
-            // Notify clients
             moveToRoomClientRpc(targetPos);
             move_tokens.Value = 0;
         
@@ -587,25 +584,41 @@ public class Movement : NetworkBehaviour
     [ClientRpc]
     public void SetPlayerVisibilityClientRpc(bool isVisible)
     {
-        // 1. Handle Mesh Renderers (including children)
         foreach (var renderer in GetComponentsInChildren<Renderer>())
         {
             renderer.enabled = isVisible;
         }
 
-        // 2. Handle Colliders (so players can walk through the ghost)
         foreach (var col in GetComponentsInChildren<Collider>())
         {
             col.enabled = isVisible;
         }
 
-        // 3. Handle Canvas/UI (if the player has a name tag floating over them)
         foreach (var canvas in GetComponentsInChildren<Canvas>())
         {
             canvas.enabled = isVisible;
         }
     
         Debug.Log($"<color=orange>Visibility set to {isVisible} for {gameObject.name}</color>");
+    }
+
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    public void TeleportToRoomServerRpc(Vector3 destination, string roomName)
+    {
+        transform.position = destination;
+        currentRoomName.Value = roomName;
+        TeleportClientRpc(destination);
+    }
+
+    [ClientRpc]
+    private void TeleportClientRpc(Vector3 destination)
+    {
+        transform.position = destination;
+        targetPosition = destination;
+        isMoving = false;
+        stage = null; 
+        whereWeAt(); 
     }
 
 }

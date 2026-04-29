@@ -137,6 +137,18 @@ public class GuessManager : NetworkBehaviour
         if(IsServer) Invoke("endDisproveServerRpc", 3f);
     }
 
+    private void activateGuessMoves(Who who, What what, Where where)
+    {
+        string whoName = who.ToString(); 
+        string whatName = what.ToString();
+        string whereName = where.ToString();
+
+        MoveCharacterServerRpc(whoName, whereName);
+        MoveWeaponServerRpc(whatName, whereName);
+    }
+
+
+
     [ClientRpc]
     private void reqDisproveClientRpc(Card[] matchingCards, ClientRpcParams rpcParams)
     {
@@ -330,7 +342,6 @@ public class GuessManager : NetworkBehaviour
             return;
         }
 
-        // Find matching room spawn point
         WSPoint targetPoint = spawnPoints
             .FirstOrDefault(p => p.Name == roomName);
 
@@ -339,16 +350,45 @@ public class GuessManager : NetworkBehaviour
             Debug.LogWarning($"Room not found: {roomName}");
             return;
         }
-
-        // Move weapon
         weapon.transform.position = targetPoint.transform.position;
         weapon.transform.rotation = targetPoint.transform.rotation;
-
-        // Ensure it's networked
         NetworkObject netObj = weapon.GetComponent<NetworkObject>();
         if (netObj != null && !netObj.IsSpawned)
         {
             netObj.Spawn();
+        }
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    private void MoveCharacterServerRpc(string charName, string roomName)
+    {
+        Character targetChar = FindObjectsByType<Character>(FindObjectsSortMode.None)
+            .FirstOrDefault(c => c.charName == charName);
+
+        if (targetChar == null) return;
+
+        Door targetDoor = FindObjectsByType<Door>(FindObjectsSortMode.None)
+            .FirstOrDefault(d => d.roomName == roomName);
+
+        if (targetDoor != null)
+        {
+
+            int idToMatch = targetChar.isRobot.Value ? targetChar.botID.Value : (int)targetChar.OwnerClientId;
+
+            Vector3 spawnPos = targetDoor.GetRoomPosition(idToMatch);
+
+            if (spawnPos != Vector3.zero)
+            {
+                if (targetChar.TryGetComponent<Movement>(out var moveScript))
+                {
+                    moveScript.TeleportToRoomServerRpc(spawnPos, roomName);
+                    Debug.Log($"[Server] Teleported {charName} (ID: {idToMatch}) to {roomName} via {targetDoor.name}");
+                }
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"[Server] Could not find a Door script for room: {roomName}");
         }
     }
 
