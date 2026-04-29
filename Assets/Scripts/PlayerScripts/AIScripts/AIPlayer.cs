@@ -11,6 +11,7 @@ public class AIPLayer : NetworkBehaviour
     private bool isThinking = false;
     public GameObject stage; 
     private Rolling dice;
+    private float accusationChance = 0.1f;
 
     void Start()
     {
