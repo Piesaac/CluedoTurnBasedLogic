@@ -6,6 +6,7 @@ public abstract class Character : NetworkBehaviour
     public abstract string charName { get; }
     public NetworkVariable<bool> isRobot;
     public NetworkVariable<int> botID = new NetworkVariable<int>(-1);
+    public NetworkVariable<bool> isOut = new NetworkVariable<bool>(false);
 
     public void roboHunt()
     {
