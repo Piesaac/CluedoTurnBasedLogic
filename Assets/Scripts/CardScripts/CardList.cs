@@ -26,7 +26,7 @@ namespace CardList
         Green,
         Peacock,
         Scarlett,
-        White
+        Orchid
     }
 
     // Defines the weapons

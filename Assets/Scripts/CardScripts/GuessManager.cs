@@ -65,10 +65,9 @@ public class GuessManager : NetworkBehaviour
     {   
         Debug.Log("GuessManager: submitGuessServerRpc() called");
         ulong guesserId = rpcParams.Receive.SenderClientId;
-
-        // Use playerHands.Count (total players) instead of just human clients
         int nextCW_Player = ((int)guesserId + 1) % cardDist.playerHands.Count;
         StartCoroutine(checkTheirMFHands(who, what, where, nextCW_Player, guesserId));
+        activateGuessMoves(who, what, where);
     }
 
     private List<Card> findSame(List<Card> hand, Who who, What what, Where where)
