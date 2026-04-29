@@ -191,7 +191,6 @@ public class GuessManager : NetworkBehaviour
 
     private void kickTheLoser(ulong playerId, ulong networkId)
     {
-        // 1. Tell the TurnManager to remove them from the list
         if (turnMan != null)
         {
             turnMan.removePlayer(playerId);
@@ -201,7 +200,6 @@ public class GuessManager : NetworkBehaviour
         {
             if (client.PlayerObject != null)
             {
-                // Get the Movement script from the player prefab
                 if (client.PlayerObject.TryGetComponent<Movement>(out var moveScript))
                 {
                     Tile currentTile = moveScript.stage.GetComponent<Tile>();
@@ -223,26 +221,7 @@ public class GuessManager : NetworkBehaviour
         checkForLoneSurvivor();
     }
 
-    [Rpc(SendTo.Everyone)]
-    public void HidePlayerRpc(ulong networkObjectId)
-    {
-        // Find the object by its NetworkId
-        if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(networkObjectId, out var netObj))
-        {
-            // Disable all renderers so the player "vanishes"
-            Renderer[] allRenderers = netObj.GetComponentsInChildren<Renderer>();
-            foreach (Renderer r in allRenderers)
-            {
-                r.enabled = false;
-            }
 
-            // Optional: Disable the collider so they don't block other players
-            if (netObj.TryGetComponent<Collider>(out var col))
-            {
-                col.enabled = false;
-            }
-        }
-    }
 
     [ClientRpc]
     private void tellEmTheyLostClientRpc(ClientRpcParams rpcParams = default)
@@ -373,6 +352,36 @@ public class GuessManager : NetworkBehaviour
     public void testTP()
     {
         RequestMoveWeapon("Candle_stick", "Kitchen");
+    }
+
+    private void checkForLoneSurvivor()
+    {
+        if (!IsServer) return;
+
+        // 1. Find all Character scripts in the scene
+        Character[] allCharacters = FindObjectsByType<Character>(FindObjectsSortMode.None);
+        List<Character> activePlayers = new List<Character>();
+
+        foreach (Character c in allCharacters)
+        {
+            // Only count players who haven't been kicked
+            if (!c.isOut.Value)
+            {
+                activePlayers.Add(c);
+            }
+        }
+
+        // 2. If only 1 player remains, they win!
+        if (activePlayers.Count == 1)
+        {
+            Character winner = activePlayers[0];
+            Debug.Log($"<color=green>WIN BY DEFAULT: {winner.charName} is the last survivor!</color>");
+
+            // Use the Host's ID or the Bot's ID depending on who it is
+            ulong winnerId = winner.isRobot.Value ? (ulong)winner.botID.Value : winner.OwnerClientId;
+
+            endGameClientRpc(winnerId, winner.charName);
+        }
     }
 
 }
