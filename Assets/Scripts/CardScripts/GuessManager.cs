@@ -155,7 +155,7 @@ public class GuessManager : NetworkBehaviour
     }
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
-    public void submitAccuseServerRpc(Who who, What what, Where where, RpcParams rpcParams = default)
+    public void submitAccuseServerRpc(Who who, What what, Where where, ulong requesterNetId, RpcParams rpcParams = default)
     {
         bool foundWho = false;
         bool foundWhat = false;
