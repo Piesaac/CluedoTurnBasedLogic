@@ -9311,10 +9311,10 @@ MonoBehaviour:
   playerPrefabs:
   - {fileID: 7190628333838139028, guid: c2dba4c8cda90ed46ac642372c17331a, type: 3}
   - {fileID: 1160547561274526708, guid: ab1264d393a0b444bb313c6b41a0b2fd, type: 3}
-  - {fileID: 0}
+  - {fileID: 3662403955857410072, guid: 004fe829a9a06ab4595d8d09aa0bdfbb, type: 3}
   - {fileID: 2595513471911906965, guid: 3ea666e8831565a4bbb47e78364366f3, type: 3}
-  - {fileID: 2892529819023398496, guid: c0bf9bdd4b55fee42aca3e17c6c53b9a, type: 3}
-  - {fileID: 9021800099457028607, guid: 3dee8564011041d4ab00f33325e9cfbe, type: 3}
+  - {fileID: 8237730318345326014, guid: c0bf9bdd4b55fee42aca3e17c6c53b9a, type: 3}
+  - {fileID: 848596601634681075, guid: 3dee8564011041d4ab00f33325e9cfbe, type: 3}
 --- !u!1 &349183807
 GameObject:
   m_ObjectHideFlags: 0
