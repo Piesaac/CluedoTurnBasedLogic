@@ -214,7 +214,6 @@ public class GuessManager : NetworkBehaviour
         UIController.Instance.disproveText.text = "No cards found!" + " | Skip or Accuse";
         UIController.Instance.disproveText.gameObject.SetActive(true);
         UIController.Instance.fullyfillGuesses();
-        UIController.Instance.startAccuse();
     }
 
     [ClientRpc]
@@ -328,8 +327,6 @@ public class GuessManager : NetworkBehaviour
             {
                 if (client.PlayerObject.TryGetComponent<Movement>(out var moveScript))
                 {
-                    Tile currentTile = moveScript.stage.GetComponent<Tile>();
-                    currentTile.updateOccupied(false);
                     moveScript.SetPlayerVisibilityClientRpc(false); 
                     Debug.Log("kicktheLoser(): movement script found and player made invisible");
                 }

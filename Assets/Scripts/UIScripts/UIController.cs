@@ -173,6 +173,7 @@ public class UIController : MonoBehaviour
             rollPanel.SetActive(currentPhase == TurnStage.ROLLING);
             movePanel.SetActive(currentPhase == TurnStage.MOVING);
             guessPanel.SetActive(currentPhase == TurnStage.SUGGESTING);
+            accuseButton.gameObject.SetActive(true);
 
             if (currentPhase == TurnStage.MOVING && localPlayerScript != null)
             {
@@ -206,11 +207,6 @@ public class UIController : MonoBehaviour
             }
             if (currentPhase == TurnStage.SUGGESTING)
             {
-                if (isAccuse)
-                {
-                    guessButton.gameObject.SetActive(false);
-                    confirmAccuseButton.gameObject.SetActive(true);
-                }
                 fillGuessDropdowns();
                 guessPanel.SetActive(true);
             }
@@ -218,7 +214,6 @@ public class UIController : MonoBehaviour
             {
                 guessPanel.SetActive(false);
                 disproveText.gameObject.SetActive(false);
-                confirmAccuseButton.gameObject.SetActive(false);
             }
         }
         else
@@ -345,7 +340,6 @@ public class UIController : MonoBehaviour
 
     public void fullyfillGuesses()
     {
-        isAccuse = true;
         suspectList.ClearOptions();
         weaponList.ClearOptions();
         locationList.ClearOptions();
@@ -353,7 +347,6 @@ public class UIController : MonoBehaviour
         suspectList.AddOptions(new List<string>(Enum.GetNames(typeof(Who))));
         weaponList.AddOptions(new List<string>(Enum.GetNames(typeof(What))));
         locationList.AddOptions(new List<string>(Enum.GetNames(typeof(Where))));
-        UpdateUIVisibility();
     }
 
     public void startAccuse()
@@ -372,7 +365,6 @@ public class UIController : MonoBehaviour
         accuseWhere = (Where)locationList.value;
         HideSuggestionUI();
         confirmAccuseButton.gameObject.SetActive(false);
-        isAccuse = false;
         
     }
 
@@ -405,6 +397,8 @@ public class UIController : MonoBehaviour
         if (Enum.TryParse(roomName.Replace(" ", ""), true, out Where werWhere))
             selectedRoom = werWhere;
 
+        guessButton.gameObject.SetActive(false);
+        confirmAccuseButton.gameObject.SetActive(true);
     }
 
     public void ShowDisprovePanel(Card[] cards)
