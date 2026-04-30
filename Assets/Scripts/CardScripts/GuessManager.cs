@@ -65,13 +65,12 @@ public class GuessManager : NetworkBehaviour
         uiscript.clearGuessDropdowns();
     }
 
-    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+   [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     public void submitGuessServerRpc(Who who, What what, Where where, RpcParams rpcParams = default)
     {   
-        Debug.Log($"GuessManager: submitGuessServerRpc() called {who.ToString()} {what.ToString()} {where.ToString()}");
         ulong guesserId = rpcParams.Receive.SenderClientId;
-        int nextCW_Player = ((int)guesserId + 1) % cardDist.playerHands.Count;
-        StartCoroutine(checkTheirMFHands(who, what, where, nextCW_Player, guesserId));
+        int nextPlayerIdx = ((int)guesserId + 1) % cardDist.playerHands.Count;
+        StartCoroutine(checkTheirMFHands(who, what, where, nextPlayerIdx, guesserId));
         activateGuessMoves(who, what, where);
     }
 
@@ -175,24 +174,23 @@ public class GuessManager : NetworkBehaviour
 
     private IEnumerator checkTheirMFHands(Who who, What what, Where where, int start, ulong guesserID)
     {
-        int totalPlayers = cardDist.playerHands.Count;
-        int humanCount = NetworkManager.Singleton.ConnectedClients.Count;
+        int totalParticipants = cardDist.playerHands.Count;
 
-        for (int i = 0; i < totalPlayers; i++)
+        for (int i = 1; i < totalParticipants; i++)
         {
-            int idxToCheck = (start + i) % totalPlayers;
-            if (idxToCheck == (int)guesserID) continue;
+            int idxToCheck = (start + i - 1) % totalParticipants;
+        
+            if ((ulong)idxToCheck == guesserID) continue;
 
             List<Card> foundCards = findSame(cardDist.playerHands[idxToCheck], who, what, where);
-            
+        
             if (foundCards.Count > 0)
             {
-                if (idxToCheck < humanCount)
+                if (NetworkManager.Singleton.ConnectedClientsIds.Contains((ulong)idxToCheck))
                 {
-                    ulong clientToNotify = NetworkManager.Singleton.ConnectedClientsIds[idxToCheck];
                     ClientRpcParams param = new ClientRpcParams
                     {
-                        Send = new ClientRpcSendParams { TargetClientIds = new ulong[] { clientToNotify } }
+                        Send = new ClientRpcSendParams { TargetClientIds = new ulong[] { (ulong)idxToCheck } }
                     };
                     reqDisproveClientRpc(foundCards.ToArray(), param);
                 }

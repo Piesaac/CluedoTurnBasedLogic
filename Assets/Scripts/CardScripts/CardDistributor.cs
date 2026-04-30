@@ -28,10 +28,8 @@ public class CardDistributor : NetworkBehaviour
 
     public void distributeCards(int humanPlayerCount)
     {
-        // 1. Calculate the REAL total including AI from the Lobby settings
         int totalPlayers = humanPlayerCount + MenuController.numBotsToSpawn;
 
-        // Clears any previous data to initialise a new game
         allCards.Clear();
         playerHands.Clear();
         evidence.Clear();
