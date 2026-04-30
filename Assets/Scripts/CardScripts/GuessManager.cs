@@ -30,6 +30,7 @@ public class GuessManager : NetworkBehaviour
 
     [SerializeField] private WSPoint[] spawnPoints;
 
+
     public static GuessManager Instance;
 
 
@@ -372,11 +373,12 @@ public class GuessManager : NetworkBehaviour
         spectatorText.text = resultMessage;
         spectatorPanel.SetActive(true);
 
-        Invoke("hideSpectatorText", 6f); 
+        Invoke("hideSpectatorText", 4f); 
     }
 
     private void hideSpectatorText()
     {
+        UIController.Instance.disproveText.gameObject.SetActive(false);
         spectatorPanel.SetActive(false);
     }
 
