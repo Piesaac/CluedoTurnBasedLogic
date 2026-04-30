@@ -121,7 +121,7 @@ public class GuessManager : NetworkBehaviour
  
     private void MoveCharacter(string susName, string roomName)
     {
-        Debug.Log("MoveCharacterServerRpc() called");
+        Debug.Log("MoveCharacter() called");
         Character targetChar = FindObjectsByType<Character>(FindObjectsSortMode.None)
             .FirstOrDefault(c => c.charName == susName);
 
@@ -211,9 +211,10 @@ public class GuessManager : NetworkBehaviour
     {
         if (NetworkManager.Singleton.LocalClientId != playerID) return;
 
-        UIController.Instance.disproveText.text = "No cards found!";
+        UIController.Instance.disproveText.text = "No cards found!" + " | Skip or Accuse";
         UIController.Instance.disproveText.gameObject.SetActive(true);
-        UIController.Instance.Invoke("hideDisproveText", 3f);
+        UIController.Instance.fullyfillGuesses();
+        UIController.Instance.startAccuse();
     }
 
     [ClientRpc]

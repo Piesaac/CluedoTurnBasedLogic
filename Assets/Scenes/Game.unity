@@ -17111,7 +17111,6 @@ RectTransform:
   - {fileID: 521714400}
   - {fileID: 1590435728}
   - {fileID: 1965508517}
-  - {fileID: 774272272}
   - {fileID: 729674579}
   m_Father: {fileID: 2055813179}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -20119,14 +20118,14 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 774272271}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 12132440}
   - {fileID: 1063637230}
-  m_Father: {fileID: 648539098}
+  m_Father: {fileID: 2055813179}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -39008,7 +39007,7 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 196358695}
         m_TargetAssemblyTypeName: UIController, Assembly-CSharp
-        m_MethodName: delayedUI
+        m_MethodName: UpdateUIVisibility
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -57697,6 +57696,7 @@ RectTransform:
   - {fileID: 979576581}
   - {fileID: 852048942}
   - {fileID: 371914230}
+  - {fileID: 774272272}
   - {fileID: 648539098}
   - {fileID: 1443596247}
   - {fileID: 2113088976}

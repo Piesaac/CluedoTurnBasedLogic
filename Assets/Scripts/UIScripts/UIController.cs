@@ -218,6 +218,7 @@ public class UIController : MonoBehaviour
             {
                 guessPanel.SetActive(false);
                 disproveText.gameObject.SetActive(false);
+                confirmAccuseButton.gameObject.SetActive(false);
             }
         }
         else
