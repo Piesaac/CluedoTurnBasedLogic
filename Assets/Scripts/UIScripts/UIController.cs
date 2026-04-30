@@ -51,33 +51,41 @@ public class UIController : MonoBehaviour
     // Local instance of player's movement script
     public Movement localPlayerScript;
 
+    // UI Panels for general game phases
     [Header("Panels")]
     [SerializeField] private GameObject rollPanel;  
     [SerializeField] private GameObject movePanel;  
     [SerializeField] private GameObject guessPanel; 
 
+    // Disproving UI
     [Header("Disproving UI")]
     [SerializeField] private GameObject disprovePanel;
     [SerializeField] private TMP_Dropdown disproveList;
     [SerializeField] public TextMeshProUGUI disproveText;
 
+    // Buttons used for accusation and suggestion
     [SerializeField] public Button guessButton;
     [SerializeField] public Button accuseButton;
     [SerializeField] public Button confirmAccuseButton;
 
-
+    // Links to Card Distributor
     public CardDistributor cardDist;
+    
+    // Used to populate the list of disprove options.
     List<string> cardNames;
 
-    [Header("Dropdown Fields")]
+    // Used to store the selected clues of a suggestion.
     public Who selectedSuspect;
     public What selectedWeapon;
     public Where selectedRoom;
 
+    // Used to store the selected clues of an accusation.
     public Who accuseWho;
     public What accuseWhat;
     public Where accuseWhere;
 
+
+    // Simple methods used for hiding and showing different UI elements.
     public void ShowSuggestionUI() => guessPanel.SetActive(true);
     public void HideSuggestionBtn() => guessButton.gameObject.SetActive(true);
     public void ShowAccuseBtn() => accuseButton.gameObject.SetActive(true);
@@ -86,6 +94,7 @@ public class UIController : MonoBehaviour
     public void HideRollingUI() => rollPanel.SetActive(false);
     public void HideDisproveUI() => disprovePanel.SetActive(false);
 
+    // Marks if player is currently accusing.
     public bool isAccuse;
 
     private void Awake()
@@ -93,6 +102,7 @@ public class UIController : MonoBehaviour
         Instance = this;
     }
 
+    // Initialises the cluesheet as hidden, fills the suggestion dropdowns with all clues and subscribes to changes in the Turn Manager.
     void Start()
     {
         isAccuse = false;
@@ -109,6 +119,8 @@ public class UIController : MonoBehaviour
         UpdateUIVisibility();
     }
 
+    // Keeps all required variables from Movement and Turn Manager script up to date.
+    // Keeps UI hidden or shown depending if player is currently in a room or on a door.
     void Update()
     {
         if (localPlayerScript != null && isMyTurn)
@@ -134,6 +146,7 @@ public class UIController : MonoBehaviour
         }
     }
 
+    // Finds player script that has spawned this UI controller instance and auto-updates their move counter.
     public void SetLocalPlayer(Movement player)
     {
         localPlayerScript = player;
@@ -142,6 +155,7 @@ public class UIController : MonoBehaviour
         UpdateUIVisibility();
     }
 
+    // Method to generally update UI across turns and turn phases.
     public void UpdateUIVisibility()
     {   
         bool iRobot = turnMan.turingTest();
@@ -156,6 +170,7 @@ public class UIController : MonoBehaviour
         guessPanel.SetActive(false);
         HideDisproveUI();
 
+        // If character is an AI, hides all UI elements from them.
         if (iRobot)
         {
             entryButton.gameObject.SetActive(false);
@@ -166,6 +181,7 @@ public class UIController : MonoBehaviour
             return;
         }
 
+        // Shows UI elements if it is the players turn and the relevent phase.
         if (isMyTurn)
         {
             rollPanel.SetActive(currentPhase == TurnStage.ROLLING);
@@ -192,6 +208,7 @@ public class UIController : MonoBehaviour
 
                 entryButton.gameObject.SetActive(isOnDoor);
                 
+                // Shows secret passage button if the player is in a relevent room.
                 if (isInRoom) 
                 {
                     exitDropdown();
@@ -227,25 +244,16 @@ public class UIController : MonoBehaviour
         }
     }
 
-
-    public void delayedUI()
-    {
-        Invoke("UpdateUIVisibility", 1f);
-    }
-
+    // Updates move text for player depending on their current move_token value
     public void updateMoveText()
     {
         if (localPlayerScript != null)
         {
             moves.text = $"Moves: {localPlayerScript.move_tokens.Value}";
-            Debug.Log($"UI: Move text updated to {localPlayerScript.move_tokens.Value}");
-        }
-        else 
-        {
-            Debug.LogWarning("UI: Cannot update move text because localPlayerScript is NULL");
         }
     }
 
+    // Allows client player object to submit room entry request to server.
     public void submitEnterRoom()
     {
         if (localPlayerScript != null)
@@ -260,6 +268,7 @@ public class UIController : MonoBehaviour
         UpdateUIVisibility();
     }
 
+    // Populates room exit dropdown with the correct doors of the room.
     public void exitDropdown()
     {
         if (localPlayerScript == null) return;
@@ -281,6 +290,7 @@ public class UIController : MonoBehaviour
         exitList.AddOptions(exitNames);
     }
 
+    // Links to the button for selecting the exit to leave the room.
     public void confirmExit()
     {
         int selectedIndex = exitList.value;
@@ -297,6 +307,7 @@ public class UIController : MonoBehaviour
         UpdateUIVisibility();
     }
 
+    // Adds cards given from Card Distributor to the players UI hand list.
     public void updateHand(Card[] cards)
     {
         if (handList == null) return;
@@ -310,6 +321,7 @@ public class UIController : MonoBehaviour
         handList.AddOptions(names);
     }
 
+    // Returns the string name from the card given.
     private string whatCard(Card card)
     {
         return card.type switch
@@ -321,6 +333,7 @@ public class UIController : MonoBehaviour
         };
     }
 
+    // Fills the suggestion dropdown with valid clues, only adding the room they are currently in.
     void fillGuessDropdowns()
     {
         suspectList.ClearOptions();
@@ -341,6 +354,7 @@ public class UIController : MonoBehaviour
         }
     }
 
+    // Fully fills the dropdowns for clues when accusation is required when player is still in a room.
     public void fullyfillGuesses()
     {
         suspectList.ClearOptions();
@@ -352,6 +366,7 @@ public class UIController : MonoBehaviour
         locationList.AddOptions(new List<string>(Enum.GetNames(typeof(Where))));
     }
 
+    // Resets dropdowns to original values and shows button to confirm accusation.
     public void startAccuse()
     {
         clearGuessDropdowns();
@@ -361,6 +376,7 @@ public class UIController : MonoBehaviour
         ShowSuggestionUI();
     }
 
+    // Links to GuessManager as updates value of accusation from current dropdown values.
     public void confirmAccuse()
     {
         accuseWho = (Who)suspectList.value;
@@ -372,7 +388,7 @@ public class UIController : MonoBehaviour
         
     }
 
-
+    // Resets dropdown list so players cannot see what was last input.
     public void clearGuessDropdowns()
     {
         suspectList.value = 0;
@@ -383,6 +399,7 @@ public class UIController : MonoBehaviour
         locationList.RefreshShownValue();
     }
 
+    // Links to GuessManager and converts the string value of the dropdown to the associated enum of the clue.
     public void suggestionButton()
     {
         int suspectIndex = suspectList.value;
@@ -405,6 +422,7 @@ public class UIController : MonoBehaviour
         confirmAccuseButton.gameObject.SetActive(true);
     }
 
+    // Shows the disprove panel to the player with all cards they can choose from.
     public void ShowDisprovePanel(Card[] cards)
     {
         cardNames = new List<string>();
@@ -417,6 +435,7 @@ public class UIController : MonoBehaviour
         disprovePanel.SetActive(true);
     }
 
+    // Links to the confirm disprove button to submit it to the GuessManager.
     public void confirmDisprove()
     {
         if (cardNames != null && cardNames.Count > 0)
@@ -427,18 +446,22 @@ public class UIController : MonoBehaviour
         HideDisproveUI();
     }
 
+    // Hides disprove Text and clears it for next players.
     public void hideDisproveText()
     {
         disproveText.gameObject.SetActive(false);
         disproveText.text = "";
     }
 
+    // Function used for the pop-up cluesheet.
     public void cluePopUp()
     {
         cluesheetToggled = !cluesheetToggled;
         clueSheet.SetActive(cluesheetToggled);
     }
 
+
+    // Links to the secret passage button allowing players to move across rooms.
     public void secretPassageBtn()
     {
         if (localPlayerScript != null)
@@ -447,11 +470,13 @@ public class UIController : MonoBehaviour
         }
     }
 
+    // Shows the accusation button.
     public void showAccuse()
     {
         accuseButton.gameObject.SetActive(true);
     }
 
+    // Links to the skip button for users, allowing them to skip a phase of their turn.
     public void skipBtn()
     {
         confirmAccuseButton.gameObject.SetActive(false);

@@ -8,24 +8,27 @@ public class AIPLayer : NetworkBehaviour
 {
     private Movement moveScript;
     private Character characterScript;
+    private TurnManager tm;
     private bool isThinking = false;
     public GameObject stage; 
     private Rolling dice;
     private float accusationChance = 0.0001f;
 
+    // Initialises Movement and Character scripts and for the AI Player.
     void Start()
     {
         moveScript = GetComponent<Movement>();
         characterScript = GetComponent<Character>();
+        tm = FindFirstObjectByType<TurnManager>();
     }
 
+    // Checks the requirements have been found and updates isMyTurn when its turn has been reached.
     void Update()
     {
         if (!IsServer) return;
 
         if (characterScript == null)
         {
-            Debug.Log("<color=red>[AI DEBUG] Component missing on " + gameObject.name + "</color>");
             return;
         }
 
@@ -33,26 +36,27 @@ public class AIPLayer : NetworkBehaviour
 
         if (characterScript.botID.Value == -1)
         {
-            Debug.Log("<color=orange>[AI DEBUG] I am a robot, but my botID is still -1!</color>");
             return;
         }
-
-        TurnManager tm = FindFirstObjectByType<TurnManager>();
         if (tm == null) return;
 
         bool isMyTurn = ((ulong)characterScript.botID.Value == tm.whosPlaying.Value);
 
+        // If its the AIs turn, starts coroutine of its actions.
         if (isMyTurn && !isThinking)
-    {
-        isThinking = true;
-        StartCoroutine(AIRoutine(tm));
-    }
+        {
+            isThinking = true;
+            StartCoroutine(AIRoutine(tm));
+        }
     }
 
+    // The actual behaviour coded into the AI for each specific phase.
     IEnumerator AIRoutine(TurnManager tm)
     {
         yield return new WaitForSeconds(Random.Range(0.5f, 1.5f));
 
+        // ---- ROLLING PHASE ----
+        // Calls Rolling script to generate move tokens.
         if (tm.whatPhase.Value == TurnStage.ROLLING)
         {
             dice = FindFirstObjectByType<Rolling>();
@@ -63,10 +67,11 @@ public class AIPLayer : NetworkBehaviour
             yield break;
         }
 
+        // ---- MOVING PHASE ----
         while (tm.whatPhase.Value == TurnStage.MOVING && moveScript.move_tokens.Value > 0)
         {
             yield return new WaitForSeconds(0.8f);
-
+            // Finds tile under AI if stage is not found
             if (moveScript.stage == null)
             {
                 FindStartingTile();
@@ -74,6 +79,7 @@ public class AIPLayer : NetworkBehaviour
                 if (moveScript.stage == null) break;
             }
 
+            // If AI is on a door, allows them to move into the room authorised on server.
             if (moveScript.IsOnDoor())
             {
                 moveScript.submitEntryServerRpc(moveScript.stage.GetComponent<NetworkObject>().NetworkObjectId);
@@ -81,6 +87,7 @@ public class AIPLayer : NetworkBehaviour
                 break;
             }
 
+            // Tries all nearby tiles until move is made, and while move tokens are over 0.
             Tile currentTile = moveScript.stage.GetComponent<Tile>();
             bool moveMade = false;
             if (currentTile != null && currentTile.neighbours.Count > 0)
@@ -97,6 +104,7 @@ public class AIPLayer : NetworkBehaviour
             }
         }
 
+        // If move tokens run out while it is AI's moving phase, pushes to next phase.
         if (tm.whatPhase.Value == TurnStage.MOVING && moveScript.move_tokens.Value == 0)
         {
             tm.pushNextPhase();
@@ -122,9 +130,7 @@ public class AIPLayer : NetworkBehaviour
             else
             {
                 //not in room therefore no suggestion
-                Debug.Log("Not in a room, so I can't suggest anything. Moving on.");
                 tm.pushNextPhase();
-                yield return new WaitForSeconds(1.0f);
             }
         }
 
@@ -156,6 +162,7 @@ public class AIPLayer : NetworkBehaviour
         isThinking = false;
     }
 
+    // Finds the closest tile to the AI player and marks it as the stage.
     private void FindStartingTile()
     {
         Tile[] allTiles = FindObjectsByType<Tile>(FindObjectsSortMode.None);
@@ -175,7 +182,6 @@ public class AIPLayer : NetworkBehaviour
         if (closestTile != null)
         {
             moveScript.stage = closestTile;
-            Debug.Log($"[AI] Assigned starting stage to: {closestTile.name}");
         }
     }
 }

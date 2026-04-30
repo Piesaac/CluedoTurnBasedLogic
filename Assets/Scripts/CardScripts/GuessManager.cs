@@ -50,6 +50,7 @@ public class GuessManager : NetworkBehaviour
 
     // ----------- GUESSING LOGIC --------------
 
+    // Button to validate guess made in suggestion phase, refreshes values from TMP_Dropdowns through uiscript and submits guess to the server.
     public void validateGuess()
     {
         uiscript.suggestionButton();
@@ -60,11 +61,14 @@ public class GuessManager : NetworkBehaviour
         submitGuessServerRpc(chosenWho, chosenWhat, chosenWhere);
     }
 
+    // Clears the dropdowns of the uiscript.
     private void resetGuess()
     {
         uiscript.clearGuessDropdowns();
     }
 
+    // Receives the request to submit the guess and checks the values guessed against player hands using checkTheirMFHands().
+    // Triggers the movement of Character models and Weapon models to the room the suggestion was made in.
    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     public void submitGuessServerRpc(Who who, What what, Where where, RpcParams rpcParams = default)
     {   
@@ -74,6 +78,7 @@ public class GuessManager : NetworkBehaviour
         activateGuessMoves(who, what, where);
     }
 
+    // The method to execute the character and weapon movement to rooms after suggestion.
     private void activateGuessMoves(Who who, What what, Where where)
     {
         Debug.Log($"{who.ToString()} {what.ToString()} {where.ToString()} ");
@@ -83,12 +88,7 @@ public class GuessManager : NetworkBehaviour
 
     // ---------- GUESSING - TELEPORTATION LOGIC ---------
 
-    public void RequestMoveWeapon(string weaponName, string roomName)
-    {
-        MoveWeapon(weaponName, roomName);
-    }
-
-
+    // The method that actually actions the movement of the weapon prefab.
     private void MoveWeapon(string weaponName, string roomName)
     {
         Weapon weapon = FindObjectsByType<Weapon>(FindObjectsSortMode.None)
@@ -118,7 +118,7 @@ public class GuessManager : NetworkBehaviour
         }
     }
 
- 
+    // The method used to move the Character model to the room in question.
     private void MoveCharacter(string susName, string roomName)
     {
         Debug.Log("MoveCharacter() called");
@@ -157,6 +157,7 @@ public class GuessManager : NetworkBehaviour
 
     // ---------- DISPROVE LOGIC -----------
 
+    // Finds if any of the clues suggested match any in hand.
     private List<Card> findSame(List<Card> hand, Who who, What what, Where where)
     {
         List<Card> matches = new List<Card>();
@@ -172,6 +173,7 @@ public class GuessManager : NetworkBehaviour
         return matches;
     }
 
+    // Checks over each players hand using the findSame() method and prompts the next player in sequence with matches to disprove.
     private IEnumerator checkTheirMFHands(Who who, What what, Where where, int start, ulong guesserID)
     {
         int totalParticipants = cardDist.playerHands.Count;
@@ -205,6 +207,7 @@ public class GuessManager : NetworkBehaviour
         notifyNoMatchesClientRpc(guesserID);
     }
 
+    // Method that notifies the suggester that no matching cards were found.
     [ClientRpc]
     private void notifyNoMatchesClientRpc(ulong playerID)
     {
@@ -215,17 +218,21 @@ public class GuessManager : NetworkBehaviour
         UIController.Instance.fullyfillGuesses();
     }
 
+
+    // Method that prompts client with matching card to guess to disprove.
     [ClientRpc]
     private void reqDisproveClientRpc(Card[] matchingCards, ClientRpcParams rpcParams)
     {
         uiscript.ShowDisprovePanel(matchingCards); 
     }
 
+    // Called by UI Controller to receive the clue to disprove from the client.
     public void disproveResult(string cardName)
     {
         disproveServerRpc(cardName);
     }
 
+    // Uses the clue received from the disprover and notifies the suggester (current active player)
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     public void disproveServerRpc(string cardName)
     {
@@ -240,6 +247,7 @@ public class GuessManager : NetworkBehaviour
 
     }
 
+    // Method used to notify the suggesting player, and allow them the opportunity to Accuse or skip.
     [ClientRpc]
     private void notifDispResClientRpc(string cardName, ClientRpcParams clientRpcParams = default)
     {
@@ -248,22 +256,9 @@ public class GuessManager : NetworkBehaviour
         UIController.Instance.fullyfillGuesses();
     }
 
-    public void endDisprove()
-    {
-        endDisproveServerRpc();
-    }
-
-    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
-    public void endDisproveServerRpc()
-    {
-        if (turnMan.whatPhase.Value == TurnStage.SUGGESTING)
-        {
-            turnMan.pushNextPhase();
-        }
-    }
-
     // ------- ACCUSATION LOGIC ----------
 
+    // Used by the accuse button to check the contents of the dropdowns and submit them to be checked by the server.
     public void validateAccuse()
     {
         uiscript.confirmAccuse();
@@ -274,6 +269,8 @@ public class GuessManager : NetworkBehaviour
         submitAccuseServerRpc(chosenWho, chosenWhat, chosenWhere, NetworkObjectId);
     }
 
+    // Checks the accusations made by the player against the evidence cards made by Card Distributor.
+    // If the accusation is correct, activates endGameClientRpc(), otherwise it removes the accusing player.
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     public void submitAccuseServerRpc(Who who, What what, Where where, ulong requesterNetId, RpcParams rpcParams = default)
     {
@@ -311,6 +308,7 @@ public class GuessManager : NetworkBehaviour
 
     // ------- ACCUSATION LOGIC - LOSER LOGIC -------
 
+    // Used to remove the player from TurnManager logic and to activate methods within Movement to make their player prefab uninteractable.
     private void kickTheLoser(ulong playerId)
     {
         Debug.Log("kicktheLoser() called");
@@ -336,6 +334,7 @@ public class GuessManager : NetworkBehaviour
                 }
             }
         }
+        // Creates a string with the actual evidence clues to be shown to the player accusing.
         string evidenceMessage = "";
         if (cardDist.evidence != null && cardDist.evidence.Count > 0)
         {
@@ -356,6 +355,7 @@ public class GuessManager : NetworkBehaviour
         checkForLoneSurvivor();
     }
 
+    // If player has lost, tells them they are now a spectator and shows them the correct evidence.
     [ClientRpc]
     private void tellEmTheyLostClientRpc(string evidenceNames, ClientRpcParams rpcParams = default)
     {
@@ -371,9 +371,10 @@ public class GuessManager : NetworkBehaviour
         spectatorText.text = resultMessage;
         spectatorPanel.SetActive(true);
 
-        Invoke("hideSpectatorText", 4f); 
+        Invoke("hideSpectatorText", 3f); 
     }
 
+    // Used by the method above to hide the notification of removal after a few seconds.
     private void hideSpectatorText()
     {
         UIController.Instance.disproveText.gameObject.SetActive(false);
@@ -383,13 +384,12 @@ public class GuessManager : NetworkBehaviour
 
     // ----------- GAME END LOGIC -----------
 
-
+    // If the accusation is correct, this triggers and loads the game end scene.
     [ClientRpc]
     private void endGameClientRpc(ulong id, string name)
     {
         AccuseResult.winID = id;
         AccuseResult.winName = name;
-        AccuseResult.gameEnd = true;
 
 
         if (IsServer)
@@ -399,7 +399,7 @@ public class GuessManager : NetworkBehaviour
     }
 
 
-
+    // Checks if only one player remains by accessing isOut within the players Character script, if only one player remains, they are marked as the winner.
     private void checkForLoneSurvivor()
     {
         if (!IsServer) return;

@@ -71,7 +71,7 @@ public class MenuController : NetworkBehaviour
         refreshAIText(aiCount.Value);
     }
 
-
+    // Links to add AI button on Lobby screen, allows host to increment number of AIs to spawn.
     public void addAI()
     {
         if (!NetworkManager.Singleton.IsServer) 
@@ -79,7 +79,6 @@ public class MenuController : NetworkBehaviour
             Debug.LogWarning("Only the Host can add AI!");
             return;
         }
-        Debug.Log("Add AI button clicked");
         numHuman = Netcode.Singleton.ConnectedClients.Count;
         numAI= aiCount.Value;
         totalPlayers = numHuman + numAI;
@@ -95,6 +94,7 @@ public class MenuController : NetworkBehaviour
         refreshAIText(aiCount.Value);
     }
 
+    // Refreshes number of AIs to be added in game for both Host and Client.
     private void refreshAIText(int count)
     {
         aiText.text = $"There are currently: {count} AI players";
@@ -102,13 +102,16 @@ public class MenuController : NetworkBehaviour
 
     // --- Connection Logic ---
 
+    // Button used to initialise lobby for Host.
     public void OnHostClicked()
     {
+        // If games network manager is already running, shuts it down before starting host again.
         if (NetworkManager.Singleton.IsListening || NetworkManager.Singleton.IsClient || NetworkManager.Singleton.IsServer)
         {
             NetworkManager.Singleton.Shutdown();
         }
         Debug.Log("Host button clicked");
+        // Only shows start game to the host.
         if (Netcode.Singleton.StartHost())
         {
             displayLobby();
@@ -118,6 +121,8 @@ public class MenuController : NetworkBehaviour
         }
     }
 
+
+    // Button used for Clients joining lobby.
     public void OnJoinClicked()
     {
         Debug.Log("Join button clicked");
@@ -129,12 +134,14 @@ public class MenuController : NetworkBehaviour
         }
     }
 
+    // Displayes Lobby screen once Host or Client have connected.
     private void displayLobby()
     {
         loginPanel.SetActive(false);
         lobbyPanel.SetActive(true);
     }
 
+    // Implementation of a back button.
     private void goBack()
     {   
         if (Netcode.Singleton.IsClient || Netcode.Singleton.IsServer)
@@ -149,6 +156,7 @@ public class MenuController : NetworkBehaviour
         aiBtn.gameObject.SetActive(false);
     }
 
+    // Links to button visible to Host to start the game once players and AIs required have been added.
     public void OnStartGameClicked()
     {
         numHuman = Netcode.Singleton.ConnectedClients.Count;
@@ -160,19 +168,11 @@ public class MenuController : NetworkBehaviour
             Debug.LogError("Not enough players in lobby to start game");
             return;
         }
+        // Loads main game scene if Host has clicked Start game
         if (NetworkManager.Singleton.IsServer)
         {   
             numBotsToSpawn = aiCount.Value;
             NetworkManager.Singleton.SceneManager.LoadScene("Game", UnityEngine.SceneManagement.LoadSceneMode.Single);
-        }
-    }
-
-    public void GetPlayerCount()
-    {
-        if (Netcode.Singleton.ConnectedClients != null)
-        {
-            int playerCount = Netcode.Singleton.ConnectedClients.Count;
-            playersText.text = $"Players in Lobby: {playerCount}";
         }
     }
 }
