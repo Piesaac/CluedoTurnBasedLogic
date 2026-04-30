@@ -19,13 +19,14 @@ public class TurnManager : NetworkBehaviour
     public NetworkList<ulong> turnOrder = new NetworkList<ulong>(null, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
 
-
+    // Subscribes to event changes of network variables to automatically update UI.
     public override void OnNetworkSpawn()
     {
         turnOrder.OnListChanged += (changeEvent) => updateUI();
         whatPhase.OnValueChanged += (oldVal, newVal) => updateUI();
         whosPlaying.OnValueChanged += (oldVal, newVal) => updateUI();
 
+        // The Host initialises the turn order and sets the starting player index.
         if (IsServer)
         {
             SetupTurnOrder();
@@ -35,6 +36,7 @@ public class TurnManager : NetworkBehaviour
         updateUI();
     }
 
+    // Method to initialise turn order at start of game.
     private void SetupTurnOrder()
     {
         if (!IsServer) return;
@@ -57,7 +59,8 @@ public class TurnManager : NetworkBehaviour
             turnOrder.Add(id);
         }
     }
-
+    
+    // Returns true if the player currently playing is an AI.
     public bool turingTest()
     {
         if (whosPlaying.Value >= 100) return true;
@@ -71,6 +74,7 @@ public class TurnManager : NetworkBehaviour
         return false;
     }
 
+    // Returns the currently active player.
     private GameObject findActiveplayer()
     {
         ulong activeId = whosPlaying.Value;
@@ -90,7 +94,7 @@ public class TurnManager : NetworkBehaviour
         return null;
     }
 
-
+    // Updates UI to show which player holds the turn and current phase of turn.
     private void updateUI()
     {
         if (activePlayerText != null)
@@ -109,6 +113,7 @@ public class TurnManager : NetworkBehaviour
 
     }
 
+    // Returns the string name of the object ID inputted.
     private string getCharacter(ulong id)
     {
         if (NetworkManager.Singleton.ConnectedClients.TryGetValue(id, out var client))
@@ -130,10 +135,10 @@ public class TurnManager : NetworkBehaviour
                 }
             }
         }
-
         return "Spectator";
     }
 
+    // Allows clients to request next phase of turn if it is their turn, or always allows for server.
     public void reqNextPhase()
     {
         if (NetworkManager.Singleton.LocalClientId == whosPlaying.Value || IsServer) 
@@ -146,6 +151,7 @@ public class TurnManager : NetworkBehaviour
         }
     }
 
+    // Method to change the turn phase on the server.
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void nextPhaseServerRpc()
     {
@@ -164,6 +170,7 @@ public class TurnManager : NetworkBehaviour
         }
     }
 
+    // Method to push the game to the next turn.
     public void nextTurn()
     {
         int currentIndex = turnOrder.IndexOf(whosPlaying.Value);
@@ -172,12 +179,14 @@ public class TurnManager : NetworkBehaviour
         whatPhase.Value = TurnStage.ROLLING;
     }
 
+    // Method to push the game to the next turn phase.
     public void pushNextPhase()
     {
         if (!IsServer) return; 
         nextPhaseServerRpc(); 
     }   
 
+    // Method to remove player for failed accusation.
     public void removePlayer(ulong id)
     {
         if (!IsServer) return;
@@ -205,12 +214,6 @@ public class TurnManager : NetworkBehaviour
             whatPhase.Value = TurnStage.ROLLING;
         }
         
-        updateUI();
-    }
-
-    [ClientRpc]
-    private void updateClientUIClientRpc()
-    {
         updateUI();
     }
 }

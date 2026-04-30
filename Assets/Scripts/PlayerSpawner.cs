@@ -54,12 +54,14 @@ public class PlayerSpawner : NetworkBehaviour
         Door randomRoom = allRooms[Random.Range(0, allRooms.Length)];
         Vector3 spawnPos = randomRoom.GetRoomPosition(prefabIndex);
 
-        GameObject localInstance = Instantiate(prefabToSpawn, spawnPos, randomRoom.transform.rotation);
+        GameObject playerInstance = Instantiate(prefabToSpawn, spawnPos, Quaternion.identity);
 
-        if (localInstance.TryGetComponent<NetworkObject>(out var netObj)) Destroy(netObj);
+        NetworkObject netObj = playerInstance.GetComponent<NetworkObject>();
 
-        Character whom = localInstance.GetComponent<Character>();
+        Character whom = playerInstance.GetComponent<Character>();
+        whom.isAbsent.Value = true;
         Debug.Log($"Player: {whom.charName} | Spawned in: {randomRoom.roomName}");
+        netObj.Spawn();
     }
 
 

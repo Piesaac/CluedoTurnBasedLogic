@@ -33,9 +33,10 @@ public class Movement : NetworkBehaviour
     // Field for activating movement in update method.
     private bool isMoving = false;
 
+
     // Stores room player is currently in for room exit logic.
     public NetworkVariable<Unity.Collections.FixedString32Bytes> currentRoomName = 
-    new NetworkVariable<Unity.Collections.FixedString32Bytes>("", NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    new NetworkVariable<Unity.Collections.FixedString32Bytes>("", NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
 
     public NetworkVariable<int> move_tokens = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
@@ -43,19 +44,18 @@ public class Movement : NetworkBehaviour
     // Links Player to their own UI Controller 
     public override void OnNetworkSpawn()
     {
-        if (!IsOwner || turingTest())
+        if (!IsOwner || turingTest() || absentTest())
         {
             return;
         } 
         else
         {
-            /*
+            
             uiobj = GameObject.FindFirstObjectByType<UIController>();
             if (uiobj != null)
             {
                 uiobj.localPlayerScript = this;
             }
-            */
         }
 
         searchOnce();
@@ -70,6 +70,12 @@ public class Movement : NetworkBehaviour
         if (TryGetComponent<Character>(out var c)) return c.isRobot.Value;
         return false;
     }
+
+    private bool absentTest()
+    {
+        Character charScript = GetComponentInParent<Character>();
+        return charScript.isAbsent.Value;
+    } 
 
 
     private IEnumerator linkUI()
