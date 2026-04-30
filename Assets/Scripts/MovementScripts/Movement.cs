@@ -418,11 +418,8 @@ public class Movement : NetworkBehaviour
                 transform.position = targetPos;
                 moveToRoomClientRpc(targetPos);
                 move_tokens.Value = 0;
-            
-                if (whomst.whatPhase.Value == TurnStage.MOVING)
-                {
-                    whomst.pushNextPhase();
-                }
+                whomst.nextTurn();
+                Debug.Log($"Turn has moved to {whomst.whosPlaying.Value} as Secret Passage Used");
             }
         }
     }
