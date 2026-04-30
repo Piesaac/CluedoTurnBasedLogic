@@ -61,9 +61,10 @@ public class UIController : MonoBehaviour
     [SerializeField] private TMP_Dropdown disproveList;
     [SerializeField] public TextMeshProUGUI disproveText;
 
-    [SerializeField] private Button guessButton;
-    [SerializeField] private Button accuseButton;
-    [SerializeField] private Button confirmAccuseButton;
+    [SerializeField] public Button guessButton;
+    [SerializeField] public Button accuseButton;
+    [SerializeField] public Button confirmAccuseButton;
+
 
     public CardDistributor cardDist;
     List<string> cardNames;
@@ -78,10 +79,14 @@ public class UIController : MonoBehaviour
     public Where accuseWhere;
 
     public void ShowSuggestionUI() => guessPanel.SetActive(true);
+    public void HideSuggestionBtn() => guessButton.gameObject.SetActive(true);
+    public void ShowAccuseBtn() => accuseButton.gameObject.SetActive(true);
     public void HideSuggestionUI() => guessPanel.SetActive(false);
     public void ShowRollingUI() => rollPanel.SetActive(true);
     public void HideRollingUI() => rollPanel.SetActive(false);
     public void HideDisproveUI() => disprovePanel.SetActive(false);
+
+    public bool isAccuse;
 
     private void Awake()
     {
@@ -90,6 +95,7 @@ public class UIController : MonoBehaviour
 
     void Start()
     {
+        isAccuse = false;
         cluesheetToggled = false;
         clueSheetBtn.gameObject.SetActive(true);
         fillGuessDropdowns();
@@ -200,12 +206,18 @@ public class UIController : MonoBehaviour
             }
             if (currentPhase == TurnStage.SUGGESTING)
             {
+                if (isAccuse)
+                {
+                    guessButton.gameObject.SetActive(false);
+                    confirmAccuseButton.gameObject.SetActive(true);
+                }
                 fillGuessDropdowns();
                 guessPanel.SetActive(true);
             }
             else
             {
                 guessPanel.SetActive(false);
+                disproveText.gameObject.SetActive(false);
             }
         }
         else
@@ -330,6 +342,19 @@ public class UIController : MonoBehaviour
         }
     }
 
+    public void fullyfillGuesses()
+    {
+        isAccuse = true;
+        suspectList.ClearOptions();
+        weaponList.ClearOptions();
+        locationList.ClearOptions();
+
+        suspectList.AddOptions(new List<string>(Enum.GetNames(typeof(Who))));
+        weaponList.AddOptions(new List<string>(Enum.GetNames(typeof(What))));
+        locationList.AddOptions(new List<string>(Enum.GetNames(typeof(Where))));
+        UpdateUIVisibility();
+    }
+
     public void startAccuse()
     {
         clearGuessDropdowns();
@@ -346,6 +371,7 @@ public class UIController : MonoBehaviour
         accuseWhere = (Where)locationList.value;
         HideSuggestionUI();
         confirmAccuseButton.gameObject.SetActive(false);
+        isAccuse = false;
         
     }
 
@@ -406,7 +432,6 @@ public class UIController : MonoBehaviour
     {
         disproveText.gameObject.SetActive(false);
         disproveText.text = "";
-        GuessManager.Instance.endDisprove();
     }
 
     public void cluePopUp()
@@ -421,5 +446,10 @@ public class UIController : MonoBehaviour
         {
             localPlayerScript.activateSecPassServerRpc();
         }
+    }
+
+    public void showAccuse()
+    {
+        accuseButton.gameObject.SetActive(true);
     }
 }

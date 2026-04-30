@@ -32,6 +32,8 @@ public class GuessManager : NetworkBehaviour
 
     public static GuessManager Instance;
 
+
+    
     void Start()
     {
         chosenWho = uiscript.selectedSuspect;
@@ -45,10 +47,7 @@ public class GuessManager : NetworkBehaviour
         else Destroy(gameObject);
     }
 
-    private void resetGuess()
-    {
-        uiscript.clearGuessDropdowns();
-    }
+    // ----------- GUESSING LOGIC --------------
 
     public void validateGuess()
     {
@@ -60,6 +59,11 @@ public class GuessManager : NetworkBehaviour
         submitGuessServerRpc(chosenWho, chosenWhat, chosenWhere);
     }
 
+    private void resetGuess()
+    {
+        uiscript.clearGuessDropdowns();
+    }
+
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     public void submitGuessServerRpc(Who who, What what, Where where, RpcParams rpcParams = default)
     {   
@@ -69,6 +73,89 @@ public class GuessManager : NetworkBehaviour
         StartCoroutine(checkTheirMFHands(who, what, where, nextCW_Player, guesserId));
         activateGuessMoves(who, what, where);
     }
+
+    private void activateGuessMoves(Who who, What what, Where where)
+    {
+        Debug.Log($"{who.ToString()} {what.ToString()} {where.ToString()} ");
+        MoveCharacter(who.ToString(), where.ToString());
+        MoveWeapon(what.ToString(), where.ToString());
+    }
+
+    // ---------- GUESSING - TELEPORTATION LOGIC ---------
+
+    public void RequestMoveWeapon(string weaponName, string roomName)
+    {
+        MoveWeapon(weaponName, roomName);
+    }
+
+
+    private void MoveWeapon(string weaponName, string roomName)
+    {
+        Weapon weapon = FindObjectsByType<Weapon>(FindObjectsSortMode.None)
+            .FirstOrDefault(w => w.myName == weaponName);
+
+        if (weapon == null)
+        {
+            Debug.LogWarning($"Weapon not found: {weaponName}");
+            return;
+        }
+
+        WSPoint targetPoint = spawnPoints
+            .FirstOrDefault(p => p.Name == roomName);
+
+        if (targetPoint == null)
+        {
+            Debug.LogWarning($"Room not found: {roomName}");
+            return;
+        }
+        weapon.transform.position = targetPoint.transform.position;
+        weapon.transform.rotation = targetPoint.transform.rotation;
+        NetworkObject netObj = weapon.GetComponent<NetworkObject>();
+        Debug.Log($"Weapon: {weaponName} has been moved to room: {roomName}");
+        if (netObj != null && !netObj.IsSpawned)
+        {
+            netObj.Spawn();
+        }
+    }
+
+ 
+    private void MoveCharacter(string susName, string roomName)
+    {
+        Debug.Log("MoveCharacterServerRpc() called");
+        Character targetChar = FindObjectsByType<Character>(FindObjectsSortMode.None)
+            .FirstOrDefault(c => c.charName == susName);
+
+        if (targetChar == null)
+        {
+            Debug.Log("Character not found");
+
+        }
+        Debug.Log($"Room name: {roomName}");
+
+        Door targetDoor = FindObjectsByType<Door>(FindObjectsSortMode.None)
+            .FirstOrDefault(d => d.roomName == roomName);
+
+        if (targetDoor != null)
+        {
+            Debug.Log("Target door found");
+
+            int idToMatch = targetChar.isRobot.Value ? targetChar.botID.Value  : (int)targetChar.OwnerClientId;
+
+            Vector3 spawnPos = targetDoor.GetRoomPosition(idToMatch);
+
+            if (spawnPos != Vector3.zero)
+            {
+                Movement moveScript = targetChar.GetComponentInParent<Movement>() ?? targetChar.GetComponentInChildren<Movement>();
+                if (moveScript != null)
+                {
+                    moveScript.TeleportToRoomServerRpc(spawnPos, roomName);
+                    Debug.Log($"Player: {susName} has been moved to room: {roomName}");
+                }
+            }
+        }
+    }
+
+    // ---------- DISPROVE LOGIC -----------
 
     private List<Card> findSame(List<Card> hand, Who who, What what, Where where)
     {
@@ -127,24 +214,56 @@ public class GuessManager : NetworkBehaviour
         UIController.Instance.disproveText.text = "No cards found!";
         UIController.Instance.disproveText.gameObject.SetActive(true);
         UIController.Instance.Invoke("hideDisproveText", 3f);
-        
-        if(IsServer) Invoke("endDisproveServerRpc", 3f);
     }
-
-    private void activateGuessMoves(Who who, What what, Where where)
-    {
-        Debug.Log($"{who.ToString()} {what.ToString()} {where.ToString()} ");
-        MoveCharacter(who.ToString(), where.ToString());
-        MoveWeapon(what.ToString(), where.ToString());
-    }
-
-
 
     [ClientRpc]
     private void reqDisproveClientRpc(Card[] matchingCards, ClientRpcParams rpcParams)
     {
         uiscript.ShowDisprovePanel(matchingCards); 
     }
+
+    public void disproveResult(string cardName)
+    {
+        disproveServerRpc(cardName);
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    public void disproveServerRpc(string cardName)
+    {
+        ulong suggesterId = (ulong)turnMan.whosPlaying.Value;
+
+        ClientRpcParams clientRpcParams = new ClientRpcParams
+        {
+            Send = new ClientRpcSendParams { TargetClientIds = new ulong[] { suggesterId } }
+        };
+
+        notifDispResClientRpc(cardName, clientRpcParams);
+
+    }
+
+    [ClientRpc]
+    private void notifDispResClientRpc(string cardName, ClientRpcParams clientRpcParams = default)
+    {
+        UIController.Instance.disproveText.text = "You have been shown the card: " + cardName + " | Skip or Accuse";
+        UIController.Instance.disproveText.gameObject.SetActive(true);
+        UIController.Instance.fullyfillGuesses();
+    }
+
+    public void endDisprove()
+    {
+        endDisproveServerRpc();
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    public void endDisproveServerRpc()
+    {
+        if (turnMan.whatPhase.Value == TurnStage.SUGGESTING)
+        {
+            turnMan.pushNextPhase();
+        }
+    }
+
+    // ------- ACCUSATION LOGIC ----------
 
     public void validateAccuse()
     {
@@ -191,6 +310,8 @@ public class GuessManager : NetworkBehaviour
     }
 
 
+    // ------- ACCUSATION LOGIC - LOSER LOGIC -------
+
     private void kickTheLoser(ulong playerId)
     {
         Debug.Log("kicktheLoser() called");
@@ -227,8 +348,6 @@ public class GuessManager : NetworkBehaviour
         checkForLoneSurvivor();
     }
 
-
-
     [ClientRpc]
     private void tellEmTheyLostClientRpc(ClientRpcParams rpcParams = default)
     {
@@ -244,6 +363,8 @@ public class GuessManager : NetworkBehaviour
         spectatorPanel.SetActive(false);
     }
 
+
+    // ----------- GAME END LOGIC -----------
 
 
     [ClientRpc]
@@ -262,159 +383,26 @@ public class GuessManager : NetworkBehaviour
 
 
 
-    public void disproveResult(string cardName)
-    {
-        disproveServerRpc(cardName);
-    }
-
-    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
-    public void disproveServerRpc(string cardName)
-    {
-        // Suggester is always the current player in turn manager
-        ulong suggesterId = (ulong)turnMan.whosPlaying.Value;
-
-        ClientRpcParams clientRpcParams = new ClientRpcParams
-        {
-            Send = new ClientRpcSendParams { TargetClientIds = new ulong[] { suggesterId } }
-        };
-
-        notifDispResClientRpc(cardName, clientRpcParams);
-        
-        // Since a card was shown, the phase needs to end automatically after a delay
-        if (turnMan.whatPhase.Value == TurnStage.SUGGESTING)
-        {
-            turnMan.pushNextPhase();
-        }
-        else 
-        {
-            Debug.LogWarning("GuessManager tried to push phase, but we are no longer suggesting!");
-        }
-    }
-
-    [ClientRpc]
-    private void notifDispResClientRpc(string cardName, ClientRpcParams clientRpcParams = default)
-    {
-        UIController.Instance.disproveText.text = "You have been shown the card: " + cardName;
-        UIController.Instance.disproveText.gameObject.SetActive(true);
-        UIController.Instance.Invoke("hideDisproveText", 4f);
-    }
-
-    public void endDisprove()
-    {
-        endDisproveServerRpc();
-    }
-
-    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
-    public void endDisproveServerRpc()
-    {
-        if (turnMan.whatPhase.Value == TurnStage.SUGGESTING)
-        {
-            turnMan.pushNextPhase();
-        }
-    }
-
-    public void RequestMoveWeapon(string weaponName, string roomName)
-    {
-        MoveWeapon(weaponName, roomName);
-    }
-
-
-    private void MoveWeapon(string weaponName, string roomName)
-    {
-        Weapon weapon = FindObjectsByType<Weapon>(FindObjectsSortMode.None)
-            .FirstOrDefault(w => w.myName == weaponName);
-
-        if (weapon == null)
-        {
-            Debug.LogWarning($"Weapon not found: {weaponName}");
-            return;
-        }
-
-        WSPoint targetPoint = spawnPoints
-            .FirstOrDefault(p => p.Name == roomName);
-
-        if (targetPoint == null)
-        {
-            Debug.LogWarning($"Room not found: {roomName}");
-            return;
-        }
-        weapon.transform.position = targetPoint.transform.position;
-        weapon.transform.rotation = targetPoint.transform.rotation;
-        NetworkObject netObj = weapon.GetComponent<NetworkObject>();
-        if (netObj != null && !netObj.IsSpawned)
-        {
-            netObj.Spawn();
-        }
-    }
-
- 
-    private void MoveCharacter(string susName, string roomName)
-    {
-        Debug.Log("MoveCharacterServerRpc()");
-        Character targetChar = FindObjectsByType<Character>(FindObjectsSortMode.None)
-            .FirstOrDefault(c => c.charName == susName);
-
-        if (targetChar == null)
-        {
-            Debug.Log("Character not found");
-
-        }
-        Debug.Log($"Room name: {roomName}");
-
-        Door targetDoor = FindObjectsByType<Door>(FindObjectsSortMode.None)
-            .FirstOrDefault(d => d.roomName == roomName);
-
-        if (targetDoor != null)
-        {
-
-            int idToMatch = targetChar.isRobot.Value ? targetChar.botID.Value : (int)targetChar.OwnerClientId;
-
-            Vector3 spawnPos = targetDoor.GetRoomPosition(idToMatch);
-
-            if (spawnPos != Vector3.zero)
-            {
-                if (targetChar.TryGetComponent<Movement>(out var moveScript))
-                {
-                    Debug.Log("Movement component found");
-                    moveScript.TeleportToRoomServerRpc(spawnPos, roomName);
-                }
-            }
-        }
-        else
-        {
-            Debug.LogWarning($"[Server] Could not find a Door script for room: {roomName}");
-        }
-    }
-
-    public void testTP()
-    {
-        RequestMoveWeapon("Candle_stick", "Kitchen");
-    }
-
     private void checkForLoneSurvivor()
     {
         if (!IsServer) return;
 
-        // 1. Find all Character scripts in the scene
         Character[] allCharacters = FindObjectsByType<Character>(FindObjectsSortMode.None);
         List<Character> activePlayers = new List<Character>();
 
         foreach (Character c in allCharacters)
         {
-            // Only count players who haven't been kicked
             if (!c.isOut.Value)
             {
                 activePlayers.Add(c);
             }
         }
 
-        // 2. If only 1 player remains, they win!
         if (activePlayers.Count == 1)
         {
             Character winner = activePlayers[0];
             Debug.Log($"<color=green>WIN BY DEFAULT: {winner.charName} is the last survivor!</color>");
 
-            // Use the Host's ID or the Bot's ID depending on who it is
             ulong winnerId = winner.isRobot.Value ? (ulong)winner.botID.Value : winner.OwnerClientId;
 
             endGameClientRpc(winnerId, winner.charName);
