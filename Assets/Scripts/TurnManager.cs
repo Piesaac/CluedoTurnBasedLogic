@@ -166,7 +166,6 @@ public class TurnManager : NetworkBehaviour
 
     public void nextTurn()
     {
-        if (!IsServer) return;
         int currentIndex = turnOrder.IndexOf(whosPlaying.Value);
         int nextIndex = (currentIndex + 1) % turnOrder.Count;
         whosPlaying.Value = turnOrder[nextIndex];

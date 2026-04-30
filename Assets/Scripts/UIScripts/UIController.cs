@@ -168,12 +168,15 @@ public class UIController : MonoBehaviour
 
         if (isMyTurn)
         {
-            Debug.Log($"<color=orange>UI: It's my turn! Phase: {currentPhase}</color>");
-
             rollPanel.SetActive(currentPhase == TurnStage.ROLLING);
             movePanel.SetActive(currentPhase == TurnStage.MOVING);
             guessPanel.SetActive(currentPhase == TurnStage.SUGGESTING);
             accuseButton.gameObject.SetActive(true);
+
+            if (currentPhase != TurnStage.SUGGESTING)
+            {
+                confirmAccuseButton.gameObject.SetActive(false);
+            }
 
             if (currentPhase == TurnStage.MOVING && localPlayerScript != null)
             {
@@ -365,6 +368,7 @@ public class UIController : MonoBehaviour
         accuseWhere = (Where)locationList.value;
         HideSuggestionUI();
         confirmAccuseButton.gameObject.SetActive(false);
+        UpdateUIVisibility();
         
     }
 
@@ -446,5 +450,14 @@ public class UIController : MonoBehaviour
     public void showAccuse()
     {
         accuseButton.gameObject.SetActive(true);
+    }
+
+    public void skipBtn()
+    {
+        confirmAccuseButton.gameObject.SetActive(false);
+        guessPanel.gameObject.SetActive(false);
+        hideDisproveText();
+        turnMan.reqNextPhase();
+        UpdateUIVisibility();
     }
 }

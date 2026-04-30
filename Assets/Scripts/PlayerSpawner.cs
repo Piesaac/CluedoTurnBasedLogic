@@ -36,9 +36,30 @@ public class PlayerSpawner : NetworkBehaviour
 
         while (availableIndexes.Count > 0)
         {
-            ulong uniqueId = (ulong)(500 + availableIndexes.Count); 
-            SpawnPlayer(uniqueId, false, availableIndexes);
+            SpawnAbsent(availableIndexes);
         }
+    }
+
+    private void SpawnAbsent(List<int> availableIndexes)
+    {
+        if (availableIndexes == null || availableIndexes.Count == 0) return;
+
+        int prefabIndex = availableIndexes[0];
+        availableIndexes.RemoveAt(0);
+
+        GameObject prefabToSpawn = playerPrefabs[prefabIndex];
+
+        Door[] allRooms = FindObjectsByType<Door>(FindObjectsSortMode.None);
+
+        Door randomRoom = allRooms[Random.Range(0, allRooms.Length)];
+        Vector3 spawnPos = randomRoom.GetRoomPosition(prefabIndex);
+
+        GameObject localInstance = Instantiate(prefabToSpawn, spawnPos, randomRoom.transform.rotation);
+
+        if (localInstance.TryGetComponent<NetworkObject>(out var netObj)) Destroy(netObj);
+
+        Character whom = localInstance.GetComponent<Character>();
+        Debug.Log($"Player: {whom.charName} | Spawned in: {randomRoom.roomName}");
     }
 
 
