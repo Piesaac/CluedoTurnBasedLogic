@@ -4,10 +4,10 @@ using Unity.Netcode;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using turnyWurny; // Ensure this namespace matches your TurnStage enum
+using turnyWurny; 
 
 public class TurnManager : NetworkBehaviour
-{
+{   // Set variables
     [Header("UI Text")]
     public TextMeshProUGUI status;
     public TextMeshProUGUI activePlayerText;

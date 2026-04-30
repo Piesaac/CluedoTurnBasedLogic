@@ -258,12 +258,13 @@ public class Movement : NetworkBehaviour
         }
     }
 
+    //find out where the player is e.g. tile or room 
     public void whereWeAt()
     {
         Vector3 rayStart = transform.position + Vector3.up * 1.5f; 
         RaycastHit[] hits = Physics.RaycastAll(rayStart, Vector3.down, 3.0f);
         foreach (var hit in hits)
-        {
+        {   //check if on a tile
             Tile tileComponent = hit.collider.GetComponent<Tile>();
             if (tileComponent != null)
             {
@@ -272,7 +273,7 @@ public class Movement : NetworkBehaviour
                 break; 
             }
         }
-
+        //check if in a room
         if (Physics.Raycast(rayStart, Vector3.down, out RaycastHit roomHit, 3.0f, Physics.AllLayers, QueryTriggerInteraction.Collide))
         {
             Room roomComponent = roomHit.collider.GetComponentInParent<Room>();
@@ -280,13 +281,13 @@ public class Movement : NetworkBehaviour
         }
 
         if (IsOwner && UIController.Instance != null)
-        {
+        {   //update UI
             UIController.Instance.UpdateUIVisibility();
         }
     }
 
-    // --------------- Room entry logic ----------------
-
+    
+    //is the user on a door position?
     public bool IsOnDoor()
     {
         if (Physics.Raycast(transform.position + Vector3.up, Vector3.down, out RaycastHit hit, 2f))
@@ -295,7 +296,7 @@ public class Movement : NetworkBehaviour
         }
         return false;
     }
-
+    //used to decide if a player can make a suggestion
     public bool IsInRoom()
     {
         if (Physics.Raycast(transform.position + Vector3.up * 0.5f, Vector3.down, out RaycastHit hit, 1.5f, Physics.AllLayers, QueryTriggerInteraction.Collide))
@@ -313,12 +314,12 @@ public class Movement : NetworkBehaviour
         }
         return false;
     }
-
+    //used to move the players when suggetions are made about them
     [ClientRpc]
     private void moveToRoomClientRpc(Vector3 roomPos)
     {
         if (!IsOwner) return;
-    
+        //actual movement 
         transform.position = roomPos;
         targetPosition = roomPos;
         isMoving = false; 
@@ -330,6 +331,7 @@ public class Movement : NetworkBehaviour
         StartCoroutine(delayedExitList());
     }
 
+    //shows exit dropdown
     private IEnumerator delayedExitList()
     {
         yield return new WaitForSeconds(0.1f);
@@ -339,28 +341,31 @@ public class Movement : NetworkBehaviour
         }
     }
 
-
+    //door entry
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner)]
     public void submitEntryServerRpc(ulong stageNetworkObjectId)
-    {
+    {   //dont end the turn while waiting
         CancelInvoke("delayNextTurn");
         if (NetworkManager.SpawnManager.SpawnedObjects.TryGetValue(stageNetworkObjectId, out NetworkObject stageNetObj))
-        {
+        {   //sets the tile the player was just on to false so others can use it 
+            // since now the player is not on it anymore
             Tile tileComp = stageNetObj.GetComponent<Tile>();
             if (tileComp != null)
             {
                 tileComp.updateOccupied(false);
             }
-
+            //places at specific spot
             Door door = stageNetObj.GetComponent<Door>();
             if (door == null) return;
 
             Vector3 targetPos = door.GetRoomPosition((int)OwnerClientId);
-
+            //movement to the actual place
             transform.position = targetPos;
             moveToRoomClientRpc(targetPos);
+            //turn is over as soon as you enter a room, so no more move tokens
             move_tokens.Value = 0;
-        
+            //move the phase onwards
+
             if (whomst.whatPhase.Value == TurnStage.MOVING)
             {
                 whomst.pushNextPhase();
@@ -368,7 +373,7 @@ public class Movement : NetworkBehaviour
         }
     }
     
-    // Moves the client to the exit selected.
+    //moves the client to the exit selected.
     [ClientRpc]
     private void exitRoomClientRpc(Vector3 exitPos)
     {
@@ -377,7 +382,7 @@ public class Movement : NetworkBehaviour
         whereWeAt();
     }
 
-    // Submits exit request to the server.
+    //submits exit request to the server.
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner)]
     public void submitExitServerRpc(ulong doorId)
     {
@@ -387,7 +392,7 @@ public class Movement : NetworkBehaviour
         {
             Door exit = doorNetworkObject.GetComponent<Door>();
             if (exit != null)
-            {
+            {   //exiting room counts as one move
                 move_tokens.Value--;
                 exitRoomClientRpc(exit.transform.position);
                 Debug.Log("The exit button hath been pressed");
@@ -395,20 +400,21 @@ public class Movement : NetworkBehaviour
         }
         whereWeAt();
     }
-
+    //secret passasge method
     [ServerRpc]
     public void activateSecPassServerRpc()
     {
         CancelInvoke("delayNextTurn");
         Dictionary<string, string> passages = new Dictionary<string, string>
-        {
+        {   //where the shortcuts start and end
             { "Study", "Kitchen" },
             { "Kitchen", "Study" },
             { "Conservatory", "Lounge" },
             { "Lounge", "Conservatory" }
         };
-        string currentNameStr = currentRoomName.Value.ToString();
 
+        string currentNameStr = currentRoomName.Value.ToString();
+        //only works if you are within one of the rooms mentionedin the passages array
         if (passages.ContainsKey(currentNameStr))
         {
             
@@ -420,10 +426,11 @@ public class Movement : NetworkBehaviour
             {
 
                 Vector3 targetPos = targetDoor.GetRoomPosition((int)OwnerClientId);
-
+                //same logic to place player in new room
                 transform.position = targetPos;
                 moveToRoomClientRpc(targetPos);
                 move_tokens.Value = 0;
+                //next turn
                 whomst.nextTurn();
                 Debug.Log($"Turn has moved to {whomst.whosPlaying.Value} as Secret Passage Used");
             }
@@ -436,7 +443,7 @@ public class Movement : NetworkBehaviour
     
         foreach (Door d in allDoors)
         {
-            // Option 1: Check the new string variable (Most Reliable)
+            //
             if (d.roomName == targetRoom)
             {
                 return d;
@@ -445,9 +452,10 @@ public class Movement : NetworkBehaviour
         return null;
     }
 
-    // ------------ End of room entry logic ------------
 
-    // Returns the tile the player has clicked to move to.
+
+    //returns the tile the player has clicked to move to
+    //used for movement
     private Tile GetTileAtPosition(Vector3 pos)
     {
         Collider[] colls = Physics.OverlapSphere(pos, 0.5f);
@@ -467,15 +475,16 @@ public class Movement : NetworkBehaviour
     void delayNextTurn()
     {
         if (!IsServer)
-        {
+        {   //only executes if running on server
             reqTurnChangeServerRpc();
         }
         else
-        {
+        {   //exits like normal if is client
             forceNextTurn();
         }
     }
 
+    //server recieves request to force the next turn
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void reqTurnChangeServerRpc()
     {
@@ -486,23 +495,24 @@ public class Movement : NetworkBehaviour
     {
         if (whomst == null) whomst = GameObject.FindFirstObjectByType<TurnManager>();
     
-        // Safety: Only end turn if we aren't already suggesting
+        //only end turn if we aren't already suggesting
         if (whomst != null && whomst.whatPhase.Value != TurnStage.SUGGESTING)
         {
             whomst.nextTurn();
         }
     }
-
+    //movement for the ai players
      public void AIMove(GameObject targetTileObject)
     {
         if (targetTileObject == null) return;
 
-
+        //checks if the clickedTile passed through parameters is valid tile or not
+        //if so moves towards it
         Tile clickedTile = targetTileObject.GetComponent<Tile>();
         if (clickedTile == null || stage == null) return;
-
+        //cant move where is occupied or if it has no move tokens left
         if (clickedTile.occupied.Value || move_tokens.Value <= 0) return;
-
+        //only tiles that are ariund the one the ai is currently on are valid
         Tile currentStand = stage.GetComponent<Tile>();
         if (currentStand.neighbours.Contains(targetTileObject))
         {
@@ -516,6 +526,7 @@ public class Movement : NetworkBehaviour
         }
     }
 
+    //to make the player invisibile when they become a spectator
     [ClientRpc]
     public void SetPlayerVisibilityClientRpc(bool isVisible)
     {
@@ -537,12 +548,13 @@ public class Movement : NetworkBehaviour
         Debug.Log($"<color=orange>Visibility set to {isVisible} for {gameObject.name}</color>");
     }
 
-
+    //teleporting to the rooom
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     public void TeleportToRoomServerRpc(Vector3 destination, string roomName)
     {
         transform.position = destination;
         currentRoomName.Value = roomName;
+        //calls this to ensure change happens on everyones machines not just on the server
         TeleportClientRpc(destination);
     }
 
