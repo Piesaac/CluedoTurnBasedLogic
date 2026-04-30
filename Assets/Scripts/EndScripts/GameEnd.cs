@@ -12,10 +12,8 @@ public class GameEnd : MonoBehaviour
 
     void Start()
     {
-        if (AccuseResult.gameEnd)
-        {
-            winText.text = $"{AccuseResult.winName} Solved the Crime!";
-        }
+
+        winText.text = $"{AccuseResult.winName} Solved the Crime!";
     }
 
     public void exitToMenu()
