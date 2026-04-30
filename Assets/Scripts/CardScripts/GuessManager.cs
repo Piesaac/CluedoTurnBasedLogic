@@ -339,23 +339,42 @@ public class GuessManager : NetworkBehaviour
                 }
             }
         }
+        string evidenceMessage = "";
+        if (cardDist.evidence != null && cardDist.evidence.Count > 0)
+        {
+            List<string> names = new List<string>();
+            foreach (var card in cardDist.evidence)
+            {
+                names.Add(cardDist.whatCard(card));
+            }
+            evidenceMessage = string.Join(", ", names);
+        }
 
         ClientRpcParams clientRpcParams = new ClientRpcParams
         {
             Send = new ClientRpcSendParams { TargetClientIds = new ulong[] { playerId } }
         };
-        tellEmTheyLostClientRpc(clientRpcParams);
+
+        tellEmTheyLostClientRpc(evidenceMessage, clientRpcParams);
         checkForLoneSurvivor();
     }
 
     [ClientRpc]
-    private void tellEmTheyLostClientRpc(ClientRpcParams rpcParams = default)
+    private void tellEmTheyLostClientRpc(string evidenceNames, ClientRpcParams rpcParams = default)
     {
         if (!IsOwner) return;
+
         gameplayPanel.SetActive(false);
-        spectatorText.text = "Accusation Wrong! You are now spectating.";
+    
+        string resultMessage = "Accusation Wrong! You are now spectating.\n";
+        resultMessage += "The correct clues were:\n";
+    
+        resultMessage += string.Join(", ", evidenceNames);
+
+        spectatorText.text = resultMessage;
         spectatorPanel.SetActive(true);
-        Invoke("hideSpectatorText", 4f);
+
+        Invoke("hideSpectatorText", 6f); 
     }
 
     private void hideSpectatorText()
