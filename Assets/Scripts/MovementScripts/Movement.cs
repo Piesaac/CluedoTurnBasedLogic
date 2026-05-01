@@ -37,7 +37,7 @@ public class Movement : NetworkBehaviour
     // Stores room player is currently in for room exit logic.
     public NetworkVariable<Unity.Collections.FixedString32Bytes> currentRoomName = 
     new NetworkVariable<Unity.Collections.FixedString32Bytes>("", NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
-
+    public string localRoomName = "";
 
     public NetworkVariable<int> move_tokens = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
@@ -269,9 +269,13 @@ public class Movement : NetworkBehaviour
         if (Physics.Raycast(rayStart, Vector3.down, out RaycastHit roomHit, 3.0f, Physics.AllLayers, QueryTriggerInteraction.Collide))
         {
             Room roomComponent = roomHit.collider.GetComponentInParent<Room>();
-            if (IsOwner && roomComponent != null)
+            if (roomComponent != null)
             {
-                updateRoomServerRpc(roomComponent.myName);
+                localRoomName = roomComponent.myName.ToString();
+                if (IsOwner)
+                {
+                    updateRoomServerRpc(roomComponent.myName);
+                }
             }
         }
 
@@ -297,6 +301,7 @@ public class Movement : NetworkBehaviour
         }
         return false;
     }
+
     //used to decide if a player can make a suggestion
     public bool IsInRoom()
     {
@@ -319,7 +324,7 @@ public class Movement : NetworkBehaviour
     [ClientRpc]
     private void moveToRoomClientRpc(Vector3 roomPos)
     {
-        if (!IsOwner) return;
+       if (!IsOwner) return;
         //actual movement 
         transform.position = roomPos;
         targetPosition = roomPos;

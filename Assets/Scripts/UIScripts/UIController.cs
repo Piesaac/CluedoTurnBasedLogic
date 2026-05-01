@@ -359,7 +359,8 @@ public class UIController : MonoBehaviour
         weaponList.AddOptions(new List<string>(Enum.GetNames(typeof(What))));
         if (turnMan.whatPhase.Value == TurnStage.SUGGESTING)
         {
-            List<string> currentRoom = new List<string> {$"{localPlayerScript.currentRoomName.Value}"};
+            string roomToShow = localPlayerScript.localRoomName;
+            List<string> currentRoom = new List<string> {$"{roomToShow}"};
             locationList.AddOptions(currentRoom);
             Debug.Log($"Current room {localPlayerScript.currentRoomName.Value}");
         }
