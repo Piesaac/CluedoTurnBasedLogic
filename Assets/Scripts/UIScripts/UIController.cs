@@ -89,13 +89,16 @@ public class UIController : MonoBehaviour
     public void ShowSuggestionUI() => guessPanel.SetActive(true);
     public void HideSuggestionBtn() => guessButton.gameObject.SetActive(true);
     public void ShowAccuseBtn() => accuseButton.gameObject.SetActive(true);
-    public void HideSuggestionUI() => guessPanel.SetActive(false);
     public void ShowRollingUI() => rollPanel.SetActive(true);
     public void HideRollingUI() => rollPanel.SetActive(false);
     public void HideDisproveUI() => disprovePanel.SetActive(false);
+    public void HideSuggestionUI() => guessPanel.SetActive(false);
 
-    // Marks if player is currently accusing.
+    // Marks if player is currently Accusing
     public bool isAccuse;
+
+    // Marks if player is currently Disproving
+    public bool isDisprove;
 
     private void Awake()
     {
@@ -106,6 +109,7 @@ public class UIController : MonoBehaviour
     void Start()
     {
         isAccuse = false;
+        isDisprove = false;
         cluesheetToggled = false;
         clueSheetBtn.gameObject.SetActive(true);
         fillGuessDropdowns();
@@ -168,7 +172,11 @@ public class UIController : MonoBehaviour
         rollPanel.SetActive(false);
         movePanel.SetActive(false);
         guessPanel.SetActive(false);
-        HideDisproveUI();
+        
+        if (!isDisprove)
+        {
+            HideDisproveUI();
+        }
 
         // If character is an AI, hides all UI elements from them.
         if (iRobot)
@@ -191,6 +199,7 @@ public class UIController : MonoBehaviour
 
             if (currentPhase != TurnStage.SUGGESTING)
             {
+                isAccuse = false;
                 confirmAccuseButton.gameObject.SetActive(false);
             }
 
@@ -229,6 +238,7 @@ public class UIController : MonoBehaviour
             {
                 fillGuessDropdowns();
                 guessPanel.SetActive(true);
+                confirmAccuseButton.gameObject.SetActive(isAccuse);
             }
             else
             {
@@ -238,6 +248,11 @@ public class UIController : MonoBehaviour
         }
         else
         {
+            if (isDisprove)
+            {
+                disproveList.gameObject.SetActive(true);
+                disprovePanel.SetActive(true);
+            }
             entryButton.gameObject.SetActive(false);
             exitButton.gameObject.SetActive(false);
             moves.gameObject.SetActive(false);
@@ -369,7 +384,9 @@ public class UIController : MonoBehaviour
     // Resets dropdowns to original values and shows button to confirm accusation.
     public void startAccuse()
     {
+        isAccuse = true;
         clearGuessDropdowns();
+        ToggleSuggestionLists(true);
         guessButton.gameObject.SetActive(false);
         accuseButton.gameObject.SetActive(false);
         confirmAccuseButton.gameObject.SetActive(true);
@@ -443,7 +460,9 @@ public class UIController : MonoBehaviour
             string clueToShow = cardNames[disproveList.value];
             GuessManager.Instance.disproveResult(clueToShow);
         }
+        isDisprove = false;
         HideDisproveUI();
+        UpdateUIVisibility();
     }
 
     // Hides disprove Text and clears it for next players.
@@ -484,5 +503,19 @@ public class UIController : MonoBehaviour
         hideDisproveText();
         turnMan.reqNextPhase();
         UpdateUIVisibility();
+    }
+
+    public void HideAccuseUI()
+    {
+        disproveList.gameObject.SetActive(false);
+        disprovePanel.SetActive(false);
+        confirmAccuseButton.gameObject.SetActive(false);
+    }
+
+    public void ToggleSuggestionLists(bool trigger)
+    {
+        suspectList.gameObject.SetActive(trigger);
+        weaponList.gameObject.SetActive(trigger);
+        locationList.gameObject.SetActive(trigger);
     }
 }

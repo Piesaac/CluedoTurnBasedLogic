@@ -2594,6 +2594,7 @@ MonoBehaviour:
     UpdateTraits:
       MinSecondsBetweenUpdates: 0
       MaxSecondsBetweenUpdates: 0
+  originalPlayers: 
 --- !u!1 &79756982
 GameObject:
   m_ObjectHideFlags: 0
@@ -5819,6 +5820,7 @@ MonoBehaviour:
   accuseWhat: 0
   accuseWhere: 0
   isAccuse: 0
+  isDisprove: 0
 --- !u!1001 &196817258
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -43682,6 +43684,18 @@ MonoBehaviour:
       - m_Target: {fileID: 1286082719}
         m_TargetAssemblyTypeName: GuessManager, Assembly-CSharp
         m_MethodName: validateGuess
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 196358695}
+        m_TargetAssemblyTypeName: UIController, Assembly-CSharp
+        m_MethodName: HideDisproveUI
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

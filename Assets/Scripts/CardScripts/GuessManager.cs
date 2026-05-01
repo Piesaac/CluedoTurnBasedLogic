@@ -55,17 +55,13 @@ public class GuessManager : NetworkBehaviour
     public void validateGuess()
     {
         uiscript.suggestionButton();
+        uiscript.ToggleSuggestionLists(false);
+        uiscript.confirmAccuseButton.gameObject.SetActive(false);
         chosenWho = uiscript.selectedSuspect;
         chosenWhat = uiscript.selectedWeapon;
         chosenWhere = uiscript.selectedRoom;
 
         submitGuessServerRpc(chosenWho, chosenWhat, chosenWhere);
-    }
-
-    // Clears the dropdowns of the uiscript.
-    private void resetGuess()
-    {
-        uiscript.clearGuessDropdowns();
     }
 
     // Receives the request to submit the guess and checks the values guessed against player hands using checkTheirMFHands().
@@ -235,6 +231,7 @@ public class GuessManager : NetworkBehaviour
         UIController.Instance.disproveText.text = "No cards found!" + " | Skip or Accuse";
         UIController.Instance.disproveText.gameObject.SetActive(true);
         UIController.Instance.fullyfillGuesses();
+        UIController.Instance.startAccuse();
     }
 
 
@@ -243,7 +240,9 @@ public class GuessManager : NetworkBehaviour
     private void reqDisproveClientRpc(Card[] matchingCards, ClientRpcParams rpcParams)
     {
         Debug.Log("CLIENT RECEIVED RPC");
+        uiscript.isDisprove = true;
         uiscript.ShowDisprovePanel(matchingCards); 
+        uiscript.UpdateUIVisibility();
     }
 
     // Called by UI Controller to receive the clue to disprove from the client.
@@ -274,6 +273,7 @@ public class GuessManager : NetworkBehaviour
         UIController.Instance.disproveText.text = "You have been shown the card: " + cardName + " | Skip or Accuse";
         UIController.Instance.disproveText.gameObject.SetActive(true);
         UIController.Instance.fullyfillGuesses();
+        UIController.Instance.startAccuse();
     }
 
     // ------- ACCUSATION LOGIC ----------
