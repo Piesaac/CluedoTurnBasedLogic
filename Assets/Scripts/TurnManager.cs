@@ -17,7 +17,7 @@ public class TurnManager : NetworkBehaviour
     public NetworkVariable<ulong> whosPlaying = new NetworkVariable<ulong>(0);
 
     public NetworkList<ulong> turnOrder = new NetworkList<ulong>(null, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
-
+    public List<ulong> originalPlayers = new List<ulong>();
 
     // Subscribes to event changes of network variables to automatically update UI.
     public override void OnNetworkSpawn()
@@ -41,20 +41,19 @@ public class TurnManager : NetworkBehaviour
     {
         if (!IsServer) return;
 
-        List<ulong> initialOrder = new List<ulong>();
-    
+        originalPlayers.Clear();
         foreach (var client in NetworkManager.Singleton.ConnectedClientsIds)
         {
-            initialOrder.Add(client);
+            originalPlayers.Add(client);
         }
 
         for (int i = 0; i < MenuController.numBotsToSpawn; i++)
         {
-            initialOrder.Add((ulong)(100 + i));
+            originalPlayers.Add((ulong)(100 + i));
         }
 
         turnOrder.Clear();
-        foreach (var id in initialOrder)
+        foreach (var id in originalPlayers)
         {
             turnOrder.Add(id);
         }

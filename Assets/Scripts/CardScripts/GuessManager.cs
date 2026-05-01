@@ -42,6 +42,7 @@ public class GuessManager : NetworkBehaviour
         chosenWhere = uiscript.selectedRoom;
     }
 
+
     void Awake()
     {
         if (Instance == null) Instance = this;
@@ -73,8 +74,9 @@ public class GuessManager : NetworkBehaviour
     public void submitGuessServerRpc(Who who, What what, Where where, RpcParams rpcParams = default)
     {   
         ulong guesserId = rpcParams.Receive.SenderClientId;
-        int nextPlayerIdx = ((int)guesserId + 1) % cardDist.playerHands.Count;
-        StartCoroutine(checkTheirMFHands(who, what, where, nextPlayerIdx, guesserId));
+        int guesserIdx = turnMan.originalPlayers.IndexOf(guesserId);
+    
+        StartCoroutine(checkTheirMFHands(who, what, where, guesserIdx, guesserId));
         activateGuessMoves(who, what, where);
     }
 
@@ -173,37 +175,54 @@ public class GuessManager : NetworkBehaviour
         return matches;
     }
 
-    // Checks over each players hand using the findSame() method and prompts the next player in sequence with matches to disprove.
-    private IEnumerator checkTheirMFHands(Who who, What what, Where where, int start, ulong guesserID)
+
+    private IEnumerator checkTheirMFHands(Who who, What what, Where where, int startIdx, ulong guesserID)
     {
-        int totalParticipants = cardDist.playerHands.Count;
+        int total = turnMan.originalPlayers.Count;
+        Debug.Log($"[DEBUG] Starting check. Total Players: {total}. Start Index: {startIdx}");
 
-        for (int i = 1; i < totalParticipants; i++)
+        for (int i = 1; i < total; i++)
         {
-            int idxToCheck = (start + i - 1) % totalParticipants;
+            int currentPointer = (startIdx + i) % total;
         
-            if ((ulong)idxToCheck == guesserID) continue;
+            // Ensure the pointer is valid before accessing the list
+            if (currentPointer < 0 || currentPointer >= turnMan.originalPlayers.Count) {
+                Debug.LogError($"[ERROR] currentPointer {currentPointer} is out of bounds!");
+                yield break;
+            }
 
-            List<Card> foundCards = findSame(cardDist.playerHands[idxToCheck], who, what, where);
+            ulong targetId = turnMan.originalPlayers[currentPointer];
+            Debug.Log($"[DEBUG] Checking Player {targetId} at index {currentPointer}");
+
+            // VITAL: Ensure the hand exists for this index
+            if (cardDist.playerHands[currentPointer] == null) {
+                Debug.LogError($"[ERROR] playerHands[{currentPointer}] is NULL!");
+                continue; 
+            }
+
+            List<Card> foundCards = findSame(cardDist.playerHands[currentPointer], who, what, where);
         
             if (foundCards.Count > 0)
             {
-                if (NetworkManager.Singleton.ConnectedClientsIds.Contains((ulong)idxToCheck))
-                {
-                    ClientRpcParams param = new ClientRpcParams
-                    {
-                        Send = new ClientRpcSendParams { TargetClientIds = new ulong[] { (ulong)idxToCheck } }
-                    };
-                    reqDisproveClientRpc(foundCards.ToArray(), param);
-                }
-                else
+                if (targetId >= 100) // AI Logic
                 {
                     string aiCardName = cardDist.whatCard(foundCards[0]);
-                    disproveServerRpc(aiCardName); 
+                    disproveServerRpc(aiCardName);
                 }
-                yield break;
+                else // Human Logic
+                {
+                    ClientRpcParams param = new ClientRpcParams {
+                        Send = new ClientRpcSendParams { TargetClientIds = new ulong[] { targetId } }
+                    };
+                    reqDisproveClientRpc(foundCards.ToArray(), param);
+                    Debug.Log($"[SUCCESS] Sent Disprove Request to Client {targetId}");
+                }
+                yield break; 
             }
         }
+
+        // If we get here, no matches were found
+        Debug.Log("[DEBUG] No matches found. Notifying Suggester.");
         notifyNoMatchesClientRpc(guesserID);
     }
 
@@ -223,6 +242,7 @@ public class GuessManager : NetworkBehaviour
     [ClientRpc]
     private void reqDisproveClientRpc(Card[] matchingCards, ClientRpcParams rpcParams)
     {
+        Debug.Log("CLIENT RECEIVED RPC");
         uiscript.ShowDisprovePanel(matchingCards); 
     }
 

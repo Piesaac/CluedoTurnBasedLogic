@@ -44,22 +44,13 @@ public class Movement : NetworkBehaviour
     // Links Player to their own UI Controller 
     public override void OnNetworkSpawn()
     {
+        StartCoroutine(stageSearch());
+        searchOnce();
         if (!IsOwner || turingTest() || absentTest())
         {
             return;
         } 
-        else
-        {
-            
-            uiobj = GameObject.FindFirstObjectByType<UIController>();
-            if (uiobj != null)
-            {
-                uiobj.localPlayerScript = this;
-            }
-        }
-
-        searchOnce();
-        StartCoroutine(stageSearch());
+    
         StartCoroutine(linkUI());
 
     }
@@ -263,8 +254,9 @@ public class Movement : NetworkBehaviour
     {
         Vector3 rayStart = transform.position + Vector3.up * 1.5f; 
         RaycastHit[] hits = Physics.RaycastAll(rayStart, Vector3.down, 3.0f);
+    
         foreach (var hit in hits)
-        {   //check if on a tile
+        {
             Tile tileComponent = hit.collider.GetComponent<Tile>();
             if (tileComponent != null)
             {
@@ -273,17 +265,26 @@ public class Movement : NetworkBehaviour
                 break; 
             }
         }
-        //check if in a room
+
         if (Physics.Raycast(rayStart, Vector3.down, out RaycastHit roomHit, 3.0f, Physics.AllLayers, QueryTriggerInteraction.Collide))
         {
             Room roomComponent = roomHit.collider.GetComponentInParent<Room>();
-            currentRoomName.Value = roomComponent != null ? roomComponent.myName : "";
+            if (IsOwner && roomComponent != null)
+            {
+                updateRoomServerRpc(roomComponent.myName);
+            }
         }
 
         if (IsOwner && UIController.Instance != null)
-        {   //update UI
+        {
             UIController.Instance.UpdateUIVisibility();
         }
+    }
+
+    [ServerRpc]
+    private void updateRoomServerRpc(Unity.Collections.FixedString32Bytes roomName)
+    {
+        currentRoomName.Value = roomName;
     }
 
     
@@ -347,23 +348,24 @@ public class Movement : NetworkBehaviour
     {   //dont end the turn while waiting
         CancelInvoke("delayNextTurn");
         if (NetworkManager.SpawnManager.SpawnedObjects.TryGetValue(stageNetworkObjectId, out NetworkObject stageNetObj))
-        {   //sets the tile the player was just on to false so others can use it 
+        {   //sets the tile the player was just on to occupied = false so others can use it 
             // since now the player is not on it anymore
             Tile tileComp = stageNetObj.GetComponent<Tile>();
             if (tileComp != null)
             {
                 tileComp.updateOccupied(false);
             }
-            //places at specific spot
+            // finds room spawns associated with door
             Door door = stageNetObj.GetComponent<Door>();
             if (door == null) return;
-
             Vector3 targetPos = door.GetRoomPosition((int)OwnerClientId);
+
             //movement to the actual place
             transform.position = targetPos;
             moveToRoomClientRpc(targetPos);
             //turn is over as soon as you enter a room, so no more move tokens
             move_tokens.Value = 0;
+            whereWeAt();
             //move the phase onwards
 
             if (whomst.whatPhase.Value == TurnStage.MOVING)
@@ -564,7 +566,6 @@ public class Movement : NetworkBehaviour
         transform.position = destination;
         targetPosition = destination;
         isMoving = false;
-        stage = null; 
         whereWeAt(); 
     }
 
