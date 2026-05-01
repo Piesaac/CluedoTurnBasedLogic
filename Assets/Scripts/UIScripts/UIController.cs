@@ -214,8 +214,8 @@ public class UIController : MonoBehaviour
                 exitList.gameObject.SetActive(isInRoom);
                 exitText.gameObject.SetActive(isInRoom);
                 exitButton.gameObject.SetActive(isInRoom);
-
                 entryButton.gameObject.SetActive(isOnDoor);
+                secPasBtn.gameObject.SetActive(false);
                 
                 // Shows secret passage button if the player is in a relevent room.
                 if (isInRoom) 
@@ -224,6 +224,10 @@ public class UIController : MonoBehaviour
                     if (localPlayerScript.currentRoomName.Value == "Study" || localPlayerScript.currentRoomName.Value == "Kitchen" || localPlayerScript.currentRoomName.Value == "Conservatory" || localPlayerScript.currentRoomName.Value == "Lounge")
                     {
                         secPasBtn.gameObject.SetActive(true);
+                    }
+                    else
+                    {
+                        secPasBtn.gameObject.SetActive(false);
                     }
                 }
             }
