@@ -499,11 +499,24 @@ public class UIController : MonoBehaviour
     // Links to the skip button for users, allowing them to skip a phase of their turn.
     public void skipBtn()
     {
-        confirmAccuseButton.gameObject.SetActive(false);
-        guessPanel.gameObject.SetActive(false);
-        hideDisproveText();
-        turnMan.reqNextPhase();
-        UpdateUIVisibility();
+        if (localPlayerScript.IsInRoom() == false)
+        {
+            confirmAccuseButton.gameObject.SetActive(false);
+            guessPanel.gameObject.SetActive(false);
+            hideDisproveText();
+            localPlayerScript.reqTurnChangeServerRpc();
+            UpdateUIVisibility();
+
+        }
+        else
+        {
+            confirmAccuseButton.gameObject.SetActive(false);
+            guessPanel.gameObject.SetActive(false);
+            hideDisproveText();
+            turnMan.reqNextPhase();
+            UpdateUIVisibility();
+
+        }
     }
 
     public void HideAccuseUI()

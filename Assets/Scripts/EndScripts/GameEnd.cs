@@ -14,6 +14,7 @@ public class GameEnd : MonoBehaviour
     {
 
         winText.text = $"{AccuseResult.winName} Solved the Crime!";
+        winText.text += $"{AccuseResult.endMessage}";
     }
 
     public void exitToMenu()

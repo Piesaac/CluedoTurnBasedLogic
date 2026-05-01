@@ -408,8 +408,21 @@ public class GuessManager : NetworkBehaviour
     [ClientRpc]
     private void endGameClientRpc(ulong id, string name)
     {
+        string evidenceMessage = "";
+        if (cardDist.evidence != null && cardDist.evidence.Count > 0)
+        {
+            List<string> names = new List<string>();
+            foreach (var card in cardDist.evidence)
+            {
+                names.Add(cardDist.whatCard(card));
+            }
+            evidenceMessage = string.Join(", ", names);
+        }
         AccuseResult.winID = id;
         AccuseResult.winName = name;
+
+        AccuseResult.endMessage = "The correct clues were:\n";
+        AccuseResult.endMessage += evidenceMessage;
 
 
         if (IsServer)

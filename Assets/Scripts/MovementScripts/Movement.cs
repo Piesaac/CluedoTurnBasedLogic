@@ -493,7 +493,7 @@ public class Movement : NetworkBehaviour
 
     //server recieves request to force the next turn
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
-    private void reqTurnChangeServerRpc()
+    public void reqTurnChangeServerRpc()
     {
         forceNextTurn();
     }
