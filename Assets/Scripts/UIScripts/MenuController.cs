@@ -9,7 +9,9 @@ public class MenuController : NetworkBehaviour
 {
     [Header("UI Panels")]
     [SerializeField] private GameObject loginPanel;  
-    [SerializeField] private GameObject lobbyPanel; 
+    [SerializeField] private GameObject lobbyPanel;
+    [SerializeField] private GameObject guideSheet; 
+
 
     [Header("Lobby UI")]
     [SerializeField] private TextMeshProUGUI statusText;
@@ -26,9 +28,12 @@ public class MenuController : NetworkBehaviour
     public int totalPlayers;
     public static int numBotsToSpawn;
 
+    private bool guideToggle;
+
     //Sets initial login panel on as default
     private void Start()
     {
+        guideToggle = false;
         numAI = 0;
         loginPanel.SetActive(true);
         lobbyPanel.SetActive(false);
@@ -174,5 +179,18 @@ public class MenuController : NetworkBehaviour
             numBotsToSpawn = aiCount.Value;
             NetworkManager.Singleton.SceneManager.LoadScene("Game", UnityEngine.SceneManagement.LoadSceneMode.Single);
         }
+    }
+
+    public void toggleGuide()
+    {
+        if (!guideToggle)
+        {
+            guideToggle = true;
+        }
+        else
+        {
+            guideToggle = false;
+        }
+        guideSheet.SetActive(guideToggle);
     }
 }
