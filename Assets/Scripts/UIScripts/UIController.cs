@@ -243,6 +243,7 @@ public class UIController : MonoBehaviour
                 fillGuessDropdowns();
                 guessPanel.SetActive(true);
                 confirmAccuseButton.gameObject.SetActive(isAccuse);
+                guessButton.gameObject.SetActive(!isAccuse);
             }
             else
             {
